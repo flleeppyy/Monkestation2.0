@@ -101,6 +101,14 @@
 
 /datum/emote/living/scream/get_sound(mob/living/user)
 	if(issilicon(user))
+		if (is_cat_enough(user))
+			return pick(
+				'monkestation/sound/voice/screams/silicon/paicatscream1.ogg',
+				'monkestation/sound/voice/screams/silicon/paicatscream2.ogg',
+				'monkestation/sound/voice/screams/silicon/paicatscream3.ogg',
+				'monkestation/sound/voice/screams/silicon/paicatscream4.ogg',
+				'monkestation/sound/voice/screams/silicon/paicatscream5.ogg',
+			)
 		return pick(
 			'monkestation/sound/voice/screams/silicon/robotAUGH1.ogg',
 			'monkestation/sound/voice/screams/silicon/robotAUGH2.ogg',
@@ -145,6 +153,12 @@
 	return ..() && is_cat_enough(user, include_all_anime = TRUE)
 
 /datum/emote/living/meow/get_sound(mob/living/user)
+	if(issilicon(user))
+		return pick(
+			'monkestation/sound/voice/feline/paicatmeow1.ogg',
+			'monkestation/sound/voice/feline/paicatmeow2.ogg',
+			'monkestation/sound/voice/feline/paicatmeow3.ogg',
+		)
 	return pick('monkestation/sound/voice/feline/meow1.ogg', 'monkestation/sound/voice/feline/meow2.ogg', 'monkestation/sound/voice/feline/meow3.ogg', 'monkestation/sound/voice/feline/meow4.ogg')
 
 /datum/emote/living/bark/can_run_emote(mob/user, status_check = TRUE, intentional = FALSE)
