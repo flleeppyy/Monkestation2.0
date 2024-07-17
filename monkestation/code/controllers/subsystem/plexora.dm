@@ -130,7 +130,7 @@ SUBSYSTEM_DEF(plexora)
 	body["msg_raw"] = msg_raw
 	body["opened_at"] = rustg_unix_timestamp()
 	body["replay_pass"] = CONFIG_GET(string/replay_password)
-	body["icon_b64"] = icon2base64(getFlatIcon(ticket.initiator))
+	body["icon_b64"] = icon2base64(getFlatIcon(ticket.initiator, SOUTH))
 
 	if (admin_ckey)	body["admin_ckey"] = admin_ckey
 
