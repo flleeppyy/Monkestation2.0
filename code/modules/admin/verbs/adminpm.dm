@@ -1,4 +1,4 @@
-#define EXTERNALREPLYCOUNT 2
+// monkestation edit: moved EXTERNALREPLYCOUNT to __defines
 #define EXTERNAL_PM_USER "IRCKEY"
 
 // HEY FUCKO, IMPORTANT NOTE!
@@ -339,6 +339,7 @@
 		var/category = "Reply: [ckey]"
 		if(new_admin_help)
 			category = "#[new_help_id] [category]"
+			SSplexora.aticket_pm(new_admin_help, send_message) // monkestation edit: PLEXORA
 
 		send2adminchat(category, raw_message)
 		return TRUE
@@ -414,6 +415,14 @@
 			span_linkify(send_message),
 		)
 
+		// monkestation start: PLEXORA
+		if (!ticket || recipient_ticket)
+			var/datum/admin_help = GLOB.ahelp_tickets.TicketByID(recipient_ticket_id)
+
+			SSplexora.aticket_pm(admin_help, send_message, src.ckey)
+		else
+			SSplexora.aticket_pm(ticket || recipient_ticket, send_message, src.ckey)
+		// monkestation end: PLEXORA
 		to_chat(recipient,
 			type = MESSAGE_TYPE_ADMINPM,
 			html = span_adminsay("<i>Click on the administrator's name to reply.</i>"),
@@ -499,6 +508,8 @@
 				log_in_blackbox = FALSE,
 				player_message = player_interaction_message)
 
+		if (ticket || recipient_ticket) SSplexora.aticket_pm(ticket || recipient_ticket, send_message, src.ckey) // monkestation edit: PLEXORA
+
 		SSblackbox.LogAhelp(ticket_id, "Reply", send_message, recip_ckey, our_ckey)
 		return TRUE
 
@@ -516,6 +527,7 @@
 
 	ticket.reply_to_admins_notification(send_message)
 	SSblackbox.LogAhelp(ticket_id, "Reply", send_message, recip_ckey, our_ckey)
+	SSplexora.aticket_pm(ticket, send_message) // monkestation edit: PLEXORA
 
 	return TRUE
 
@@ -792,5 +804,4 @@
 	SEND_SIGNAL(src, COMSIG_ADMIN_HELP_RECEIVED, message)
 
 #undef EXTERNAL_PM_USER
-#undef EXTERNALREPLYCOUNT
 #undef TGS_AHELP_USAGE
