@@ -21,7 +21,7 @@
 	// Simple sanity check to prevent a user doing this too often
 	var/cached_one_time_token = SSdiscord.reverify_cache[usr.ckey]
 	if(cached_one_time_token && cached_one_time_token != "")
-		message = "You already generated your one time token, it is [cached_one_time_token], if you need a new one, you will have to wait until the round ends, or switch to another server, try verifying yourself in discord by using the command <span class='warning'>\" [prefix]/verifydiscord [cached_one_time_token] \"</span>" // monkestation edit: PLEXORA
+		message = "You already generated your one time token, it is [cached_one_time_token], if you need a new one, you will have to wait until the round ends, or switch to another server, try verifying yourself in discord by using the command <span class='warning'>\" /verifydiscord [cached_one_time_token] \"</span>" // monkestation edit: PLEXORA
 
 
 	else
