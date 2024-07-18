@@ -37,8 +37,6 @@ SUBSYSTEM_DEF(plexora)
 	var/enabled = TRUE
 
 /datum/controller/subsystem/plexora/Initialize()
-	. = ..()
-
 	if (!rustg_file_exists(configuration_path))
 		stack_trace("SSplexora has no configuration file! (missing: [configuration_path])")
 		enabled = FALSE
@@ -314,13 +312,8 @@ SUBSYSTEM_DEF(plexora)
 
 	var/plx_tagged = "[sender](Plexora/External)"
 
-	var/adminname
-	var/stealthkey = sender
-	if(stealth)
-		adminname = "Administrator"
-	else
-		adminname = plx_tagged
-	stealthkey = GetTgsStealthKey()
+	var/adminname = stealth ? "Administrator" : plx_tagged
+	var/stealthkey = GetTgsStealthKey()
 
 	message = sanitize(copytext_char(message, 1, MAX_MESSAGE_LEN))
 	message = emoji_parse(message)
