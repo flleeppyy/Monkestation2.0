@@ -183,6 +183,10 @@ SUBSYSTEM_DEF(plexora)
 
 	http_basicasync("atickets/connection_notice", body)
 
+// Begin Mentor tickets
+
+/datum/controller/subsystem/plexora/proc/mticket_new()
+
 /datum/controller/subsystem/plexora/proc/http_basicasync(path, list/body)
 	if (!enabled) return;
 	HTTP_DEFAULT_HEADERS()
@@ -212,24 +216,59 @@ SUBSYSTEM_DEF(plexora)
 /datum/world_topic/plx_getsmites/Run(list/input)
 	. = GLOB.smites
 
+/datum/world_topic/plx_gettwitchevents
+	keyword = "PLX_gettwitchevents"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_gettwitchevents/Run(list/input)
+	var/list/events = list()
+
+	for (var/_event_path in subtypesof(/datum/twitch_event))
+		var/datum/twitch_event/event_path = _event_path
+		events[initial(event_path.event_name)] = event_path
+
+	return events
+
+/datum/world_topic/plx_getplayernotes
+	keyword = "PLX_getplayernotes"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_getplayernotes/Run(list/input)
+	var/ckey = input["ckey"]
+
+/datum/world_topic/plx_runtwitchevent
+	keyword = "plx_runtwitchevent"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_runtwitchevent/Run(list/input)
+	var/event = input["event"]
+	var/executor = input["executor"]
+
+	if (!CONFIG_GET(string/twitch_key))
+		return "error=twitchkeynotconfigured"
+
+	// cant be bothered, lets just call the topic.
+	var/outgoing = list("TWITCH-API", CONFIG_GET(string/twitch_key), event,)
+	SStwitch.handle_topic()
+
 /datum/world_topic/plx_smite
 	keyword = "PLX_smite"
 	require_comms_key = TRUE
 
 /datum/world_topic/plx_smite/Run(list/input)
-	var/target_ckey = input["target"]
+	var/target_ckey = input["ckey"]
 	var/selected_smite = input["smite"]
 	var/smited_by = input["smited_by_ckey"]
 
 	if (!GLOB.smites[selected_smite])
 		return "error=invalidsmite"
 
-	// DIVINE SMITING!
 	var/client/client = disambiguate_client(target_ckey)
 
 	if (!client)
 		return "error=clientnotexist"
 
+	// DIVINE SMITING!
 	var/smite_path = GLOB.smites[selected_smite]
 	var/datum/smite/picking_smite = new smite_path
 	var/configuration_success = picking_smite.configure(client)
@@ -241,8 +280,39 @@ SUBSYSTEM_DEF(plexora)
 		key = smited_by,
 	)
 
-	src = mockadmin
+	usr = mockadmin
 	picking_smite.effect(client, client.mob)
+
+/datum/world_topic/plx_jailmob
+	keyword = "PLX_jailmob"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_jailmob/Run(list/input)
+	var/ckey = input["ckey"]
+	var/jailer = input["admin_ckey"]
+
+	var/client/client = disambiguate_client(ckey)
+
+	if (!client)
+		return "error=clientnotexist"
+
+	var/mob/client_mob = client.mob
+
+	if (!client_mob)
+		return "error=clientnomob"
+
+	// Mock admin
+	var/datum/client_interface/mockadmin = new(
+		key = jailer,
+	)
+
+	usr = mockadmin
+
+	client_mob.forceMove(pick(GLOB.prisonwarp))
+	to_chat(client_mob, span_adminnotice("You have been sent to Prison!"), confidential = TRUE)
+
+	log_admin("[key_name(usr)] has sent [key_name(client_mob)] to Prison!")
+	message_admins("[key_name_admin(usr)] has sent [key_name_admin(client_mob)] to Prison!")
 
 /datum/world_topic/plx_ticketaction
 	keyword = "PLX_ticketaction"
