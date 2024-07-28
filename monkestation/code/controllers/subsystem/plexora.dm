@@ -107,9 +107,18 @@ SUBSYSTEM_DEF(plexora)
 	)
 	request.begin_async()
 
-	// UNTIL(request.is_complete())
-	// var/datum/http_response/response = new()
+/datum/controller/subsystem/plexora/Shutdown()
+	HTTP_DEFAULT_HEADERS()
 
+	var/datum/http_request/request = new()
+	request.prepare(
+		RUSTG_HTTP_METHOD_POST,
+		"http://[http_root]:[http_port]/serverrestart",
+		null,
+		headers,
+		"tmp/response.json"
+	)
+	request.begin_async()
 
 // Maybe we should consider that, if theres no admin_ckey when creating a new ticket,
 // This isnt a bwoink. Other wise if it does exist, it is a bwoink.
@@ -235,6 +244,10 @@ SUBSYSTEM_DEF(plexora)
 
 /datum/world_topic/plx_getplayernotes/Run(list/input)
 	var/ckey = input["ckey"]
+	var/datum/player_details/details = GLOB.player_details[ckey]
+
+	// if (!details)
+
 
 /datum/world_topic/plx_runtwitchevent
 	keyword = "plx_runtwitchevent"
