@@ -35,6 +35,8 @@
 	/// How broken is it? NOT_BROKEN, KINDA_BROKEN, REALLY_BROKEN
 	var/broken = NOT_BROKEN
 	var/open = FALSE
+	var/dont_eject_after_done = FALSE // monkestation edit: microwave "enhancements"
+	var/can_eject = TRUE // monkestation edit: microwave "enhancements"
 	var/max_n_of_items = 10
 	var/efficiency = 0
 	var/datum/looping_sound/microwave/soundloop
@@ -68,7 +70,7 @@
 
 
 /obj/machinery/microwave/on_deconstruction()
-	eject()
+	eject(force = TRUE) // monkestation edit: microwave "enhancements"
 	return ..()
 
 /obj/machinery/microwave/Destroy()
@@ -360,13 +362,22 @@
 	usr.set_machine(src)
 	switch(choice)
 		if("eject")
+			// monkestation edit start: microwave "enhancements"
+			if (!can_eject)
+				balloon_alert(user, "the lock is stuck!")
+				return
+			// monkestation end
 			eject()
 		if("use")
 			cook(user)
 		if("examine")
 			examine(user)
 
-/obj/machinery/microwave/proc/eject()
+// monkestation edit start: microwave "enhancements"
+/obj/machinery/microwave/proc/eject(force = FALSE)
+	if (!can_eject && !force)
+		return
+// monkestation end
 	var/atom/drop_loc = drop_location()
 	for(var/atom/movable/movable_ingredient as anything in ingredients)
 		movable_ingredient.forceMove(drop_loc)
@@ -466,20 +477,36 @@
 	. = ..()
 	if((machine_stat & NOPOWER) && operating)
 		pre_fail()
-		eject()
+		eject(force = TRUE) // monkestation edit: microwave "enhancements"
 
 /obj/machinery/microwave/proc/loop_finish(mob/cooker)
 	operating = FALSE
 
 	var/metal_amount = 0
+	var/shouldnt_open = FALSE // monkestation edit: microwave "enhancements"
+	var/dont_eject = FALSE // monkestation edit: microwave "enhancements"
 	for(var/obj/item/cooked_item in ingredients)
+		// var/sigreturn = cooked_item.microwave_act(src, cooker, randomize_pixel_offset = ingredients.len)
+		// if(sigreturn & COMPONENT_MICROWAVE_SUCCESS)
+		// 	if(isstack(cooked_item))
+		// 		var/obj/item/stack/cooked_stack = cooked_item
+		// 		dirty += cooked_stack.amount
+		// 	else
+		// 		dirty++
+		// monkestation edit start: microwave "enhancements"
 		var/sigreturn = cooked_item.microwave_act(src, cooker, randomize_pixel_offset = ingredients.len)
 		if(sigreturn & COMPONENT_MICROWAVE_SUCCESS)
+			var/should_dirty = !(sigreturn & COMPONENT_MICROWAVE_DONTDIRTY)
 			if(isstack(cooked_item))
 				var/obj/item/stack/cooked_stack = cooked_item
-				dirty += cooked_stack.amount
+				should_dirty && (dirty += cooked_stack.amount)
 			else
-				dirty++
+				should_dirty && (dirty++)
+		if (sigreturn & COMPONENT_MICROWAVE_DONTEJECT)
+			dont_eject = TRUE
+		if (sigreturn & COMPONENT_MICROWAVE_DONTOPEN)
+			shouldnt_open = TRUE
+		// monkestation end
 
 		metal_amount += (cooked_item.custom_materials?[GET_MATERIAL_REF(/datum/material/iron)] || 0)
 
@@ -493,10 +520,10 @@
 		broken = REALLY_BROKEN
 		if(HAS_TRAIT(cooker, TRAIT_CURSED) || prob(max(metal_amount / 2, 33))) // If we're unlucky and have metal, we're guaranteed to explode
 			explosion(src, heavy_impact_range = 1, light_impact_range = 2)
-	else
+	else if (!dont_eject) // monkestation edit: microwave "enhancements" - + if (!dont_eject)
 		dump_inventory_contents()
 
-	after_finish_loop()
+	after_finish_loop(dontopen = shouldnt_open) // monkestation edit: microwave "enhancements" - () -> (dontopen = shouldnt_open)
 
 /obj/machinery/microwave/proc/pre_fail()
 	broken = REALLY_BROKEN
@@ -516,10 +543,17 @@
 
 	after_finish_loop()
 
-/obj/machinery/microwave/proc/after_finish_loop()
+/obj/machinery/microwave/proc/after_finish_loop(dontopen = FALSE) // monkestation edit: microwave "enhancements" () -> (dontopen = FALSE)
 	set_light(0)
 	soundloop.stop()
-	open()
+	//open()
+	// monkestation edit start: microwave "enhancements"
+	if (!dontopen)
+		open()
+	else
+		update_appearance()
+	// monkestation end
+
 
 /obj/machinery/microwave/proc/open()
 	open = TRUE
