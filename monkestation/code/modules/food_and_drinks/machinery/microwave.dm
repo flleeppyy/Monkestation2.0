@@ -12,7 +12,7 @@
 	eject(force = TRUE)
 	return ..()
 
-/obj/machinery/microwave/proc/after_finish_loop(dontopen = FALSE)
+/obj/machinery/microwave/after_finish_loop(dontopen = FALSE)
 	set_light(0)
 	soundloop.stop()
 	if (!dontopen)

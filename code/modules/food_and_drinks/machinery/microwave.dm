@@ -542,8 +542,7 @@
 /obj/machinery/microwave/proc/after_finish_loop()
 	set_light(0)
 	soundloop.stop()
-		open()
-
+	open()
 
 /obj/machinery/microwave/proc/open()
 	open = TRUE
