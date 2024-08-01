@@ -373,11 +373,7 @@
 		if("examine")
 			examine(user)
 
-// monkestation edit start: microwave "enhancements"
-/obj/machinery/microwave/proc/eject(force = FALSE)
-	if (!can_eject && !force)
-		return
-// monkestation end
+/obj/machinery/microwave/proc/eject()
 	var/atom/drop_loc = drop_location()
 	for(var/atom/movable/movable_ingredient as anything in ingredients)
 		movable_ingredient.forceMove(drop_loc)
