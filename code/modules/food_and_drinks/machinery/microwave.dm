@@ -35,8 +35,6 @@
 	/// How broken is it? NOT_BROKEN, KINDA_BROKEN, REALLY_BROKEN
 	var/broken = NOT_BROKEN
 	var/open = FALSE
-	var/dont_eject_after_done = FALSE // monkestation edit: microwave "enhancements"
-	var/can_eject = TRUE // monkestation edit: microwave "enhancements"
 	var/max_n_of_items = 10
 	var/efficiency = 0
 	var/datum/looping_sound/microwave/soundloop
@@ -70,7 +68,7 @@
 
 
 /obj/machinery/microwave/on_deconstruction()
-	eject(force = TRUE) // monkestation edit: microwave "enhancements"
+	// eject() // monkestation edit: overrided in module
 	return ..()
 
 /obj/machinery/microwave/Destroy()
@@ -482,22 +480,24 @@
 	var/shouldnt_open = FALSE // monkestation edit: microwave "enhancements"
 	var/dont_eject = FALSE // monkestation edit: microwave "enhancements"
 	for(var/obj/item/cooked_item in ingredients)
-		// var/sigreturn = cooked_item.microwave_act(src, cooker, randomize_pixel_offset = ingredients.len)
-		// if(sigreturn & COMPONENT_MICROWAVE_SUCCESS)
-		// 	if(isstack(cooked_item))
-		// 		var/obj/item/stack/cooked_stack = cooked_item
-		// 		dirty += cooked_stack.amount
-		// 	else
-		// 		dirty++
-		// monkestation edit start: microwave "enhancements"
+		// monkestation original start
+			// var/sigreturn = cooked_item.microwave_act(src, cooker, randomize_pixel_offset = ingredients.len)
+			// if(sigreturn & COMPONENT_MICROWAVE_SUCCESS)
+			// 	if(isstack(cooked_item))
+			// 		var/obj/item/stack/cooked_stack = cooked_item
+			// 		dirty += cooked_stack.amount
+			// 	else
+			// 		dirty++
+		// monkestation original end
+		// monkestation start: microwave "enhancements"
 		var/sigreturn = cooked_item.microwave_act(src, cooker, randomize_pixel_offset = ingredients.len)
 		if(sigreturn & COMPONENT_MICROWAVE_SUCCESS)
 			var/should_dirty = !(sigreturn & COMPONENT_MICROWAVE_DONTDIRTY)
 			if(isstack(cooked_item))
 				var/obj/item/stack/cooked_stack = cooked_item
-				should_dirty && (dirty += cooked_stack.amount)
+				if (should_dirty) dirty += cooked_stack.amount
 			else
-				should_dirty && (dirty++)
+				if (should_dirty) dirty++
 		if (sigreturn & COMPONENT_MICROWAVE_DONTEJECT)
 			dont_eject = TRUE
 		if (sigreturn & COMPONENT_MICROWAVE_DONTOPEN)
@@ -539,16 +539,10 @@
 
 	after_finish_loop()
 
-/obj/machinery/microwave/proc/after_finish_loop(dontopen = FALSE) // monkestation edit: microwave "enhancements" () -> (dontopen = FALSE)
+/obj/machinery/microwave/proc/after_finish_loop()
 	set_light(0)
 	soundloop.stop()
-	//open()
-	// monkestation edit start: microwave "enhancements"
-	if (!dontopen)
 		open()
-	else
-		update_appearance()
-	// monkestation end
 
 
 /obj/machinery/microwave/proc/open()

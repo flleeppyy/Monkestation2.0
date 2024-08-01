@@ -79,6 +79,8 @@
 		return
 	if (microwaved)
 		if (microwaved_uses_left <= 0)
+			to_chat(user, span_warning("the components [src] starts glowing a bright orange, before the capacitors erupt in a violent explosion!"))
+			to_chat(user, span_notice("How this small thing could have had this large of an explosion is byond you."))
 			A.emp_act(EMP_HEAVY)
 			explosion(src, heavy_impact_range = 0, light_impact_range = 3)
 			log_combat(user, A, "attempted to emag with microwaved emag, emag exploded")
@@ -88,15 +90,15 @@
 		else
 			A.emp_act(EMP_LIGHT)
 		if (microwaved_uses_left == 1)
-			desc += " The capacitors look exploded."
-			to_chat(user, span_warning("The components on [src] start glowing a burning orange!"))
-			to_chat(user, span_warning("The [src] feels way too hot to hold in your hand, and you fumble it on to the floor."))
+			desc += " The capacitors are leaking."
+			to_chat(user, span_warning("the components on [src] start glowing a burning orange!"))
+			to_chat(user, span_warning("[src] feels way too hot to hold in your hand, and you fumble it on to the floor."))
 			user.dropItemToGround(src)
 			icon_state = "[icon_state]_glow"
-			src.visible_message(span_notice("[user] fumbles the [src] and drops it on the ground, a glow fading from hot orange to dim red."))
+			src.visible_message(span_notice("[user] fumbles [src] and drops it on the ground, a glow fading from hot orange to dim red."))
 		else
 			flick("[icon_state]_spark", src)
-			to_chat(user, span_warning(pick(list("The [src] sparks in your hand!", "The components on [src] start glowing!",))))
+			to_chat(user, span_warning(pick(list("[src] sparks in your hand!", "The components on [src] start glowing!",))))
 		microwaved_uses_left--
 		log_combat(user, A, "attempted to emag with microwaved emag")
 	else

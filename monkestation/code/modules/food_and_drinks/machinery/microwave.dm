@@ -6,3 +6,16 @@
 	if (!can_eject && !force)
 		return
 	. = ..()
+
+
+/obj/machinery/microwave/on_deconstruction()
+	eject(force = TRUE)
+	return ..()
+
+/obj/machinery/microwave/proc/after_finish_loop(dontopen = FALSE)
+	set_light(0)
+	soundloop.stop()
+	if (!dontopen)
+		open()
+	else
+		update_appearance()
