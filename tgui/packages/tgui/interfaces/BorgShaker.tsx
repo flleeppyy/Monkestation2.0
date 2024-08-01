@@ -54,7 +54,6 @@ export const BorgShaker = (props) => {
               />
               <Button
                 icon="flask"
-                width="23px"
                 color={
                   data.reagentSearchContainer ===
                   ContainerPreference.InternalBeaker
@@ -70,7 +69,6 @@ export const BorgShaker = (props) => {
               />
               <Button
                 icon="vial"
-                width="24px"
                 tooltip="Search source: Beverage Apparatus"
                 color={
                   data.reagentSearchContainer ===
