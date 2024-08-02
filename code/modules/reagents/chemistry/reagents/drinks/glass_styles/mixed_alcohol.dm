@@ -434,16 +434,15 @@
 	required_drink_type = /datum/reagent/consumable/ethanol/eggnog
 	name = "eggnog"
 	desc = "For enjoying the most wonderful time of the year."
-	icon = 'icons/obj/drinks/mixed_drinks.dmi'
-	icon_state = "eggnog"
-	//drink_type = FRUIT // monkestation removal: this is NOT FRUIT?!
+	icon_state = "glass_yellow"
+	drink_type = FRUIT
 
 /datum/glass_style/has_foodtype/juicebox/eggnog
 	required_drink_type = /datum/reagent/consumable/ethanol/eggnog
 	name = "carton of eggnog"
 	desc = "A big juicebox for adults."
 	icon_state = "nog2"
-	//drink_type = FRUIT // monkestation removal: this is NOT FRUIT?!
+	drink_type = FRUIT
 
 /datum/glass_style/drinking_glass/narsour
 	required_drink_type = /datum/reagent/consumable/ethanol/narsour

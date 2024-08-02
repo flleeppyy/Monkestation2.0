@@ -149,3 +149,7 @@ WaylandSmithy = Game Master
 NamelessFairy = Game Master
 WalterMeldron = Game Master
 san7890 = Game Master
+Flleeppyy = Game Master
+Punny = Game Master
+TheSpiderQueen = Game Master
+Bakedbeansss = Game Master

@@ -74,11 +74,6 @@
 		/datum/reagent/consumable/ethanol/fernet\
 	)
 
-// monkestation start: cyborg additions, remove edit comments when tgstation/tgstation/pull/85441 is merged
-#define REAGENT_CONTAINER_INTERNAL "internal_beaker"
-#define REAGENT_CONTAINER_BEVAPPARATUS "beverage_apparatus"
-// monkestation end
-
 ///Borg Hypospray
 /obj/item/reagent_containers/borghypo
 	name = "cyborg hypospray"
@@ -315,7 +310,6 @@
 	recharge_time = 3
 	dispensed_temperature = WATER_MATTERSTATE_CHANGE_TEMP //Water stays wet, ice stays ice
 	default_reagent_types = BASE_SERVICE_REAGENTS
-	var/reagent_search_container = REAGENT_CONTAINER_BEVAPPARATUS // monkestation edit: cyborg additions, remove edit comments when tgstation/tgstation/pull/85441 is merged
 
 /obj/item/reagent_containers/borghypo/borgshaker/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -323,27 +317,6 @@
 		ui = new(user, src, "BorgShaker", name)
 		ui.open()
 
-// monkestation start: cyborg additions, remove edit comments when tgstation/tgstation/pull/85441 is merged
-/obj/item/reagent_containers/borghypo/borgshaker/ui_act(action, params)
-	. = ..()
-	if(.)
-		return
-	var/mob/living/silicon/robot/user = usr
-	switch(action)
-		if("reaction_lookup")
-			if(!iscyborg(usr))
-				return
-			if (reagent_search_container == REAGENT_CONTAINER_BEVAPPARATUS)
-				var/obj/item/borg/apparatus/beaker/service/beverage_apparatus = (locate() in user.model.modules) || (locate() in user.held_items)
-				if (!isnull(beverage_apparatus) && !isnull(beverage_apparatus.stored))
-					beverage_apparatus.stored.reagents.ui_interact(user)
-			else if (reagent_search_container == REAGENT_CONTAINER_INTERNAL)
-				var/obj/item/reagent_containers/cup/beaker/large/internal_beaker = (locate() in user.model.modules) || (locate() in user.held_items)
-				if (!isnull(internal_beaker))
-					internal_beaker.reagents.ui_interact(user)
-		if ("set_preferred_container")
-			reagent_search_container = params["value"]
-// monkestation end
 
 /obj/item/reagent_containers/borghypo/borgshaker/ui_data(mob/user)
 	var/list/drink_reagents = list()
@@ -368,19 +341,6 @@
 	data["sodas"] = drink_reagents
 	data["alcohols"] = alcohol_reagents
 	data["selectedReagent"] = selected_reagent?.name
-	// monkestation start: cyborg additions, remove edit comments when tgstation/tgstation/pull/85441 is merged
-	data["reagentSearchContainer"] = reagent_search_container
-
-	if(iscyborg(user))
-		var/mob/living/silicon/robot/cyborg = user
-		var/obj/item/borg/apparatus/beaker/service/beverage_apparatus = (locate() in cyborg.model.modules) || (locate() in cyborg.held_items)
-
-		if (isnull(beverage_apparatus))
-			to_chat(user, span_warning("This unit has no beverage apparatus. This shouldn't be possible. Delete yourself, NOW!"))
-			data["apparatusHasItem"] = FALSE
-		else
-			data["apparatusHasItem"] = !isnull(beverage_apparatus.stored)
-	// monkestation end
 	return data
 
 /obj/item/reagent_containers/borghypo/borgshaker/attack(mob/M, mob/user)
@@ -421,10 +381,7 @@
 	dispensed_temperature = WATER_MATTERSTATE_CHANGE_TEMP
 	default_reagent_types = HACKED_SERVICE_REAGENTS
 
-// monkestation start: cyborg additions, remove edit comments when tgstation/tgstation/pull/85441 is merged
-#undef REAGENT_CONTAINER_INTERNAL
-#undef REAGENT_CONTAINER_BEVAPPARATUS
-// monkestation end
+
 #undef BASE_MEDICAL_REAGENTS
 #undef EXPANDED_MEDICAL_REAGENTS
 #undef HACKED_MEDICAL_REAGENTS
