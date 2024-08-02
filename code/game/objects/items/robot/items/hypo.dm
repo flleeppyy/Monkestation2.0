@@ -317,7 +317,6 @@
 		ui = new(user, src, "BorgShaker", name)
 		ui.open()
 
-
 /obj/item/reagent_containers/borghypo/borgshaker/ui_data(mob/user)
 	var/list/drink_reagents = list()
 	var/list/alcohol_reagents = list()
@@ -380,7 +379,6 @@
 	tgui_theme = "syndicate"
 	dispensed_temperature = WATER_MATTERSTATE_CHANGE_TEMP
 	default_reagent_types = HACKED_SERVICE_REAGENTS
-
 
 #undef BASE_MEDICAL_REAGENTS
 #undef EXPANDED_MEDICAL_REAGENTS
