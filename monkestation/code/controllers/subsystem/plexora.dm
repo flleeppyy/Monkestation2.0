@@ -210,13 +210,60 @@ SUBSYSTEM_DEF(plexora)
 	)
 	request.begin_async()
 
+/datum/world_topic/plx_adminwho
+	keyword = "PLX_adminwho"
+	require_comms_key = TRUE
 
-// /datum/controller/subsystem/plexora/proc/topic_fowarder(list/input)
-//   if (!input["plexora"])
-// 		return "failed=goober"
+/datum/world_topic/plx_adminwho/Run(list/input)
+	var/list/admins = list()
 
-// /datum/world_topic/plexora
+	for (var/client/admin in GLOB.admins)
+		var/admin_ = list(
+			"name" = admin,
+			"ckey" = admin.ckey,
+			"rank" = admin.holder.rank_names(),
+			"afk" = admin.is_afk(),
+			"stealth" = !!admin.holder.fakekey,
+			"stealthkey" = admin.holder.fakekey,
+		)
 
+		if(isobserver(admin.mob))
+			admin_["state"] = "observing"
+		else if(isnewplayer(admin.mob))
+			admin_["state"] = "lobby"
+		else
+			admin_["state"] = "playing"
+
+		admins += LIST_VALUE_WRAP_LISTS(admin_)
+	return admins
+
+/datum/world_topic/plx_mentorwho
+	keyword = "PLX_mentorwho"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_mentorwho/Run(list/input)
+	var/list/mentors = list()
+
+	for (var/client/mentor in GLOB.mentors)
+		var/list/mentor_ = list(
+			"name" = mentor,
+			"ckey" = mentor.ckey,
+			"rank" = mentor.holder.rank_names(),
+			"afk" = mentor.is_afk(),
+			"stealth" = !!mentor.holder.fakekey,
+			"stealthkey" = mentor.holder.fakekey,
+		)
+
+		if(isobserver(mentor.mob))
+			mentor_["state"] = "observing"
+		else if(isnewplayer(mentor.mob))
+			mentor_["state"] = "lobby"
+		else
+			mentor_["state"] = "playing"
+
+		mentors += LIST_VALUE_WRAP_LISTS(mentor_)
+
+	return mentors
 
 /datum/world_topic/plx_getsmites
 	keyword = "PLX_getsmites"
@@ -238,16 +285,26 @@ SUBSYSTEM_DEF(plexora)
 
 	return events
 
-/datum/world_topic/plx_getplayernotes
-	keyword = "PLX_getplayernotes"
+/datum/world_topic/plx_getplayerdetails
+	keyword = "PLX_getplayerdetails"
 	require_comms_key = TRUE
 
-/datum/world_topic/plx_getplayernotes/Run(list/input)
+/datum/world_topic/plx_getplayerdetails/Run(list/input)
 	var/ckey = input["ckey"]
 	var/datum/player_details/details = GLOB.player_details[ckey]
 
-	// if (!details)
+	if (!details)
+		// fetch from database maybe?
 
+	var/list/returning = list()
+
+	returning["player_actions"] = details.player_actions
+	returning["logging"] = details.logging
+	returning["played_names"] = details.logging
+	returning["byond_version"] = details.byond_version
+	returning["achievements"] = details.achievements
+
+	return details
 
 /datum/world_topic/plx_runtwitchevent
 	keyword = "plx_runtwitchevent"
@@ -258,7 +315,7 @@ SUBSYSTEM_DEF(plexora)
 	var/executor = input["executor"]
 
 	if (!CONFIG_GET(string/twitch_key))
-		return "error=twitchkeynotconfigured"
+		return list("error" = "twitchkeynotconfigured")
 
 	// cant be bothered, lets just call the topic.
 	var/outgoing = list("TWITCH-API", CONFIG_GET(string/twitch_key), event,)
@@ -279,7 +336,7 @@ SUBSYSTEM_DEF(plexora)
 	var/client/client = disambiguate_client(target_ckey)
 
 	if (!client)
-		return "error=clientnotexist"
+		return list("error" = "clientnotexist")
 
 	// DIVINE SMITING!
 	var/smite_path = GLOB.smites[selected_smite]
@@ -307,12 +364,12 @@ SUBSYSTEM_DEF(plexora)
 	var/client/client = disambiguate_client(ckey)
 
 	if (!client)
-		return "error=clientnotexist"
+		return list("error" = "clientnotexist")
 
 	var/mob/client_mob = client.mob
 
 	if (!client_mob)
-		return "error=clientnomob"
+		return list("error" = "clientnomob")
 
 	// Mock admin
 	var/datum/client_interface/mockadmin = new(
@@ -324,8 +381,8 @@ SUBSYSTEM_DEF(plexora)
 	client_mob.forceMove(pick(GLOB.prisonwarp))
 	to_chat(client_mob, span_adminnotice("You have been sent to Prison!"), confidential = TRUE)
 
-	log_admin("[key_name(usr)] has sent [key_name(client_mob)] to Prison!")
-	message_admins("[key_name_admin(usr)] has sent [key_name_admin(client_mob)] to Prison!")
+	log_admin("Discord: [key_name(usr)] has sent [key_name(client_mob)] to Prison!")
+	message_admins("Discord: [key_name_admin(usr)] has sent [key_name_admin(client_mob)] to Prison!")
 
 /datum/world_topic/plx_ticketaction
 	keyword = "PLX_ticketaction"
@@ -338,7 +395,7 @@ SUBSYSTEM_DEF(plexora)
 
 
 	var/datum/admin_help/ticket = GLOB.ahelp_tickets.TicketByID(ticketid)
-	if (!ticket) return "error=couldntfetchticket"
+	if (!ticket) return list("error" = "couldntfetchticket")
 
 	if (action != "reopen" && ticket.state != AHELP_ACTIVE)
 		return
@@ -370,7 +427,7 @@ SUBSYSTEM_DEF(plexora)
 
 /datum/world_topic/plx_sendaticketpm/Run(list/input)
   // We're kind of copying /proc/TgsPm here...
-	var/ticketid = text2num(input["id"])
+	var/ticketid = text2num(input["ticket_id"])
 	var/input_ckey = input["ckey"]
 	var/sender = input["sender_ckey"]
 	var/stealth = input["stealh"]
@@ -391,7 +448,7 @@ SUBSYSTEM_DEF(plexora)
 		ticket = GLOB.ahelp_tickets.CKey2ActiveTicket(requested_ckey)
 
 	if (!ticket)
-		return "error=couldntfetchticket"
+		return list("error" = "couldntfetchticket")
 
 	var/plx_tagged = "[sender](Plexora/External)"
 
@@ -402,7 +459,7 @@ SUBSYSTEM_DEF(plexora)
 	message = emoji_parse(message)
 
 	if (!message)
-		return "error=messagedidntpasssanitization"
+		return list("error" = "sanitizationfailed")
 
 	// I have no idea what this does honestly.
 
@@ -440,7 +497,6 @@ SUBSYSTEM_DEF(plexora)
 		SEND_SOUND(recipient, 'sound/effects/adminhelp.ogg')
 
 		recipient.externalreplyamount = EXTERNALREPLYCOUNT
-
 
 #undef AUTH_HEADER
 #undef HTTP_DEFAULT_HEADERS
