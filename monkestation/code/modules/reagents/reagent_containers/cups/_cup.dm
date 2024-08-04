@@ -45,26 +45,12 @@
 	playsound(get_turf(src), sound, 60, TRUE, use_reverb = TRUE)
 
 /obj/item/reagent_containers/cup/proc/get_pouring_sound(trans)
-	var/list/determined_sound_list = pouring_sounds_categorized["50_inf"]
+	var/pour_amount = "0_10"
+	if(trans >= 50)
+		pour_amount = "50_inf"
+	else if(trans >= 25)
+		pour_amount = "25_50"
+	else if(trans >= 10)
+		pour_amount = "10_25"
 
-	if (trans >= 50)
-		determined_sound_list = pouring_sounds_categorized["50_inf"]
-	else if (trans >= 25)
-		determined_sound_list = pouring_sounds_categorized["25_50"]
-	else if (trans >= 10)
-		determined_sound_list = pouring_sounds_categorized["10_25"]
-	else if (trans >= 0)
-		determined_sound_list = pouring_sounds_categorized["0_10"]
-
-	var/chance_for_rare = roll(100)
-	if (chance_for_rare == 100)
-		if (trans >= 50)
-			determined_sound_list = rare_pouring_sound["50_inf"]
-		else if (trans >= 25)
-			determined_sound_list = rare_pouring_sound["25_50"]
-		else if (trans >= 10)
-			determined_sound_list = rare_pouring_sound["10_25"]
-		else if (trans >= 0)
-			determined_sound_list = rare_pouring_sound["0_10"]
-
-	return pick(determined_sound_list)
+	return prob(1) ? rare_pouring_sound[pour_amount] : pouring_sounds_categorized[pour_amount]
