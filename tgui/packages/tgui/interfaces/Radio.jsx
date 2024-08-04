@@ -123,7 +123,7 @@ export const Radio = (props) => {
                       }
                     />
                     <Button
-                      icon={channel.sound ? 'volume' : 'volume-slash'}
+                      icon={channel.sound ? 'volume-up' : 'volume-off'}
                       tooltip="Disable/enable radio message sounds"
                       checked={channel.sound}
                       onClick={() => {
