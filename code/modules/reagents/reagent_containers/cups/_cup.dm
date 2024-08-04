@@ -87,7 +87,7 @@
 		contained_bladder.consume_act(reagents, gulp_size * 0.2)
 	reagents.trans_to(target_mob, gulp_size, transfered_by = user, methods = INGEST)
 	checkLiked(fraction, target_mob)
-  ////playsound(target_mob.loc,'sound/items/drink.ogg', rand(10,50), TRUE) // monkestation edit original
+	////playsound(target_mob.loc,'sound/items/drink.ogg', rand(10,50), TRUE) // monkestation edit original
 	playsound(target_mob.loc,get_drink_sound(target_mob), rand(10,50), TRUE) // monkestation edit: synthesized drink sounds
 	if(!iscarbon(target_mob))
 		return
