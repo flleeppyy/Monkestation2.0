@@ -11,9 +11,15 @@
  * NOTES:
  * * SSplexora makes heavy use of topics, and rust_g HTTP requests
  * * Lets hope to god plexora is configured properly and DOESNT CRASh,
- *   -because i seriously do not want to put error catchers in
- *   -EVERY FUNCTION THAT MAKES AN HTTP REQUEST
+ *	 -because i seriously do not want to put error catchers in
+ *	 -EVERY FUNCTION THAT MAKES AN HTTP REQUEST
  */
+
+#define TOPIC_EMITTER \
+	if (input["emitter_token"]) { \
+		INVOKE_ASYNC(SSplexora, TYPE_PROC_REF(/datum/controller/subsystem/plexora,topic_listener_response), input["emitter_token"], returning); \
+		return; \
+	};
 
 #define AUTH_HEADER ("Basic " + CONFIG_GET(string/comms_key))
 
@@ -61,6 +67,8 @@ SUBSYSTEM_DEF(plexora)
 	// Do a ping test to check if Plexora is actually running
 	if (!isPlexoraAlive())
 		stack_trace("SSplexora is enabled BUT plexora is not alive or running! SS has not been aborted, subsequent fires will take place.")
+	else
+		serverstarted()
 
 	return SS_INIT_SUCCESS
 
@@ -106,19 +114,84 @@ SUBSYSTEM_DEF(plexora)
 		"tmp/response.json"
 	)
 	request.begin_async()
+	UNTIL(request.is_complete())
 
 /datum/controller/subsystem/plexora/Shutdown()
+	var/list/body = list();
+	body["type"] = "servershutdown"
+	body["timestamp"] = rustg_unix_timestamp()
+	body["roundid"] = GLOB.round_id
+	body["round_timer"] = ROUND_TIME()
+	body["map"] = SSmapping.config?.map_name
+	body["playercount"] = length(GLOB.clients)
+
 	HTTP_DEFAULT_HEADERS()
 
 	var/datum/http_request/request = new()
 	request.prepare(
 		RUSTG_HTTP_METHOD_POST,
-		"http://[http_root]:[http_port]/serverrestart",
-		null,
+		"http://[http_root]:[http_port]/serverupdates",
+		body,
 		headers,
 		"tmp/response.json"
 	)
 	request.begin_async()
+	UNTIL(request.is_complete())
+
+/datum/controller/subsystem/plexora/proc/serverstarted()
+	var/list/body = list();
+	body["type"] = "serverstart"
+	body["timestamp"] = rustg_unix_timestamp()
+	body["roundid"] = GLOB.round_id
+	body["map"] = SSmapping.config?.map_name
+	body["playercount"] = length(GLOB.clients)
+
+	http_basicasync("serverupdates", body)
+
+/datum/controller/subsystem/plexora/proc/roundstarted()
+	var/list/body = list()
+	body["type"] = "roundstart"
+	body["timestamp"] = rustg_unix_timestamp()
+	body["roundid"] = GLOB.round_id
+	body["map"] = SSmapping.config?.map_name
+	body["playercount"] = length(GLOB.clients)
+
+	http_basicasync("serverupdates", body)
+
+/datum/controller/subsystem/plexora/proc/roundended()
+	var/list/body = list()
+	body["type"] = "roundend"
+	body["timestamp"] = rustg_unix_timestamp()
+	body["roundid"] = GLOB.round_id
+	body["round_timer"] = ROUND_TIME()
+	body["map"] = SSmapping.config?.map_name
+	body["nextmap"] = SSmapping.next_map_config.map_name
+	body["playercount"] = length(GLOB.clients)
+	body["playerstring"] = "**Total**: [length(GLOB.clients)], **Living**: [length(GLOB.alive_player_list)], **Dead**: [length(GLOB.dead_player_list)], **Observers**: [length(GLOB.current_observers_list)]"
+
+	http_basicasync("serverupdates", body)
+
+// note: recover_all_SS_and_recreate_master to force mc shit
+
+/datum/controller/subsystem/plexora/proc/mc_alert(alert, level)
+	var/list/body = list()
+	body["type"] = "mcalert"
+	body["timestamp"] = rustg_unix_timestamp()
+	body["roundid"] = GLOB.round_id
+	body["round_timer"] = ROUND_TIME()
+	body["map"] = SSmapping.config?.map_name
+	body["playercount"] = length(GLOB.clients)
+	body["playerstring"] = "**Total**: [length(GLOB.clients)], **Living**: [length(GLOB.alive_player_list)], **Dead**: [length(GLOB.dead_player_list)], **Observers**: [length(GLOB.current_observers_list)]"
+	body["defconstring"] = alert
+	body["defconlevel"] = level
+
+	http_basicasync("serverupdates", body)
+
+/datum/controller/subsystem/plexora/proc/new_ban(list/ban)
+	// TODO: It might be easier to just send off a ban ID to Plexora, but oh well.
+	// list values are in sql_ban_system.dm
+	ban["replay_pass"] = CONFIG_GET(string/replay_password)
+	http_basicasync("banupdates", ban)
 
 // Maybe we should consider that, if theres no admin_ckey when creating a new ticket,
 // This isnt a bwoink. Other wise if it does exist, it is a bwoink.
@@ -137,7 +210,7 @@ SUBSYSTEM_DEF(plexora)
 	body["msg_raw"] = msg_raw
 	body["opened_at"] = rustg_unix_timestamp()
 	body["replay_pass"] = CONFIG_GET(string/replay_password)
-	body["icon_b64"] = icon2base64(getFlatIcon(ticket.initiator, SOUTH))
+	body["icon_b64"] = icon2base64(getFlatIcon(ticket.initiator.mob, SOUTH, no_anim = TRUE))
 
 	if (admin_ckey)	body["admin_ckey"] = admin_ckey
 
@@ -194,7 +267,44 @@ SUBSYSTEM_DEF(plexora)
 
 // Begin Mentor tickets
 
-/datum/controller/subsystem/plexora/proc/mticket_new()
+/datum/controller/subsystem/plexora/proc/mticket_new(datum/request/ticket)
+	if (!enabled) return;
+
+	var/list/body = list()
+	body["id"] = ticket.id
+	body["ckey"] = ticket.owner_ckey
+	body["key_name"] = ticket.owner_name
+	body["roundid"] = GLOB.round_id
+	body["round_timer"] = ROUND_TIME()
+	body["world_time"] = world.time
+	body["opened_at"] = rustg_unix_timestamp()
+	body["icon_b64"] = icon2base64(getFlatIcon(ticket.owner.mob, SOUTH, no_anim = TRUE))
+	body["message"] = ticket.message
+
+	http_basicasync("mtickets/new", body)
+
+/datum/controller/subsystem/plexora/proc/mticket_pm(datum/request/ticket, mob/frommob, mob/tomob, msg,)
+	var/list/body = list()
+	body["id"] = ticket.id
+	body["from_ckey"] = frommob.ckey
+	body["from_key_name"] = frommob.ckey
+	body["ckey"] = tomob.ckey
+	body["key_name"] = tomob.key
+	body["roundid"] = GLOB.round_id
+	body["round_timer"] = ROUND_TIME()
+	body["world_time"] = world.time
+	body["timestamp"] = rustg_unix_timestamp()
+	body["icon_b64"] = icon2base64(getFlatIcon(frommob, SOUTH, no_anim = TRUE))
+	body["message"] = msg
+
+	http_basicasync("mtickets/pm", body)
+
+/datum/controller/subsystem/plexora/proc/topic_listener_response(token, data)
+	if (!enabled) return;
+	var/list/body = list()
+	body["token"] = token
+	body["data"] = data
+	http_basicasync("topic_emitter", body)
 
 /datum/controller/subsystem/plexora/proc/http_basicasync(path, list/body)
 	if (!enabled) return;
@@ -279,11 +389,40 @@ SUBSYSTEM_DEF(plexora)
 /datum/world_topic/plx_gettwitchevents/Run(list/input)
 	var/list/events = list()
 
+	// TODO: Only return smites that take no arguments.
 	for (var/_event_path in subtypesof(/datum/twitch_event))
 		var/datum/twitch_event/event_path = _event_path
 		events[initial(event_path.event_name)] = event_path
 
 	return events
+
+/datum/world_topic/plx_getbasicplayerdetails
+	keyword = "PLX_getbasicplayerdetails"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_getbasicplayerdetails/Run(list/input)
+	var/ckey = input["ckey"]
+
+	if (!ckey)
+		return list("error" = "missingckey")
+
+	var/client/client = disambiguate_client(ckey)
+
+	if (!client)
+		return list("present" = FALSE)
+
+	var/list/returning = list()
+
+	returning["present"] = TRUE
+	returning["ckey"] = ckey
+	returning["key"] = client.key
+
+	var/datum/player_details/details = GLOB.player_details[ckey]
+
+	if (details)
+		returning["byond_version"] = details.byond_version
+
+	return returning
 
 /datum/world_topic/plx_getplayerdetails
 	keyword = "PLX_getplayerdetails"
@@ -291,20 +430,102 @@ SUBSYSTEM_DEF(plexora)
 
 /datum/world_topic/plx_getplayerdetails/Run(list/input)
 	var/ckey = input["ckey"]
+	var/omit_logs = input["omit_logs"]
+
+	if (!ckey)
+		return list("error" = "missingckey")
+
 	var/datum/player_details/details = GLOB.player_details[ckey]
 
 	if (!details)
-		// fetch from database maybe?
+		return list("error" = "detailsnotexist")
+
+	var/client/client = disambiguate_client(ckey)
+
+	if (!client)
+		return list("error" = "clientnotexist")
 
 	var/list/returning = list()
 
-	returning["player_actions"] = details.player_actions
-	returning["logging"] = details.logging
-	returning["played_names"] = details.logging
+	returning["ckey"] = ckey
+	returning["key"] = client.key
+	returning["admin_datum"] = null
+	if (!omit_logs) returning["logging"] = details.logging
+	returning["played_names"] = details.played_names
 	returning["byond_version"] = details.byond_version
-	returning["achievements"] = details.achievements
+	returning["achievements"] = details.achievements.data
+	if (GLOB.admin_datums[ckey])
+		returning["admin_datum"] = list(
+			"name" = GLOB.admin_datums[ckey].name,
+			"ranks" = GLOB.admin_datums[ckey].ranks,
+			"fakekey" = GLOB.admin_datums[ckey].fakekey,
+			"deadmined" = GLOB.admin_datums[ckey].deadmined,
+			"bypass_2fa" = GLOB.admin_datums[ckey].bypass_2fa,
+			"admin_signature" = GLOB.admin_datums[ckey].admin_signature,
+		)
 
-	return details
+	returning["mob"] = list(
+		"name" = client.mob.name,
+		"real_name" = client.mob.real_name,
+		"type" = client.mob.type,
+		"gender" = client.mob.gender,
+		"stat" = client.mob.stat,
+	)
+	if (isliving(client.mob))
+		var/mob/living/livingmob = client.mob
+		returning["health"] = livingmob.health
+		returning["maxHealth"] = livingmob.maxHealth
+		returning["bruteloss"] = livingmob.bruteloss
+		returning["fireloss"] = livingmob.fireloss
+		returning["toxloss"] = livingmob.toxloss
+		returning["oxyloss"] = livingmob.oxyloss
+
+	TOPIC_EMITTER
+
+	return returning
+
+/datum/world_topic/plx_forceemote
+	keyword = "PLX_forceemote"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_forceemote/Run(list/input)
+	var/target_ckey = input["ckey"]
+	var/emote = input["emote"]
+	var/emote_args = input["emote_args"]
+
+	var/client/client = disambiguate_client(ckey(target_ckey))
+
+	if (!client)
+		return list("error" = "clientnotexist")
+
+	var/mob/client_mob = client.mob
+
+	if (!client_mob)
+		return list("error" = "clientnomob")
+
+	return list(
+		"success" = client_mob.emote(emote, message = emote_args, intentional = FALSE)
+	);
+
+/datum/world_topic/plx_forcesay
+	keyword = "PLX_forcesay"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_forcesay/Run(list/input)
+	var/target_ckey = input["ckey"]
+	var/message = input["message"]
+
+	var/client/client = disambiguate_client(ckey(target_ckey))
+
+	if (!client)
+		return list("error" = "clientnotexist")
+
+	var/mob/client_mob = client.mob
+
+	if (!client_mob)
+		return list("error" = "clientnomob")
+
+	client_mob.say(message, forced = TRUE)
 
 /datum/world_topic/plx_runtwitchevent
 	keyword = "plx_runtwitchevent"
@@ -312,14 +533,15 @@ SUBSYSTEM_DEF(plexora)
 
 /datum/world_topic/plx_runtwitchevent/Run(list/input)
 	var/event = input["event"]
-	var/executor = input["executor"]
+	// TODO: do something with the executor input
+	//var/executor = input["executor"]
 
 	if (!CONFIG_GET(string/twitch_key))
 		return list("error" = "twitchkeynotconfigured")
 
 	// cant be bothered, lets just call the topic.
 	var/outgoing = list("TWITCH-API", CONFIG_GET(string/twitch_key), event,)
-	SStwitch.handle_topic()
+	SStwitch.handle_topic(outgoing)
 
 /datum/world_topic/plx_smite
 	keyword = "PLX_smite"
@@ -389,10 +611,16 @@ SUBSYSTEM_DEF(plexora)
 	require_comms_key = TRUE
 
 /datum/world_topic/plx_ticketaction/Run(list/input)
-	var/ticketid = text2num(input["id"])
+	var/ticketid = input["id"]
 	var/action_by_ckey = input["action_by"]
 	var/action = input["action"]
 
+
+	var/datum/client_interface/mockadmin = new(
+		key = action_by_ckey,
+	)
+
+	usr = mockadmin
 
 	var/datum/admin_help/ticket = GLOB.ahelp_tickets.TicketByID(ticketid)
 	if (!ticket) return list("error" = "couldntfetchticket")
@@ -404,7 +632,7 @@ SUBSYSTEM_DEF(plexora)
 		if("reopen")
 			if (ticket.state == AHELP_ACTIVE) return
 			SSplexora.aticket_reopened(ticket, action_by_ckey)
-			ticket.Reopen(action_by_ckey)
+			ticket.Reopen()
 		if("reject")
 			SSplexora.aticket_closed(ticket, action_by_ckey, AHELP_CLOSETYPE_REJECT)
 			ticket.Reject(action_by_ckey)
@@ -426,20 +654,18 @@ SUBSYSTEM_DEF(plexora)
 	require_comms_key = TRUE
 
 /datum/world_topic/plx_sendaticketpm/Run(list/input)
-  // We're kind of copying /proc/TgsPm here...
+	// We're kind of copying /proc/TgsPm here...
 	var/ticketid = text2num(input["ticket_id"])
 	var/input_ckey = input["ckey"]
 	var/sender = input["sender_ckey"]
-	var/stealth = input["stealh"]
+	var/stealth = input["stealth"]
 	var/message = input["message"]
 
 	var/requested_ckey = ckey(input_ckey)
-	var/ambiguious_target = disambiguate_client(requested_ckey)
+	var/client/recipient = disambiguate_client(requested_ckey)
 
-	var/client/recipient
-
-	if(istype(ambiguious_target, /client))
-		recipient = ambiguious_target
+	if (!recipient)
+		return list("error" = "clientnotexist")
 
 	var/datum/admin_help/ticket
 	if (ticketid)
@@ -498,5 +724,26 @@ SUBSYSTEM_DEF(plexora)
 
 		recipient.externalreplyamount = EXTERNALREPLYCOUNT
 
+/datum/world_topic/plx_sendmticketpm
+	keyword = "PLX_sendmticketpm"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_sendmticketpm/Run(list/input)
+	var/ticketid = input["ticket_id"]
+	var/target_ckey = input["ckey"]
+	var/sender = input["sender_ckey"]
+	var/message = input["message"]
+
+	var/client/recipient = disambiguate_client(ckey(target_ckey))
+
+	if (!recipient)
+		return list("error" = "clientnotexist")
+
+	var/datum/request/request = GLOB.mentor_requests.requests_by_id[ticketid]
+
+	var/from = "Discord: " + sender
+	to_chat(recipient, "<font color='purple'>Mentor PM from-<b>[key_name_mentor(from, recipient, TRUE, FALSE, FALSE)]</b>: [message]</font>")
+
 #undef AUTH_HEADER
 #undef HTTP_DEFAULT_HEADERS
+#undef TOPIC_EMITTER

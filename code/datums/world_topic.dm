@@ -33,7 +33,12 @@
 		if (input["format"] == "json")
 			. = list("error" = .)
 	else
-		. = Run(input)
+		// Monkestation edit start
+		if (input["json"])
+			. = Run(input + json_decode(input["json"]))
+		else
+			. = Run(input)
+		// Monkestation edit end
 	if (input["format"] == "json")
 		. = json_encode(.)
 	else if(islist(.))

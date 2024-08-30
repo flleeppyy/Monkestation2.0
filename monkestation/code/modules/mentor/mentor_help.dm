@@ -76,9 +76,7 @@
 
 	msg = sanitize(copytext(msg,1,MAX_MESSAGE_LEN))
 	var/mentor_msg = "<font color='purple'><span class='mentornotice'><b>MENTORHELP:</b> <b>[key_name_mentor(src, TRUE, FALSE)]</b> : </span><span class='message linkify'>[msg]</span></font>"
-	//Monkestation Edit Begin
 	var/mentor_msg_observing = "<span class='mentornotice'><b><span class='mentorhelp'>MENTORHELP:</b> <b>[key_name_mentor(src, TRUE, FALSE)]</b> (<a href='?_src_=mentor;[MentorHrefToken(TRUE)];mentor_friend=[REF(src.mob)]'>IF</a>) : [msg]</span></span>"
-	//Monkestation Edit End
 	log_mentor("MENTORHELP: [key_name_mentor(src, null, FALSE, FALSE)]: [msg]")
 
 	/// Send the Mhelp to all Mentors/Admins
@@ -110,6 +108,7 @@
 	if(request)
 		var/id = "[request.id]"
 		var/regular_webhook_url = CONFIG_GET(string/regular_mentorhelp_webhook_url)
+		SSplexora.mticket_new(request)
 		if(regular_webhook_url)
 			var/extra_message = CONFIG_GET(string/mhelp_message)
 			var/datum/discord_embed/embed = format_mhelp_embed(msg, id)

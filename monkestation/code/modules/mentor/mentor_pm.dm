@@ -31,6 +31,7 @@
 				var/datum/request/request = GLOB.mentor_requests.requests[ckey][length(GLOB.mentor_requests.requests[ckey])]
 				if(request)
 					id = "[request.id]"
+					SSplexora.mticket_pm(request, usr, msg)
 
 				var/regular_webhook_url = CONFIG_GET(string/regular_mentorhelp_webhook_url)
 				if(regular_webhook_url)
@@ -60,6 +61,7 @@
 				var/datum/request/request = GLOB.mentor_requests.requests[ckey][length(GLOB.mentor_requests.requests[ckey])]
 				if(request)
 					id = "[request.id]"
+					SSplexora.mticket_pm(request, usr, msg)
 
 				var/regular_webhook_url = CONFIG_GET(string/regular_mentorhelp_webhook_url)
 				if(regular_webhook_url)
