@@ -122,7 +122,7 @@ SUBSYSTEM_DEF(plexora)
 	request.begin_async()
 	UNTIL(request.is_complete())
 
-/datum/controller/subsystem/plexora/Shutdown()
+/datum/controller/subsystem/plexora/Shutdown(hard = FALSE)
 	var/list/body = list();
 	body["type"] = "servershutdown"
 	body["timestamp"] = rustg_unix_timestamp()
@@ -130,6 +130,7 @@ SUBSYSTEM_DEF(plexora)
 	body["round_timer"] = ROUND_TIME()
 	body["map"] = SSmapping.config?.map_name
 	body["playercount"] = length(GLOB.clients)
+	body["hard"] = hard
 
 	http_basicasync("serverupdates", body)
 
@@ -140,6 +141,17 @@ SUBSYSTEM_DEF(plexora)
 	body["roundid"] = GLOB.round_id
 	body["map"] = SSmapping.config?.map_name
 	body["playercount"] = length(GLOB.clients)
+
+	http_basicasync("serverupdates", body)
+
+/datum/controller/subsystem/plexora/proc/serverinitdone(time)
+var/list/body = list();
+	body["type"] = "serverinitdone"
+	body["timestamp"] = rustg_unix_timestamp()
+	body["roundid"] = GLOB.round_id
+	body["map"] = SSmapping.config?.map_name
+	body["playercount"] = length(GLOB.clients)
+	body["init_time"] = time
 
 	http_basicasync("serverupdates", body)
 

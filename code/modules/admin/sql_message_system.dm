@@ -122,7 +122,7 @@
 		)
 
 		plexora_note["total_playtime"] = mock_player.get_exp_living()
-		SSplexora.new_note()
+		SSplexora.new_note(plexora_note)
 		// Monkestation edit end
 		if(browse)
 			browse_messages("[type]")
