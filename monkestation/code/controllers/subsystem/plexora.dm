@@ -41,6 +41,7 @@ SUBSYSTEM_DEF(plexora)
 	var/http_root = ""
 	var/http_port = 0
 	var/enabled = TRUE
+	var/tripped_bad_version = FALSE
 
 /datum/controller/subsystem/plexora/Initialize()
 	if (!rustg_file_exists(configuration_path))
@@ -70,8 +71,8 @@ SUBSYSTEM_DEF(plexora)
 	else
 		serverstarted()
 
+	RegisterSignal(SSticker, COMSIG_TICKER_ROUND_STARTING, PROC_REF(roundstarted))
 	return SS_INIT_SUCCESS
-
 
 /datum/controller/subsystem/plexora/proc/isPlexoraAlive()
 	if (!enabled) return;
@@ -81,9 +82,8 @@ SUBSYSTEM_DEF(plexora)
 	request.prepare(
 		RUSTG_HTTP_METHOD_GET,
 		"http://[http_root]:[http_port]/alive",
-		null,
-		headers,
-		"tmp/response.json",
+		"",
+		"",
 	)
 	request.begin_async()
 	UNTIL(request.is_complete())
@@ -93,6 +93,12 @@ SUBSYSTEM_DEF(plexora)
 		plexora_is_alive = FALSE
 		return FALSE
 	else
+		var/list/json_body = json_decode(response.body)
+		if (json_body["version_increment_counter"] != version_increment_counter)
+			if (!tripped_bad_version)
+				stack_trace("SSplexora's version does not match Plexora! SSplexora: [version_increment_counter] Plexora: [json_body["version_increment_counter"]]")
+				tripped_bad_version = TRUE
+
 		plexora_is_alive = TRUE
 		return TRUE
 
@@ -125,18 +131,7 @@ SUBSYSTEM_DEF(plexora)
 	body["map"] = SSmapping.config?.map_name
 	body["playercount"] = length(GLOB.clients)
 
-	HTTP_DEFAULT_HEADERS()
-
-	var/datum/http_request/request = new()
-	request.prepare(
-		RUSTG_HTTP_METHOD_POST,
-		"http://[http_root]:[http_port]/serverupdates",
-		body,
-		headers,
-		"tmp/response.json"
-	)
-	request.begin_async()
-	UNTIL(request.is_complete())
+	http_basicasync("serverupdates", body)
 
 /datum/controller/subsystem/plexora/proc/serverstarted()
 	var/list/body = list();
@@ -165,7 +160,7 @@ SUBSYSTEM_DEF(plexora)
 	body["roundid"] = GLOB.round_id
 	body["round_timer"] = ROUND_TIME()
 	body["map"] = SSmapping.config?.map_name
-	body["nextmap"] = SSmapping.next_map_config.map_name
+	body["nextmap"] = SSmapping.next_map_config?.map_name
 	body["playercount"] = length(GLOB.clients)
 	body["playerstring"] = "**Total**: [length(GLOB.clients)], **Living**: [length(GLOB.alive_player_list)], **Dead**: [length(GLOB.dead_player_list)], **Observers**: [length(GLOB.current_observers_list)]"
 
@@ -186,6 +181,11 @@ SUBSYSTEM_DEF(plexora)
 	body["defconlevel"] = level
 
 	http_basicasync("serverupdates", body)
+
+/datum/controller/subsystem/plexora/proc/new_note(list/note) {
+	note["replay_pass"] = CONFIG_GET(string/replay_password)
+	http_basicasync("noteupdates")
+}
 
 /datum/controller/subsystem/plexora/proc/new_ban(list/ban)
 	// TODO: It might be easier to just send off a ban ID to Plexora, but oh well.
@@ -319,6 +319,21 @@ SUBSYSTEM_DEF(plexora)
 		"tmp/response.json"
 	)
 	request.begin_async()
+
+/datum/world_topic/plx_who
+	keyword = "PLX_who"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_who/Run(list/input)
+	var/list/players = list()
+
+	for(var/client/client in GLOB.clients)
+		if(client.holder && client.holder.fakekey)
+			players += list(list("key" = client.holder.fakekey, "avgping" = "[round(client.avgping, 1)]ms"))
+		else
+			players += list(list("key" = client.key, "avgping" = "[round(client.avgping, 1)]ms"))
+
+	return players
 
 /datum/world_topic/plx_adminwho
 	keyword = "PLX_adminwho"

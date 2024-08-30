@@ -616,6 +616,7 @@
 		"admin_key_name" = key_name(usr),
 		"round_id" = GLOB.round_id,
 		"round_timer" = ROUND_TIME(),
+		"world_time" = world.time,
 	)
 
 	plexora_ban["total_playtime"] = mock_player.get_exp_living()
