@@ -83,6 +83,7 @@
 		logger.Log(LOG_CATEGORY_DEBUG, "NO REPLY CLIENT FOUND")
 		return
 
+	chosen_client << 'sound/items/bikehorn.ogg'
 	to_chat(chosen_client, "<font color='purple'>Mentor PM from-<b>[key_name_mentor(from, chosen_client, TRUE, FALSE, FALSE)]</b>: [msg]</font>")
 
 	var/regular_webhook_url = CONFIG_GET(string/regular_mentorhelp_webhook_url)

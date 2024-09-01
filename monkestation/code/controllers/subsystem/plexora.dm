@@ -791,6 +791,7 @@ SUBSYSTEM_DEF(plexora)
 
 	var/datum/request/request = GLOB.mentor_requests.requests_by_id[ticketid]
 
+	recipient << 'sound/items/bikehorn.ogg'
 	to_chat(recipient, "<font color='purple'>Mentor PM from-<b>[key_name_mentor(sender, recipient, TRUE, FALSE, FALSE)]</b>: [message]</font>")
 
 #undef AUTH_HEADER
