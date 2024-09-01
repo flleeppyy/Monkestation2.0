@@ -145,7 +145,7 @@ SUBSYSTEM_DEF(plexora)
 	http_basicasync("serverupdates", body)
 
 /datum/controller/subsystem/plexora/proc/serverinitdone(time)
-var/list/body = list();
+	var/list/body = list();
 	body["type"] = "serverinitdone"
 	body["timestamp"] = rustg_unix_timestamp()
 	body["roundid"] = GLOB.round_id
@@ -178,9 +178,14 @@ var/list/body = list();
 
 	http_basicasync("serverupdates", body)
 
+/datum/controller/subsystem/plexora/proc/newinterview()
+	var/list/body = list()
+	// not done
+	http_basicasync("serverupdates", body)
+
 // note: recover_all_SS_and_recreate_master to force mc shit
 
-/datum/controller/subsystem/plexora/proc/mc_alert(alert, level)
+/datum/controller/subsystem/plexora/proc/mc_alert(alert, level = 5)
 	var/list/body = list()
 	body["type"] = "mcalert"
 	body["timestamp"] = rustg_unix_timestamp()
@@ -291,6 +296,7 @@ var/list/body = list();
 	body["world_time"] = world.time
 	body["opened_at"] = rustg_unix_timestamp()
 	body["icon_b64"] = icon2base64(getFlatIcon(ticket.owner.mob, SOUTH, no_anim = TRUE))
+	body["replay_pass"] = CONFIG_GET(string/replay_password)
 	body["message"] = ticket.message
 
 	http_basicasync("mtickets/new", body)
@@ -407,7 +413,16 @@ var/list/body = list();
 	require_comms_key = TRUE
 
 /datum/world_topic/plx_getsmites/Run(list/input)
-	. = GLOB.smites
+	var/list/availableSmites = list()
+
+	for (var/_smite_path in subtypesof(/datum/smite))
+		var/datum/smite/smite_path = _smite_path
+		try
+			if ((new smite_path).configure(new /datum/client_interface("fake_player")) == "NO_CONFIG")
+				availableSmites[initial(smite_path.name)] = smite_path
+		catch
+
+	return availableSmites
 
 /datum/world_topic/plx_gettwitchevents
 	keyword = "PLX_gettwitchevents"
@@ -416,7 +431,6 @@ var/list/body = list();
 /datum/world_topic/plx_gettwitchevents/Run(list/input)
 	var/list/events = list()
 
-	// TODO: Only return smites that take no arguments.
 	for (var/_event_path in subtypesof(/datum/twitch_event))
 		var/datum/twitch_event/event_path = _event_path
 		events[initial(event_path.event_name)] = event_path
@@ -433,21 +447,28 @@ var/list/body = list();
 	if (!ckey)
 		return list("error" = "missingckey")
 
-	var/client/client = disambiguate_client(ckey)
-
-	if (!client)
-		return list("present" = FALSE)
-
 	var/list/returning = list()
 
-	returning["present"] = TRUE
-	returning["ckey"] = ckey
-	returning["key"] = client.key
+	var/client/client = disambiguate_client(ckey)
+
+	if (client)
+		returning["present"] = FALSE
+	else
+		returning["present"] = TRUE
+		returning["ckey"] = ckey
+		returning["key"] = client.key
 
 	var/datum/player_details/details = GLOB.player_details[ckey]
 
 	if (details)
 		returning["byond_version"] = details.byond_version
+
+	if (isnull(client))
+		var/datum/client_interface/mock_player = new(ckey)
+		mock_player.prefs = new /datum/preferences(mock_player)
+		returning["playtime"] = mock_player.get_exp_living(FALSE);
+	else
+		returning["playtime"] = client.get_exp_living(FALSE);
 
 	return returning
 
@@ -481,6 +502,8 @@ var/list/body = list();
 	returning["played_names"] = details.played_names
 	returning["byond_version"] = details.byond_version
 	returning["achievements"] = details.achievements.data
+	returning["playtime"] = client.get_exp_living(FALSE);
+
 	if (GLOB.admin_datums[ckey])
 		returning["admin_datum"] = list(
 			"name" = GLOB.admin_datums[ckey].name,
@@ -768,8 +791,7 @@ var/list/body = list();
 
 	var/datum/request/request = GLOB.mentor_requests.requests_by_id[ticketid]
 
-	var/from = "Discord: " + sender
-	to_chat(recipient, "<font color='purple'>Mentor PM from-<b>[key_name_mentor(from, recipient, TRUE, FALSE, FALSE)]</b>: [message]</font>")
+	to_chat(recipient, "<font color='purple'>Mentor PM from-<b>[key_name_mentor(sender, recipient, TRUE, FALSE, FALSE)]</b>: [message]</font>")
 
 #undef AUTH_HEADER
 #undef HTTP_DEFAULT_HEADERS

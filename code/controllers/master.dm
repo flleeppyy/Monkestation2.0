@@ -379,8 +379,12 @@ GLOBAL_REAL(Master, /datum/controller/master)
 	if (rtn >= MC_LOOP_RTN_GRACEFUL_EXIT || processing < 0)
 		return //this was suppose to happen.
 	//loop ended, restart the mc
-	log_game("MC crashed or runtimed, restarting")
-	message_admins("MC crashed or runtimed, restarting")
+	// Monkestation edit: start - plexora
+	var/msg = "MC crashed or runtimed, restarting"
+	log_game(msg)
+	message_admins(msg)
+	SSplexora.mc_alert(msg)
+	// Monkestation edit: end
 	var/rtn2 = Recreate_MC()
 	if (rtn2 <= 0)
 		log_game("Failed to recreate MC (Error code: [rtn2]), it's up to the failsafe now")

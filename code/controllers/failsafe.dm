@@ -191,7 +191,9 @@ GLOBAL_REAL(Failsafe, /datum/controller/failsafe)
 	if (. == 1) //We were able to create a new master
 		SSticker.Recover(); //Recover the ticket system so the Masters runlevel gets set
 		Master.Initialize(10, FALSE, FALSE) //Need to manually start the MC, normally world.new would do this
-		to_chat(GLOB.admins, span_adminnotice("MC successfully recreated after recovering all subsystems!"))
+		var/msg = "MC successfully recreated after recovering all subsystems!"
+		to_chat(GLOB.admins, span_adminnotice(msg))
+		SSplexora.mc_alert(msg, Failsafe.defcon)
 	else
 		message_admins(span_boldannounce("Failed to create new MC!"))
 
