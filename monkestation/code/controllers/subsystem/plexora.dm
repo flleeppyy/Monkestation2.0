@@ -122,7 +122,7 @@ SUBSYSTEM_DEF(plexora)
 	request.begin_async()
 	UNTIL(request.is_complete())
 
-/datum/controller/subsystem/plexora/Shutdown(hard = FALSE)
+/datum/controller/subsystem/plexora/Shutdown(hard = FALSE, requestedby)
 	var/list/body = list();
 	body["type"] = "servershutdown"
 	body["timestamp"] = rustg_unix_timestamp()
@@ -131,6 +131,9 @@ SUBSYSTEM_DEF(plexora)
 	body["map"] = SSmapping.config?.map_name
 	body["playercount"] = length(GLOB.clients)
 	body["hard"] = hard
+
+	if (!isnull(requestedby))
+		body["requestedby"] = requestedby
 
 	http_basicasync("serverupdates", body)
 
@@ -408,6 +411,27 @@ SUBSYSTEM_DEF(plexora)
 
 	return mentors
 
+/datum/world_topic/plx_getloadoutrewards
+	keyword = "PLX_getloadoutrewards"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_getloadoutrewards/Run(list/input)
+	return subtypesof(/datum/store_item) - typesof(/datum/store_item/roundstart)
+
+/datum/world_topic/plx_getunusualitems
+	keyword = "PLX_getunusualitems"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_getunusualitems/Run(list/input)
+	return GLOB.possible_lootbox_clothing
+
+/datum/world_topic/get_unusualeffects
+  keyword = "PLX_getunusualeffects"
+  require_comms_key = TRUE
+
+/datum/world_topic/get_unusualeffects/Run(list/input)
+  return subtypesof(/datum/component/particle_spewer) - /datum/component/particle_spewer/movement
+
 /datum/world_topic/plx_getsmites
 	keyword = "PLX_getsmites"
 	require_comms_key = TRUE
@@ -533,6 +557,86 @@ SUBSYSTEM_DEF(plexora)
 	TOPIC_EMITTER
 
 	return returning
+
+/datum/world_topic/plx_generategiveawaycodes
+	keyword = "PLX_generategiveawaycodes"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_generategiveawaycodes/Run(list/input)
+	var/type = input["type"]
+	var/codeamount = input["limit"]
+
+	var/codes = list()
+
+	if (type == "loadout" && !input["loadout"])
+		return
+
+	for (var/i in 1 to codeamount)
+		var/code
+		var/returning = list("type" = type)
+
+		switch(type)
+			if ("coin")
+				var/amount = input["amount"]
+				if (!amount)
+					amount = 5000
+				returning["amount"] = amount
+				code = generate_coin_code(amount, TRUE)
+			if ("loadout")
+				var/loadout = input["loadout"]
+				//we are not chosing a random one for this, you MUST specify
+				if (!loadout) return
+				returning["loadout"] = loadout
+				code = generate_loadout_code(loadout, TRUE)
+			if ("antagtoken")
+				var/tokentype = input["antagtoken"]
+				if (!tokentype)
+					tokentype = LOW_THREAT
+				code = generate_antag_token_code(tokentype, TRUE)
+			if ("unusual")
+				var/item = input["unusual_item"]
+				var/effect = input["unusual_effect"]
+				if (!item)
+					item = pick(GLOB.possible_lootbox_clothing)
+				if (!effect)
+					var/static/list/possible_effects = subtypesof(/datum/component/particle_spewer) - /datum/component/particle_spewer/movement
+					effect = pick(possible_effects)
+				returning["item"] = item
+				returning["effect"] = effect
+				code = generate_unusual_code(item, effect, TRUE)
+		codes += code
+	return codes
+
+/datum/world_topic/plx_givecoins
+	keyword = "PLX_givecoins"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_givecoins/Run(list/input)
+	var/ckey = input["ckey"]
+	var/amount = input["amount"]
+	var/reason = input["reason"]
+
+	var/client/userclient = disambiguate_client(ckey)
+
+	var/datum/preferences/prefs
+	if (isnull(userclient))
+		var/datum/client_interface/mock_player = new(ckey)
+		mock_player.prefs = new /datum/preferences(mock_player)
+
+		prefs = mock_player.prefs
+	else
+		prefs = userclient.prefs
+
+	prefs.adjust_metacoins(ckey, amount, reason, donator_multipler = FALSE, respects_roundcap = FALSE, announces = FALSE)
+
+	return list("totalcoins" = prefs.metacoins)
+
+/datum/world_topic/plx_generategiveawaycode
+	keyword = "PLX_generategiveawaycode"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_generategiveawaycode/Run(list/input)
+
 
 /datum/world_topic/plx_forceemote
 	keyword = "PLX_forceemote"
