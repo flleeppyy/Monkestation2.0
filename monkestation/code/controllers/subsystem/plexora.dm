@@ -442,7 +442,8 @@ SUBSYSTEM_DEF(plexora)
 	for (var/_smite_path in subtypesof(/datum/smite))
 		var/datum/smite/smite_path = _smite_path
 		try
-			if ((new smite_path).configure(new /datum/client_interface("fake_player")) == "NO_CONFIG")
+			var/datum/smite/_smite = new smite_path
+			if (_smite.configure(new /datum/client_interface("fake_player")) == "NO_CONFIG")
 				availableSmites[initial(smite_path.name)] = smite_path
 		catch
 
@@ -529,13 +530,14 @@ SUBSYSTEM_DEF(plexora)
 	returning["playtime"] = client.get_exp_living(FALSE);
 
 	if (GLOB.admin_datums[ckey])
+		var/datum/admins/ckeyadatum = GLOB.admin_datums[ckey]
 		returning["admin_datum"] = list(
-			"name" = GLOB.admin_datums[ckey].name,
-			"ranks" = GLOB.admin_datums[ckey].ranks,
-			"fakekey" = GLOB.admin_datums[ckey].fakekey,
-			"deadmined" = GLOB.admin_datums[ckey].deadmined,
-			"bypass_2fa" = GLOB.admin_datums[ckey].bypass_2fa,
-			"admin_signature" = GLOB.admin_datums[ckey].admin_signature,
+			"name" = ckeyadatum.name,
+			"ranks" = ckeyadatum.ranks,
+			"fakekey" = ckeyadatum.fakekey,
+			"deadmined" = ckeyadatum.deadmined,
+			"bypass_2fa" = ckeyadatum.bypass_2fa,
+			"admin_signature" = ckeyadatum.admin_signature,
 		)
 
 	returning["mob"] = list(
