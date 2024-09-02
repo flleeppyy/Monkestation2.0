@@ -574,27 +574,27 @@ SUBSYSTEM_DEF(plexora)
 		return
 
 	for (var/i in 1 to codeamount)
-		var/code
 		var/returning = list("type" = type)
 
 		switch(type)
 			if ("coin")
-				var/amount = input["amount"]
-				if (!amount)
+				var/amount = input["coins"]
+				if (isnull(amount))
 					amount = 5000
-				returning["amount"] = amount
-				code = generate_coin_code(amount, TRUE)
+				returning["coins"] = amount
+				returning["code"] = generate_coin_code(amount, TRUE)
 			if ("loadout")
 				var/loadout = input["loadout"]
 				//we are not chosing a random one for this, you MUST specify
 				if (!loadout) return
 				returning["loadout"] = loadout
-				code = generate_loadout_code(loadout, TRUE)
+				returning["code"] = generate_loadout_code(loadout, TRUE)
 			if ("antagtoken")
 				var/tokentype = input["antagtoken"]
 				if (!tokentype)
 					tokentype = LOW_THREAT
-				code = generate_antag_token_code(tokentype, TRUE)
+				returning["antagtoken"] = tokentype
+				returning["code"] = generate_antag_token_code(tokentype, TRUE)
 			if ("unusual")
 				var/item = input["unusual_item"]
 				var/effect = input["unusual_effect"]
@@ -605,8 +605,9 @@ SUBSYSTEM_DEF(plexora)
 					effect = pick(possible_effects)
 				returning["item"] = item
 				returning["effect"] = effect
-				code = generate_unusual_code(item, effect, TRUE)
-		codes += code
+				returning["code"] = generate_unusual_code(item, effect, TRUE)
+
+		codes += list(returning)
 	return codes
 
 /datum/world_topic/plx_givecoins
