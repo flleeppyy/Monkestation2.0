@@ -181,10 +181,20 @@ SUBSYSTEM_DEF(plexora)
 
 	http_basicasync("serverupdates", body)
 
-/datum/controller/subsystem/plexora/proc/newinterview()
+/datum/controller/subsystem/plexora/proc/interview(datum/interview/interview)
 	var/list/body = list()
-	// not done
-	http_basicasync("serverupdates", body)
+	body["id"] = interview.id
+	body["atomic_id"] = interview.atomic_id
+	body["owner_ckey"] = interview.owner_ckey
+	body["responses"] = interview.responses
+	body["read_only"] = interview.read_only
+	body["pos_in_queue"] = interview.pos_in_queue
+	body["status"] = interview.status
+	if (interview?.owner)
+		body["ip"] = interview.owner.address
+		body["computer_id"] = interview.owner.computer_id
+
+	http_basicasync("interviewupdates", body)
 
 // note: recover_all_SS_and_recreate_master to force mc shit
 
@@ -476,7 +486,7 @@ SUBSYSTEM_DEF(plexora)
 
 	var/client/client = disambiguate_client(ckey)
 
-	if (client)
+	if (!client)
 		returning["present"] = FALSE
 	else
 		returning["present"] = TRUE
