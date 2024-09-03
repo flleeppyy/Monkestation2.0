@@ -896,7 +896,7 @@ SUBSYSTEM_DEF(plexora)
 	if (!recipient)
 		return list("error" = "clientnotexist")
 
-	var/datum/request/request = GLOB.mentor_requests.requests_by_id[ticketid]
+	var/datum/request/request = GLOB.mentor_requests.requests_by_id[num2text(ticketid)]
 
 	recipient << 'sound/items/bikehorn.ogg'
 	to_chat(recipient, "<font color='purple'>Mentor PM from-<b>[key_name_mentor(sender, recipient, TRUE, FALSE, FALSE)]</b>: [message]</font>")
