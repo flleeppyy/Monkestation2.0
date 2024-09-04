@@ -910,6 +910,13 @@ SUBSYSTEM_DEF(plexora)
 
 	recipient << 'sound/items/bikehorn.ogg'
 	to_chat(recipient, "<font color='purple'>Mentor PM from-<b>[key_name_mentor(sender, recipient, TRUE, FALSE, FALSE)]</b>: [message]</font>")
+	for(var/client/honked_clients in GLOB.mentors | GLOB.admins)
+		/// Check client/honked_clients is an Mentor and isn't the Sender/Recipient
+		if(honked_clients.key!=recipient.key)
+			to_chat(honked_clients,
+				type = MESSAGE_TYPE_MODCHAT,
+				html = "<B><font color='green'>Mentor PM: [key_name_mentor(sender, honked_clients, FALSE, FALSE)]-&gt;[key_name_mentor(recipient, honked_clients, FALSE, FALSE)]:</B> <font color = #5c00e6> <span class='message linkify'>[message]</span></font>",
+				confidential = TRUE)
 
 #undef AUTH_HEADER
 #undef HTTP_DEFAULT_HEADERS
