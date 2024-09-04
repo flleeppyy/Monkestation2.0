@@ -843,7 +843,7 @@ SUBSYSTEM_DEF(plexora)
 	if (!ticket)
 		return list("error" = "couldntfetchticket")
 
-	var/plx_tagged = "[sender](Plexora/External)"
+	var/plx_tagged = "[sender]"
 
 	var/adminname = stealth ? "Administrator" : plx_tagged
 	var/stealthkey = GetTgsStealthKey()
