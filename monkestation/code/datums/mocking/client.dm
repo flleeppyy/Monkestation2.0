@@ -11,4 +11,4 @@
 	return pure_numeric ? exp_living : get_exp_format(exp_living)
 
 /datum/client_interface/proc/operator""()
- return "[key]/([mob || key])"
+	return "[key]"
