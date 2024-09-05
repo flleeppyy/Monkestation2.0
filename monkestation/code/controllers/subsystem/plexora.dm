@@ -23,11 +23,6 @@
 
 #define AUTH_HEADER ("Basic " + CONFIG_GET(string/comms_key))
 
-#define HTTP_DEFAULT_HEADERS(...) \
-	var/list/headers = list(); \
-	headers["Content-Type"] = "application/json"; \
-	headers["Authorization"] = AUTH_HEADER;
-
 SUBSYSTEM_DEF(plexora)
 	name = "Plexora"
 	wait = 30 SECONDS
@@ -42,6 +37,7 @@ SUBSYSTEM_DEF(plexora)
 	var/http_port = 0
 	var/enabled = TRUE
 	var/tripped_bad_version = FALSE
+	var/list/default_headers
 
 /datum/controller/subsystem/plexora/Initialize()
 	if (!rustg_file_exists(configuration_path))
@@ -66,32 +62,30 @@ SUBSYSTEM_DEF(plexora)
 	http_port = config["port"]
 
 	// Do a ping test to check if Plexora is actually running
-	if (!isPlexoraAlive())
+	if (!is_plexora_alive())
 		stack_trace("SSplexora is enabled BUT plexora is not alive or running! SS has not been aborted, subsequent fires will take place.")
 	else
 		serverstarted()
 
 	RegisterSignal(SSticker, COMSIG_TICKER_ROUND_STARTING, PROC_REF(roundstarted))
+
+	default_headers = list(
+		"Content-Type" = "application/json",
+		"Authorization" = AUTH_HEADER,
+	)
 	return SS_INIT_SUCCESS
 
-/datum/controller/subsystem/plexora/proc/isPlexoraAlive()
-	if (!enabled) return;
-	HTTP_DEFAULT_HEADERS()
+/datum/controller/subsystem/plexora/proc/is_plexora_alive()
+	. = FALSE
+	if(!enabled) return
 
-	var/datum/http_request/request = new()
-	request.prepare(
-		RUSTG_HTTP_METHOD_GET,
-		"http://[http_root]:[http_port]/alive",
-		"",
-		"",
-	)
+	var/datum/http_request/request = new(RUSTG_HTTP_METHOD_GET, "http://[http_root]:[http_port]/alive")
 	request.begin_async()
-	UNTIL(request.is_complete())
+	UNTIL_OR_TIMEOUT(request.is_complete(), 10 SECONDS)
 	var/datum/http_response/response = request.into_response()
 	if (response.errored)
-		stack_trace("Failed to check if Plexora is alive! She probably isn't. Check config on both sides")
 		plexora_is_alive = FALSE
-		return FALSE
+		CRASH("Failed to check if Plexora is alive! She probably isn't. Check config on both sides")
 	else
 		var/list/json_body = json_decode(response.body)
 		if (json_body["version_increment_counter"] != version_increment_counter)
@@ -103,119 +97,101 @@ SUBSYSTEM_DEF(plexora)
 		return TRUE
 
 /datum/controller/subsystem/plexora/fire()
-	if (!enabled) return;
-	isPlexoraAlive()
+	if(!is_plexora_alive()) return
 	// Send current status to Plexora
 	var/datum/world_topic/status/status_handler = new()
 	var/list/status = status_handler.Run()
 
-	HTTP_DEFAULT_HEADERS()
-
-	var/datum/http_request/request = new()
-	request.prepare(
+	http_request(
 		RUSTG_HTTP_METHOD_POST,
 		"http://[http_root]:[http_port]/status",
 		json_encode(status),
-		headers,
-		"tmp/response.json"
-	)
-	request.begin_async()
-	UNTIL(request.is_complete())
+		default_headers
+	).begin_async()
 
 /datum/controller/subsystem/plexora/Shutdown(hard = FALSE, requestedby)
-	var/list/body = list();
-	body["type"] = "servershutdown"
-	body["timestamp"] = rustg_unix_timestamp()
-	body["roundid"] = GLOB.round_id
-	body["round_timer"] = ROUND_TIME()
-	body["map"] = SSmapping.config?.map_name
-	body["playercount"] = length(GLOB.clients)
-	body["hard"] = hard
-
-	if (!isnull(requestedby))
-		body["requestedby"] = requestedby
-
-	http_basicasync("serverupdates", body)
+	http_basicasync("serverupdates", list(
+		"type" = "servershutdown",
+		"timestamp" = rustg_unix_timestamp(),
+		"roundid" = GLOB.round_id,
+		"round_timer" = ROUND_TIME(),
+		"map" = SSmapping.config?.map_name,
+		"playercount" = length(GLOB.clients),
+		"hard" = hard,
+		"requestedby" = requestedby,
+	))
 
 /datum/controller/subsystem/plexora/proc/serverstarted()
-	var/list/body = list();
-	body["type"] = "serverstart"
-	body["timestamp"] = rustg_unix_timestamp()
-	body["roundid"] = GLOB.round_id
-	body["map"] = SSmapping.config?.map_name
-	body["playercount"] = length(GLOB.clients)
-
-	http_basicasync("serverupdates", body)
+	http_basicasync("serverupdates", list(
+		"type" = "serverstart",
+		"timestamp" = rustg_unix_timestamp(),
+		"roundid" = GLOB.round_id,
+		"map" = SSmapping.config?.map_name,
+		"playercount" = length(GLOB.clients),
+	))
 
 /datum/controller/subsystem/plexora/proc/serverinitdone(time)
-	var/list/body = list();
-	body["type"] = "serverinitdone"
-	body["timestamp"] = rustg_unix_timestamp()
-	body["roundid"] = GLOB.round_id
-	body["map"] = SSmapping.config?.map_name
-	body["playercount"] = length(GLOB.clients)
-	body["init_time"] = time
-
-	http_basicasync("serverupdates", body)
+	http_basicasync("serverupdates", list(
+		"type" = "serverinitdone",
+		"timestamp" = rustg_unix_timestamp(),
+		"roundid" = GLOB.round_id,
+		"map" = SSmapping.config?.map_name,
+		"playercount" = length(GLOB.clients),
+		"init_time" = time,
+	))
 
 /datum/controller/subsystem/plexora/proc/roundstarted()
-	var/list/body = list()
-	body["type"] = "roundstart"
-	body["timestamp"] = rustg_unix_timestamp()
-	body["roundid"] = GLOB.round_id
-	body["map"] = SSmapping.config?.map_name
-	body["playercount"] = length(GLOB.clients)
-
-	http_basicasync("serverupdates", body)
+	http_basicasync("serverupdates", list(
+		"type" = "roundstart",
+		"timestamp" = rustg_unix_timestamp(),
+		"roundid" = GLOB.round_id,
+		"map" = SSmapping.config?.map_name,
+		"playercount" = length(GLOB.clients),
+	))
 
 /datum/controller/subsystem/plexora/proc/roundended()
-	var/list/body = list()
-	body["type"] = "roundend"
-	body["timestamp"] = rustg_unix_timestamp()
-	body["roundid"] = GLOB.round_id
-	body["round_timer"] = ROUND_TIME()
-	body["map"] = SSmapping.config?.map_name
-	body["nextmap"] = SSmapping.next_map_config?.map_name
-	body["playercount"] = length(GLOB.clients)
-	body["playerstring"] = "**Total**: [length(GLOB.clients)], **Living**: [length(GLOB.alive_player_list)], **Dead**: [length(GLOB.dead_player_list)], **Observers**: [length(GLOB.current_observers_list)]"
-
-	http_basicasync("serverupdates", body)
+	http_basicasync("serverupdates", list(
+		"type" = "roundend",
+		"timestamp" = rustg_unix_timestamp(),
+		"roundid" = GLOB.round_id,
+		"round_timer" = ROUND_TIME(),
+		"map" = SSmapping.config?.map_name,
+		"nextmap" = SSmapping.next_map_config?.map_name,
+		"playercount" = length(GLOB.clients),
+		"playerstring" = "**Total**: [length(GLOB.clients)], **Living**: [length(GLOB.alive_player_list)], **Dead**: [length(GLOB.dead_player_list)], **Observers**: [length(GLOB.current_observers_list)]",
+	))
 
 /datum/controller/subsystem/plexora/proc/interview(datum/interview/interview)
-	var/list/body = list()
-	body["id"] = interview.id
-	body["atomic_id"] = interview.atomic_id
-	body["owner_ckey"] = interview.owner_ckey
-	body["responses"] = interview.responses
-	body["read_only"] = interview.read_only
-	body["pos_in_queue"] = interview.pos_in_queue
-	body["status"] = interview.status
-	if (interview?.owner)
-		body["ip"] = interview.owner.address
-		body["computer_id"] = interview.owner.computer_id
-
-	http_basicasync("interviewupdates", body)
+	http_basicasync("interviewupdates", list(
+		"id" = interview.id,
+		"atomic_id" = interview.atomic_id,
+		"owner_ckey" = interview.owner_ckey,
+		"responses" = interview.responses,
+		"read_only" = interview.read_only,
+		"pos_in_queue" = interview.pos_in_queue,
+		"status" = interview.status,
+		"ip" = interview.owner?.address,
+		"computer_id" = interview.owner?.computer_id,
+	))
 
 // note: recover_all_SS_and_recreate_master to force mc shit
 
 /datum/controller/subsystem/plexora/proc/mc_alert(alert, level = 5)
-	var/list/body = list()
-	body["type"] = "mcalert"
-	body["timestamp"] = rustg_unix_timestamp()
-	body["roundid"] = GLOB.round_id
-	body["round_timer"] = ROUND_TIME()
-	body["map"] = SSmapping.config?.map_name
-	body["playercount"] = length(GLOB.clients)
-	body["playerstring"] = "**Total**: [length(GLOB.clients)], **Living**: [length(GLOB.alive_player_list)], **Dead**: [length(GLOB.dead_player_list)], **Observers**: [length(GLOB.current_observers_list)]"
-	body["defconstring"] = alert
-	body["defconlevel"] = level
+	http_basicasync("serverupdates", list(
+		"type" = "mcalert",
+		"timestamp" = rustg_unix_timestamp(),
+		"roundid" = GLOB.round_id,
+		"round_timer" = ROUND_TIME(),
+		"map" = SSmapping.config?.map_name,
+		"playercount" = length(GLOB.clients),
+		"playerstring" = "**Total**: [length(GLOB.clients)], **Living**: [length(GLOB.alive_player_list)], **Dead**: [length(GLOB.dead_player_list)], **Observers**: [length(GLOB.current_observers_list)]",
+		"defconstring" = alert,
+		"defconlevel" = level,
+	))
 
-	http_basicasync("serverupdates", body)
-
-/datum/controller/subsystem/plexora/proc/new_note(list/note) {
+/datum/controller/subsystem/plexora/proc/new_note(list/note)
 	note["replay_pass"] = CONFIG_GET(string/replay_password)
-	http_basicasync("noteupdates")
-}
+	http_basicasync("noteupdates", note)
 
 /datum/controller/subsystem/plexora/proc/new_ban(list/ban)
 	// TODO: It might be easier to just send off a ban ID to Plexora, but oh well.
@@ -226,52 +202,47 @@ SUBSYSTEM_DEF(plexora)
 // Maybe we should consider that, if theres no admin_ckey when creating a new ticket,
 // This isnt a bwoink. Other wise if it does exist, it is a bwoink.
 /datum/controller/subsystem/plexora/proc/aticket_new(datum/admin_help/ticket, msg_raw, is_bwoink, urgent, admin_ckey = null)
-	if (!enabled) return;
-	var/list/body = list();
-	body["id"] = ticket.id
-	body["roundid"] = GLOB.round_id
-	body["round_timer"] = ROUND_TIME()
-	body["world_time"] = world.time
-	body["name"] = ticket.name
-	body["ckey"] = ticket.initiator_ckey
-	body["key_name"] = ticket.initiator_key_name
-	body["is_bwoink"] = is_bwoink
-	body["urgent"] = urgent
-	body["msg_raw"] = msg_raw
-	body["opened_at"] = rustg_unix_timestamp()
-	body["replay_pass"] = CONFIG_GET(string/replay_password)
-	body["icon_b64"] = icon2base64(getFlatIcon(ticket.initiator.mob, SOUTH, no_anim = TRUE))
-
-	if (admin_ckey)	body["admin_ckey"] = admin_ckey
-
-	http_basicasync("atickets/new", body)
+	if(!enabled) return
+	http_basicasync("atickets/new", list(
+		"id" = ticket.id,
+		"roundid" = GLOB.round_id,
+		"round_timer" = ROUND_TIME(),
+		"world_time" = world.time,
+		"name" = ticket.name,
+		"ckey" = ticket.initiator_ckey,
+		"key_name" = ticket.initiator_key_name,
+		"is_bwoink" = is_bwoink,
+		"urgent" = urgent,
+		"msg_raw" = msg_raw,
+		"opened_at" = rustg_unix_timestamp(),
+		"replay_pass" = CONFIG_GET(string/replay_password),
+		"icon_b64" = icon2base64(getFlatIcon(ticket.initiator.mob, SOUTH, no_anim = TRUE)),
+		"admin_ckey" = admin_ckey,
+	))
 
 /datum/controller/subsystem/plexora/proc/aticket_closed(datum/admin_help/ticket, closed_by, close_type = AHELP_CLOSETYPE_CLOSE, close_reason = AHELP_CLOSEREASON_NONE)
-	if (!enabled) return;
-	var/list/body = list();
-	body["id"] = ticket.id
-	body["roundid"] = GLOB.round_id
-	body["closed_by"] = closed_by
-	// Make sure the defines in __DEFINES/admin.dm match up with Plexora's code
-	body["close_reason"] = close_reason
-	body["close_type"] = close_type
-
-	body["time_closed"] = rustg_unix_timestamp()
-
-	http_basicasync("atickets/close", body)
+	if(!enabled) return
+	http_basicasync("atickets/close", list(
+		"id" = ticket.id,
+		"roundid" = GLOB.round_id,
+		"closed_by" = closed_by,
+		// Make sure the defines in __DEFINES/admin.dm match up with Plexora's code
+		"close_reason" = close_reason,
+		"close_type" = close_type,
+		"time_closed" = rustg_unix_timestamp(),
+	))
 
 /datum/controller/subsystem/plexora/proc/aticket_reopened(datum/admin_help/ticket, reopened_by)
-	if (!enabled) return;
-	var/list/body = list();
-	body["id"] = ticket.id
-	body["roundid"] = GLOB.round_id
-	body["time_reopened"] = rustg_unix_timestamp()
-	body["reopened_by"] = reopened_by // ckey
-
-	http_basicasync("atickets/reopen", body)
+	if(!enabled) return
+	http_basicasync("atickets/reopen", list(
+		"id" = ticket.id,
+		"roundid" = GLOB.round_id,
+		"time_reopened" = rustg_unix_timestamp(),
+		"reopened_by" = reopened_by, // ckey
+	))
 
 /datum/controller/subsystem/plexora/proc/aticket_pm(datum/admin_help/ticket, message, admin_ckey = null)
-	if (!enabled) return;
+	if(!enabled) return
 	var/list/body = list();
 	body["id"] = ticket.id
 	body["roundid"] = GLOB.round_id
@@ -283,98 +254,96 @@ SUBSYSTEM_DEF(plexora)
 
 	if (admin_ckey)	body["admin_ckey"] = admin_ckey
 
-	http_basicasync("atickets/pm", body)
+	http_basicasync("atickets/pm", list(
+		"id" = ticket.id,
+		"roundid" = GLOB.round_id,
+		"message" = message,
+		"admin_ckey" = admin_ckey,
+	))
 
 /datum/controller/subsystem/plexora/proc/aticket_connection(datum/admin_help/ticket, is_disconnect = TRUE)
-	if (!enabled) return;
-	var/list/body = list()
-	body["id"] = ticket.id
-	body["roundid"] = GLOB.round_id
-	body["is_disconnect"] = is_disconnect
-	body["time_of_connection"] = rustg_unix_timestamp()
-
-	http_basicasync("atickets/connection_notice", body)
+	if(!enabled) return
+	http_basicasync("atickets/connection_notice", list(
+		"id" = ticket.id,
+		"roundid" = GLOB.round_id,
+		"is_disconnect" = is_disconnect,
+		"time_of_connection" = rustg_unix_timestamp(),
+	))
 
 // Begin Mentor tickets
 
 /datum/controller/subsystem/plexora/proc/mticket_new(datum/request/ticket)
-	if (!enabled) return;
-
-	var/list/body = list()
-	body["id"] = ticket.id
-	body["ckey"] = ticket.owner_ckey
-	body["key_name"] = ticket.owner_name
-	body["roundid"] = GLOB.round_id
-	body["round_timer"] = ROUND_TIME()
-	body["world_time"] = world.time
-	body["opened_at"] = rustg_unix_timestamp()
-	body["icon_b64"] = icon2base64(getFlatIcon(ticket.owner.mob, SOUTH, no_anim = TRUE))
-	body["replay_pass"] = CONFIG_GET(string/replay_password)
-	body["message"] = ticket.message
-
-	http_basicasync("mtickets/new", body)
+	if (!enabled) return
+	http_basicasync("mtickets/new", list(
+		"id" = ticket.id,
+		"ckey" = ticket.owner_ckey,
+		"key_name" = ticket.owner_name,
+		"roundid" = GLOB.round_id,
+		"round_timer" = ROUND_TIME(),
+		"world_time" = world.time,
+		"opened_at" = rustg_unix_timestamp(),
+		"icon_b64" = icon2base64(getFlatIcon(ticket.owner.mob, SOUTH, no_anim = TRUE)),
+		"replay_pass" = CONFIG_GET(string/replay_password),
+		"message" = ticket.message,
+	))
 
 /datum/controller/subsystem/plexora/proc/mticket_pm(datum/request/ticket, mob/frommob, mob/tomob, msg,)
-	var/list/body = list()
-	body["id"] = ticket.id
-	body["from_ckey"] = frommob.ckey
-	body["from_key_name"] = frommob.ckey
-	body["ckey"] = tomob.ckey
-	body["key_name"] = tomob.key
-	body["roundid"] = GLOB.round_id
-	body["round_timer"] = ROUND_TIME()
-	body["world_time"] = world.time
-	body["timestamp"] = rustg_unix_timestamp()
-	body["icon_b64"] = icon2base64(getFlatIcon(frommob, SOUTH, no_anim = TRUE))
-	body["message"] = msg
-
-	http_basicasync("mtickets/pm", body)
+	http_basicasync("mtickets/pm", list(
+		"id" = ticket.id,
+		"from_ckey" = frommob.ckey,
+		"from_key_name" = frommob.ckey,
+		"ckey" = tomob.ckey,
+		"key_name" = tomob.key,
+		"roundid" = GLOB.round_id,
+		"round_timer" = ROUND_TIME(),
+		"world_time" = world.time,
+		"timestamp" = rustg_unix_timestamp(),
+		"icon_b64" = icon2base64(getFlatIcon(frommob, SOUTH, no_anim = TRUE)),
+		"message" = msg,
+	))
 
 /datum/controller/subsystem/plexora/proc/topic_listener_response(token, data)
-	if (!enabled) return;
-	var/list/body = list()
-	body["token"] = token
-	body["data"] = data
-	http_basicasync("topic_emitter", body)
+	if(!enabled) return
+	http_basicasync("topic_emitter", list(
+		"token" = token,
+		"data" = data,
+	))
 
-/datum/controller/subsystem/plexora/proc/http_basicasync(path, list/body)
-	if (!enabled) return;
-	HTTP_DEFAULT_HEADERS()
+/datum/controller/subsystem/plexora/proc/http_basicasync(path, list/body) as /datum/http_request
+	RETURN_TYPE(/datum/http_request)
+	if(!enabled) return
 
-	var/datum/http_request/request = new()
-	request.prepare(
+	var/datum/http_request/request = new(
 		RUSTG_HTTP_METHOD_POST,
 		"http://[http_root]:[http_port]/[path]",
 		json_encode(body),
-		headers,
+		default_headers,
 		"tmp/response.json"
 	)
 	request.begin_async()
+	return request
 
 /datum/world_topic/plx_who
 	keyword = "PLX_who"
 	require_comms_key = TRUE
 
 /datum/world_topic/plx_who/Run(list/input)
-	var/list/players = list()
-
-	for(var/client/client in GLOB.clients)
-		if(client.holder && client.holder.fakekey)
-			players += list(list("key" = client.holder.fakekey, "avgping" = "[round(client.avgping, 1)]ms"))
-		else
-			players += list(list("key" = client.key, "avgping" = "[round(client.avgping, 1)]ms"))
-
-	return players
+	. = list()
+	for(var/client/client as anything in GLOB.clients)
+		if(QDELETED(client))
+			continue
+		. += list(list("key" = client.holder?.fakekey || client.key, "avgping" = "[round(client.avgping, 1)]ms"))
 
 /datum/world_topic/plx_adminwho
 	keyword = "PLX_adminwho"
 	require_comms_key = TRUE
 
 /datum/world_topic/plx_adminwho/Run(list/input)
-	var/list/admins = list()
-
-	for (var/client/admin in GLOB.admins)
-		var/admin_ = list(
+	. = list()
+	for (var/client/admin as anything in GLOB.admins)
+		if(QDELETED(admin))
+			continue
+		var/admin_info = list(
 			"name" = admin,
 			"ckey" = admin.ckey,
 			"rank" = admin.holder.rank_names(),
@@ -384,42 +353,40 @@ SUBSYSTEM_DEF(plexora)
 		)
 
 		if(isobserver(admin.mob))
-			admin_["state"] = "observing"
+			admin_info["state"] = "observing"
 		else if(isnewplayer(admin.mob))
-			admin_["state"] = "lobby"
+			admin_info["state"] = "lobby"
 		else
-			admin_["state"] = "playing"
+			admin_info["state"] = "playing"
 
-		admins += LIST_VALUE_WRAP_LISTS(admin_)
-	return admins
+		. += LIST_VALUE_WRAP_LISTS(admin_info)
 
 /datum/world_topic/plx_mentorwho
 	keyword = "PLX_mentorwho"
 	require_comms_key = TRUE
 
 /datum/world_topic/plx_mentorwho/Run(list/input)
-	var/list/mentors = list()
-
-	for (var/client/mentor in GLOB.mentors)
-		var/list/mentor_ = list(
+	. = list()
+	for (var/client/mentor as anything in GLOB.mentors)
+		if(QDELETED(mentor))
+			continue
+		var/list/mentor_info = list(
 			"name" = mentor,
 			"ckey" = mentor.ckey,
-			"rank" = mentor.holder.rank_names(),
+			"rank" = mentor.holder?.rank_names(),
 			"afk" = mentor.is_afk(),
-			"stealth" = !!mentor.holder.fakekey,
-			"stealthkey" = mentor.holder.fakekey,
+			"stealth" = !!mentor.holder?.fakekey,
+			"stealthkey" = mentor.holder?.fakekey,
 		)
 
 		if(isobserver(mentor.mob))
-			mentor_["state"] = "observing"
+			mentor_info["state"] = "observing"
 		else if(isnewplayer(mentor.mob))
-			mentor_["state"] = "lobby"
+			mentor_info["state"] = "lobby"
 		else
-			mentor_["state"] = "playing"
+			mentor_info["state"] = "playing"
 
-		mentors += LIST_VALUE_WRAP_LISTS(mentor_)
-
-	return mentors
+		. += LIST_VALUE_WRAP_LISTS(mentor_info)
 
 /datum/world_topic/plx_getloadoutrewards
 	keyword = "PLX_getloadoutrewards"
@@ -436,41 +403,38 @@ SUBSYSTEM_DEF(plexora)
 	return GLOB.possible_lootbox_clothing
 
 /datum/world_topic/get_unusualeffects
-  keyword = "PLX_getunusualeffects"
-  require_comms_key = TRUE
+	keyword = "PLX_getunusualeffects"
+	require_comms_key = TRUE
 
 /datum/world_topic/get_unusualeffects/Run(list/input)
-  return subtypesof(/datum/component/particle_spewer) - /datum/component/particle_spewer/movement
+	return subtypesof(/datum/component/particle_spewer) - /datum/component/particle_spewer/movement
 
 /datum/world_topic/plx_getsmites
 	keyword = "PLX_getsmites"
 	require_comms_key = TRUE
 
 /datum/world_topic/plx_getsmites/Run(list/input)
-	var/list/availableSmites = list()
-
-	for (var/_smite_path in subtypesof(/datum/smite))
-		var/datum/smite/smite_path = _smite_path
+	. = list()
+	for (var/datum/smite/smite_path as anything in subtypesof(/datum/smite))
+		var/smite_name = smite_path::name
+		if(!smite_name)
+			continue
 		try
-			var/datum/smite/_smite = new smite_path
-			if (_smite.configure(new /datum/client_interface("fake_player")) == "NO_CONFIG")
-				availableSmites[initial(smite_path.name)] = smite_path
+			var/datum/smite/smite_instance = new smite_path
+			if (smite_instance.configure(new /datum/client_interface("fake_player")) == "NO_CONFIG")
+				.[smite_name] = smite_path
+			QDEL_NULL(smite_instance)
 		catch
-
-	return availableSmites
+			pass()
 
 /datum/world_topic/plx_gettwitchevents
 	keyword = "PLX_gettwitchevents"
 	require_comms_key = TRUE
 
 /datum/world_topic/plx_gettwitchevents/Run(list/input)
-	var/list/events = list()
-
-	for (var/_event_path in subtypesof(/datum/twitch_event))
-		var/datum/twitch_event/event_path = _event_path
-		events[initial(event_path.event_name)] = event_path
-
-	return events
+	. = list()
+	for (var/datum/twitch_event/event_path as anything in subtypesof(/datum/twitch_event))
+		.[event_path::event_name] = event_path
 
 /datum/world_topic/plx_getbasicplayerdetails
 	keyword = "PLX_getbasicplayerdetails"
@@ -486,7 +450,7 @@ SUBSYSTEM_DEF(plexora)
 
 	var/client/client = disambiguate_client(ckey)
 
-	if (!client)
+	if (QDELETED(client))
 		returning["present"] = FALSE
 	else
 		returning["present"] = TRUE
@@ -498,12 +462,12 @@ SUBSYSTEM_DEF(plexora)
 	if (details)
 		returning["byond_version"] = details.byond_version
 
-	if (isnull(client))
+	if (QDELETED(client))
 		var/datum/client_interface/mock_player = new(ckey)
 		mock_player.prefs = new /datum/preferences(mock_player)
-		returning["playtime"] = mock_player.get_exp_living(FALSE);
+		returning["playtime"] = mock_player.get_exp_living(FALSE)
 	else
-		returning["playtime"] = client.get_exp_living(FALSE);
+		returning["playtime"] = client.get_exp_living(FALSE)
 
 	return returning
 
@@ -520,24 +484,26 @@ SUBSYSTEM_DEF(plexora)
 
 	var/datum/player_details/details = GLOB.player_details[ckey]
 
-	if (!details)
+	if (QDELETED(details))
 		return list("error" = "detailsnotexist")
 
 	var/client/client = disambiguate_client(ckey)
 
-	if (!client)
+	if (QDELETED(client))
 		return list("error" = "clientnotexist")
 
-	var/list/returning = list()
-
-	returning["ckey"] = ckey
-	returning["key"] = client.key
-	returning["admin_datum"] = null
-	if (!omit_logs) returning["logging"] = details.logging
-	returning["played_names"] = details.played_names
-	returning["byond_version"] = details.byond_version
-	returning["achievements"] = details.achievements.data
-	returning["playtime"] = client.get_exp_living(FALSE);
+	var/list/returning = list(
+		"ckey" = ckey,
+		"key" = client.key,
+		"admin_datum" = null,
+		"logging" = details.logging,
+		"played_names" = details.played_names,
+		"byond_version" = details.byond_version,
+		"achievements" = details.achievements.data,
+		"playtime" = client.get_exp_living(FALSE),
+	)
+	if (!omit_logs)
+		returning["logging"] = details.logging
 
 	if (GLOB.admin_datums[ckey])
 		var/datum/admins/ckeyadatum = GLOB.admin_datums[ckey]
@@ -578,7 +544,7 @@ SUBSYSTEM_DEF(plexora)
 	var/type = input["type"]
 	var/codeamount = input["limit"]
 
-	var/codes = list()
+	. = list()
 
 	if (type == "loadout" && !input["loadout"])
 		return
@@ -617,8 +583,7 @@ SUBSYSTEM_DEF(plexora)
 				returning["effect"] = effect
 				returning["code"] = generate_unusual_code(item, effect, TRUE)
 
-		codes += list(returning)
-	return codes
+		. += list(returning)
 
 /datum/world_topic/plx_givecoins
 	keyword = "PLX_givecoins"
@@ -632,7 +597,7 @@ SUBSYSTEM_DEF(plexora)
 	var/client/userclient = disambiguate_client(ckey)
 
 	var/datum/preferences/prefs
-	if (isnull(userclient))
+	if (QDELETED(userclient))
 		var/datum/client_interface/mock_player = new(ckey)
 		mock_player.prefs = new /datum/preferences(mock_player)
 
@@ -662,17 +627,17 @@ SUBSYSTEM_DEF(plexora)
 
 	var/client/client = disambiguate_client(ckey(target_ckey))
 
-	if (!client)
+	if (QDELETED(client))
 		return list("error" = "clientnotexist")
 
 	var/mob/client_mob = client.mob
 
-	if (!client_mob)
+	if (QDELETED(client_mob))
 		return list("error" = "clientnomob")
 
 	return list(
 		"success" = client_mob.emote(emote, message = emote_args, intentional = FALSE)
-	);
+	)
 
 /datum/world_topic/plx_forcesay
 	keyword = "PLX_forcesay"
@@ -684,12 +649,12 @@ SUBSYSTEM_DEF(plexora)
 
 	var/client/client = disambiguate_client(ckey(target_ckey))
 
-	if (!client)
+	if (QDELETED(client))
 		return list("error" = "clientnotexist")
 
 	var/mob/client_mob = client.mob
 
-	if (!client_mob)
+	if (QDELETED(client_mob))
 		return list("error" = "clientnomob")
 
 	client_mob.say(message, forced = TRUE)
@@ -724,7 +689,7 @@ SUBSYSTEM_DEF(plexora)
 
 	var/client/client = disambiguate_client(target_ckey)
 
-	if (!client)
+	if (QDELETED(client))
 		return list("error" = "clientnotexist")
 
 	// DIVINE SMITING!
@@ -735,9 +700,7 @@ SUBSYSTEM_DEF(plexora)
 		return
 
 	// Mock admin
-	var/datum/client_interface/mockadmin = new(
-		key = smited_by,
-	)
+	var/datum/client_interface/mockadmin = new(key = smited_by)
 
 	usr = mockadmin
 	picking_smite.effect(client, client.mob)
@@ -752,12 +715,12 @@ SUBSYSTEM_DEF(plexora)
 
 	var/client/client = disambiguate_client(ckey)
 
-	if (!client)
+	if (QDELETED(client))
 		return list("error" = "clientnotexist")
 
 	var/mob/client_mob = client.mob
 
-	if (!client_mob)
+	if (QDELETED(client_mob))
 		return list("error" = "clientnomob")
 
 	// Mock admin
@@ -783,14 +746,12 @@ SUBSYSTEM_DEF(plexora)
 	var/action = input["action"]
 
 
-	var/datum/client_interface/mockadmin = new(
-		key = action_by_ckey,
-	)
+	var/datum/client_interface/mockadmin = new(key = action_by_ckey)
 
 	usr = mockadmin
 
 	var/datum/admin_help/ticket = GLOB.ahelp_tickets.TicketByID(ticketid)
-	if (!ticket) return list("error" = "couldntfetchticket")
+	if (QDELETED(ticket)) return list("error" = "couldntfetchticket")
 
 	if (action != "reopen" && ticket.state != AHELP_ACTIVE)
 		return
@@ -831,16 +792,12 @@ SUBSYSTEM_DEF(plexora)
 	var/requested_ckey = ckey(input_ckey)
 	var/client/recipient = disambiguate_client(requested_ckey)
 
-	if (!recipient)
+	if (QDELETED(recipient))
 		return list("error" = "clientnotexist")
 
-	var/datum/admin_help/ticket
-	if (ticketid)
-		ticket = GLOB.ahelp_tickets.TicketByID(ticketid)
-	else
-		ticket = GLOB.ahelp_tickets.CKey2ActiveTicket(requested_ckey)
+	var/datum/admin_help/ticket = ticketid ? GLOB.ahelp_tickets.TicketByID(ticketid) : GLOB.ahelp_tickets.CKey2ActiveTicket(requested_ckey)
 
-	if (!ticket)
+	if (QDELETED(ticket))
 		return list("error" = "couldntfetchticket")
 
 	var/plx_tagged = "[sender]"
@@ -885,7 +842,7 @@ SUBSYSTEM_DEF(plexora)
 
 	window_flash(recipient, ignorepref = TRUE)
 	// Nullcheck because we run a winset in window flash and I do not trust byond
-	if(recipient)
+	if(!QDELETED(recipient))
 		//always play non-admin recipients the adminhelp sound
 		SEND_SOUND(recipient, 'sound/effects/adminhelp.ogg')
 
@@ -896,28 +853,27 @@ SUBSYSTEM_DEF(plexora)
 	require_comms_key = TRUE
 
 /datum/world_topic/plx_sendmticketpm/Run(list/input)
-	var/ticketid = input["ticket_id"]
+	//var/ticketid = input["ticket_id"]
 	var/target_ckey = input["ckey"]
 	var/sender = input["sender_ckey"]
 	var/message = input["message"]
 
 	var/client/recipient = disambiguate_client(ckey(target_ckey))
 
-	if (!recipient)
+	if (QDELETED(recipient))
 		return list("error" = "clientnotexist")
 
-	var/datum/request/request = GLOB.mentor_requests.requests_by_id[num2text(ticketid)]
+	// var/datum/request/request = GLOB.mentor_requests.requests_by_id[num2text(ticketid)]
 
-	recipient << 'sound/items/bikehorn.ogg'
+	SEND_SOUND(recipient, 'sound/items/bikehorn.ogg')
 	to_chat(recipient, "<font color='purple'>Mentor PM from-<b>[key_name_mentor(sender, recipient, TRUE, FALSE, FALSE)]</b>: [message]</font>")
-	for(var/client/honked_clients in GLOB.mentors | GLOB.admins)
-		/// Check client/honked_clients is an Mentor and isn't the Sender/Recipient
-		if(honked_clients.key!=recipient.key)
-			to_chat(honked_clients,
-				type = MESSAGE_TYPE_MODCHAT,
-				html = "<B><font color='green'>Mentor PM: [key_name_mentor(sender, honked_clients, FALSE, FALSE)]-&gt;[key_name_mentor(recipient, honked_clients, FALSE, FALSE)]:</B> <font color = #5c00e6> <span class='message linkify'>[message]</span></font>",
-				confidential = TRUE)
+	for(var/client/honked_client as anything in GLOB.mentors | GLOB.admins)
+		if(QDELETED(honked_client) || honked_client == recipient)
+			continue
+		to_chat(honked_client,
+			type = MESSAGE_TYPE_MODCHAT,
+			html = "<B><font color='green'>Mentor PM: [key_name_mentor(sender, honked_client, FALSE, FALSE)]-&gt;[key_name_mentor(recipient, honked_client, FALSE, FALSE)]:</B> <font color = #5c00e6> <span class='message linkify'>[message]</span></font>",
+			confidential = TRUE)
 
 #undef AUTH_HEADER
-#undef HTTP_DEFAULT_HEADERS
 #undef TOPIC_EMITTER
