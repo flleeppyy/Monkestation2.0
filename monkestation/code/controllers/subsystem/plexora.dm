@@ -82,6 +82,18 @@ SUBSYSTEM_DEF(plexora)
 	)
 	return SS_INIT_SUCCESS
 
+/datum/controller/subsystem/plexora/Recover()
+	flags |= SS_NO_INIT // Make extra sure we don't initialize twice.
+	initialized = SSplexora.initialized
+	plexora_is_alive = SSplexora.plexora_is_alive
+	http_root = SSplexora.http_root
+	http_port = SSplexora.http_port
+	enabled = SSplexora.enabled
+	tripped_bad_version = SSplexora.tripped_bad_version
+	default_headers = SSplexora.default_headers
+	if(initialized && !enabled)
+		flags |= SS_NO_FIRE
+
 /datum/controller/subsystem/plexora/proc/is_plexora_alive()
 	. = FALSE
 	if(!enabled) return
