@@ -17,7 +17,7 @@
 
 #define TOPIC_EMITTER \
 	if (input["emitter_token"]) { \
-		INVOKE_ASYNC(SSplexora, TYPE_PROC_REF(/datum/controller/subsystem/plexora,topic_listener_response), input["emitter_token"], returning); \
+		INVOKE_ASYNC(SSplexora, TYPE_PROC_REF(/datum/controller/subsystem/plexora, topic_listener_response), input["emitter_token"], returning); \
 		return; \
 	};
 
@@ -29,6 +29,10 @@ SUBSYSTEM_DEF(plexora)
 	init_order = INIT_ORDER_PLEXORA
 	priority = FIRE_PRIORITY_PLEXORA
 	runlevels = ALL
+
+#ifdef UNIT_TESTS
+	flags = SS_NO_INIT | SS_NO_FIRE
+#endif
 
 	var/version_increment_counter = 1
 	var/configuration_path = "config/plexora.json"
@@ -43,6 +47,7 @@ SUBSYSTEM_DEF(plexora)
 	if (!rustg_file_exists(configuration_path))
 		stack_trace("SSplexora has no configuration file! (missing: [configuration_path])")
 		enabled = FALSE
+		flags |= SS_NO_FIRE
 		return SS_INIT_FAILURE
 
 	// Get config
@@ -50,12 +55,14 @@ SUBSYSTEM_DEF(plexora)
 
 	if (!config["enabled"])
 		enabled = FALSE
+		flags |= SS_NO_FIRE
 		return SS_INIT_NO_NEED
 
 	var/comms_key = CONFIG_GET(string/comms_key)
 	if (!comms_key)
 		stack_trace("SSplexora is enabled BUT there is no configured comms key! Please make sure to set one and update Plexora's server config.")
 		enabled = FALSE
+		flags |= SS_NO_FIRE
 		return SS_INIT_FAILURE
 
 	http_root = config["ip"]
