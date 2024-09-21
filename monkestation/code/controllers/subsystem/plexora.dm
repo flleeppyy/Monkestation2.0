@@ -310,7 +310,6 @@ SUBSYSTEM_DEF(plexora)
 	http_basicasync("mtickets/pm", list(
 		"id" = ticket.id,
 		"from_ckey" = frommob.ckey,
-		"from_key_name" = frommob.ckey,
 		"ckey" = tomob.ckey,
 		"key_name" = tomob.key,
 		"roundid" = GLOB.round_id,
