@@ -32,7 +32,10 @@ GLOBAL_LIST_INIT(stored_codes, list())
 /proc/generate_loadout_code_tgui(no_logs = FALSE)
 	if(!check_rights(R_FUN))
 		return
-	var/choice = tgui_input_list(usr, "Please choose a loadout item to award", "Loadout Choice", subtypesof(/datum/store_item) - typesof(/datum/store_item/roundstart))
+	var/static/list/possible_items
+	if(!possible_items)
+		possible_items = subtypesof(/datum/store_item) - typesof(/datum/store_item/roundstart)
+	var/choice = tgui_input_list(usr, "Please choose a loadout item to award", "Loadout Choice", possible_items)
 	if(!choice)
 		return
 	return generate_loadout_code(choice, no_logs)
@@ -49,24 +52,25 @@ GLOBAL_LIST_INIT(stored_codes, list())
 	if(!check_rights(R_FUN))
 		return
 	var/item_choice = tgui_alert(usr, "Should it be a random item?", "Loadout Choice", list("Yes", "No"))
-	if(!item_choice)
-		return
-	if(item_choice == "Yes")
-		item_choice = pick(GLOB.possible_lootbox_clothing)
-	else
-		item_choice = tgui_input_list(usr, "Please choose a loadout item to award", "Loadout Choice", GLOB.possible_lootbox_clothing)
-	if(!item_choice || !ispath(item_choice))
+	switch(item_choice)
+		if("Yes")
+			item_choice = pick(GLOB.possible_lootbox_clothing)
+		if("No")
+			item_choice = tgui_input_list(usr, "Please choose a loadout item to award", "Loadout Choice", GLOB.possible_lootbox_clothing)
+	if(!ispath(item_choice))
 		return
 
+	var/static/list/possible_effects
+	if(!possible_effects)
+		possible_effects = subtypesof(/datum/component/particle_spewer) - /datum/component/particle_spewer/movement
+
 	var/effect_choice = tgui_alert(usr, "Should it be a random effect?", "Loadout Choice", list("Yes", "No"))
-	if(!effect_choice)
-		return
-	var/static/list/possible_effects = subtypesof(/datum/component/particle_spewer) - /datum/component/particle_spewer/movement
-	if(effect_choice == "Yes")
-		effect_choice = pick(possible_effects)
-	else
-		effect_choice = tgui_input_list(usr, "Please choose an effect to give the item.", "Loadout Choice", possible_effects)
-	if(!effect_choice || !ispath(effect_choice))
+	switch(effect_choice)
+		if("Yes")
+			effect_choice = pick(possible_effects)
+		if("No")
+			effect_choice = tgui_input_list(usr, "Please choose an effect to give the item.", "Loadout Choice", possible_effects)
+	if(!ispath(effect_choice))
 		return
 	return generate_unusual_code(item_choice, effect_choice, no_logs)
 
