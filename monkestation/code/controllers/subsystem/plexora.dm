@@ -34,6 +34,7 @@ SUBSYSTEM_DEF(plexora)
 	flags = SS_NO_INIT | SS_NO_FIRE
 #endif
 
+	// MUST INCREMENT BY ONE FOR EVERY CHANGE MADE TO PLEXORA
 	var/version_increment_counter = 2
 	var/configuration_path = "config/plexora.json"
 	var/plexora_is_alive = FALSE
