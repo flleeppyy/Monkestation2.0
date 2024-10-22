@@ -34,7 +34,7 @@ SUBSYSTEM_DEF(plexora)
 	flags = SS_NO_INIT | SS_NO_FIRE
 #endif
 
-	var/version_increment_counter = 1
+	var/version_increment_counter = 2
 	var/configuration_path = "config/plexora.json"
 	var/plexora_is_alive = FALSE
 	var/http_root = ""
@@ -341,6 +341,34 @@ SUBSYSTEM_DEF(plexora)
 	request.begin_async()
 	return request
 
+/datum/world_topic/plx_announce
+	keyword = "PLX_announce"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_announce/Run(list/input)
+	var/message = input["message"]
+	var/from = input["from"]
+
+	send_formatted_announcement(message, "From [from]")
+
+// // not ready yet
+// /datum/world_topic/plx_commandreport
+// 	keyword = "PLX_commandreport"
+// 	require_comms_key = TRUE
+
+// /datum/world_topic/plx_commandreport/Run(list/input)
+// 	priority_announce(text = input["text"], title = input["title"], encode_title = FALSE, encode_text = FALSE, color_override)
+
+/datum/world_topic/plx_globalnarrate
+	keyword = "PLX_globalnarrate"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_globalnarrate/Run(list/input)
+	var/message = input["contents"]
+
+	for(var/mob/player as anything in GLOB.player_list)
+		to_chat(player, message)
+
 /datum/world_topic/plx_who
 	keyword = "PLX_who"
 	require_comms_key = TRUE
@@ -464,7 +492,9 @@ SUBSYSTEM_DEF(plexora)
 	if (!ckey)
 		return list("error" = "missingckey")
 
-	var/list/returning = list()
+	var/list/returning = list(
+		"ckey" = ckey
+	)
 
 	var/client/client = disambiguate_client(ckey)
 
@@ -472,7 +502,6 @@ SUBSYSTEM_DEF(plexora)
 		returning["present"] = FALSE
 	else
 		returning["present"] = TRUE
-		returning["ckey"] = ckey
 		returning["key"] = client.key
 
 	var/datum/player_details/details = GLOB.player_details[ckey]
@@ -507,19 +536,27 @@ SUBSYSTEM_DEF(plexora)
 
 	var/client/client = disambiguate_client(ckey)
 
-	if (QDELETED(client))
-		return list("error" = "clientnotexist")
-
 	var/list/returning = list(
 		"ckey" = ckey,
-		"key" = client.key,
+		"present" = !QDELETED(client),
 		"admin_datum" = null,
 		"logging" = details.logging,
 		"played_names" = details.played_names,
 		"byond_version" = details.byond_version,
 		"achievements" = details.achievements.data,
-		"playtime" = client.get_exp_living(FALSE),
 	)
+
+	var/mob/clientmob
+	if (!QDELETED(client))
+		returning["playtime"] = client.get_exp_living(FALSE)
+		returning["key"] = client.key
+		clientmob = client.mob
+	else
+		for (var/mob/mob as anything in GLOB.mob_list)
+			if (!QDELETED(mob) && mob.ckey == ckey)
+				clientmob = mob
+				break
+
 	if (!omit_logs)
 		returning["logging"] = details.logging
 
@@ -535,20 +572,40 @@ SUBSYSTEM_DEF(plexora)
 		)
 
 	returning["mob"] = list(
-		"name" = client.mob.name,
-		"real_name" = client.mob.real_name,
-		"type" = client.mob.type,
-		"gender" = client.mob.gender,
-		"stat" = client.mob.stat,
+		"name" = clientmob.name,
+		"real_name" = clientmob.real_name,
+		"type" = clientmob.type,
+		"gender" = clientmob.gender,
+		"stat" = clientmob.stat,
 	)
-	if (isliving(client.mob))
-		var/mob/living/livingmob = client.mob
+	if (!QDELETED(client) && isliving(clientmob))
+		var/mob/living/livingmob = clientmob
 		returning["health"] = livingmob.health
 		returning["maxHealth"] = livingmob.maxHealth
 		returning["bruteloss"] = livingmob.bruteloss
 		returning["fireloss"] = livingmob.fireloss
 		returning["toxloss"] = livingmob.toxloss
 		returning["oxyloss"] = livingmob.oxyloss
+
+	TOPIC_EMITTER
+
+	return returning
+
+/datum/world_topic/plx_mobpicture
+	keyword = "PLX_mobpicture"
+	require_comms_key = TRUE
+
+/datum/world_topic/plx_mobpicture/Run(list/input)
+	var/ckey = input["ckey"]
+
+	var/client/client = disambiguate_client(ckey)
+
+	if (QDELETED(client))
+		return list("error" = "clientnotexist")
+
+	var/returning = list(
+		"icon_b64" = icon2base64(getFlatIcon(client.mob, no_anim = TRUE))
+	)
 
 	TOPIC_EMITTER
 
