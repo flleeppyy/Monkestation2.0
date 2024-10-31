@@ -16,6 +16,7 @@
 	var/atmos_gas = "miasma=0.25;TEMP=310.15" //310.15 is body temperature
 	var/fart_instability = 1 //Percent chance to lose your rear each fart.
 	var/cooling_down = FALSE
+	var/superfart_armed = FALSE
 
 //ADMIN ONLY ATOMIC ASS
 /obj/item/organ/internal/butt/atomic

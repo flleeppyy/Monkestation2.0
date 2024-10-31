@@ -1,5 +1,41 @@
+/datum/emote/living/carbon/human/assinhale
+	key = "assinhale"
+	key_third_person = "inhales through their ass"
+
+	var/sounds = list(
+		'monkestation/sounds/effects/fart_reverse1.ogg',
+		'monkestation/sounds/effects/fart_reverse2.ogg',
+		'monkestation/sounds/effects/fart_reverse3.ogg',
+		'monkestation/sounds/effects/fart_reverse4.ogg'
+	)
+	emote_type = EMOTE_AUDIBLE
+
+/datum/emote/living/carbon/human/assinhale/run_emote(mob/user, params, type_override, intentional)
+	. = ..()
+	if (!.)
+		return
+
+	if(!user.get_organ_slot(ORGAN_SLOT_BUTT) || !ishuman(user))
+		to_chat(user, "<span class='warning'>You don't have a butt!</span>")
+		return
+	var/mob/living/carbon/human/ass_holder = user
+	var/obj/item/organ/internal/butt/booty = user.get_organ_slot(ORGAN_SLOT_BUTT)
+
+	if (booty.superfart_armed)
+		to_chat(user, "<span class='warning'>Your ass is already armed!</span>")
+		return
+
+	var/volume = 50
+	if(ass_holder.has_quirk(/datum/quirk/loud_ass))
+		volume = volume * 2
+
+	user.visible_message("<span class='warning'>inhales through their ass. What the fuck?</span>", "<span class='warning'>You inhale through your ass, ready to super fart at any moment!</span>")
+	playsound(ass_holder, pick(sounds), , FALSE, pressure_affected = FALSE, mixer_channel = CHANNEL_PRUDE)
+	booty.superfart_armed = TRUE
+
 /datum/emote/living/carbon/human/superfart
 	key = "superfart"
+	emote_type = EMOTE_VISIBLE | EMOTE_AUDIBLE
 
 /datum/emote/living/carbon/human/superfart/run_emote(mob/user, params, type_override, intentional)
 	. = ..()
@@ -13,6 +49,8 @@
 	if(booty.cooling_down)
 		return
 	booty.cooling_down = TRUE
+	if (!booty.superfart_armed)
+		to_chat(user, "<span class='warning'>You need to *assinhale before you can superfart!</span>")
 	var/turf/Location = get_turf(ass_holder)
 
 	//BIBLEFART/
