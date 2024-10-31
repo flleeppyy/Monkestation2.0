@@ -1517,6 +1517,7 @@
 			animate(src, transform = null, flags = ANIMATION_END_NOW) // Literally just fucking stop animating entirely because admin said so
 		return
 
+	// monkestation edit start: forced shake
 	if(href_list[VV_HK_SHAKE] && check_rights(R_FUN))
 		var/pixelshiftx = input(usr, "Choose amount of pixels to shift on X axis","Shake Atom") as null|num
 		var/pixelshifty = input(usr, "Choose amount of pixels to shift on Y axis","Shake Atom") as null|num
@@ -1524,16 +1525,12 @@
 			return
 
 		var/duration = input(usr, "Duration? (In seconds)","Shake Atom") as null|num
-		if(isnull(duration))
-			return
-
 		var/shake_interval = input(usr, "Shake interval (In seconds) - Default: 0.02", "Shake Atom", 0.02) as null|num
-
-		if(isnull(shake_interval))
+		if(isnull(shake_interval) || isnull(duration))
 			return
 
 		src.Shake(pixelshiftx, pixelshifty, duration * 10, shake_interval * 10)
-
+	// monkestation edit end
 	if(href_list[VV_HK_AUTO_RENAME] && check_rights(R_VAREDIT))
 		var/newname = input(usr, "What do you want to rename this to?", "Automatic Rename") as null|text
 		// Check the new name against the chat filter. If it triggers the IC chat filter, give an option to confirm.

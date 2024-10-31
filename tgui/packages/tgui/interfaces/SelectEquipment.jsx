@@ -225,7 +225,7 @@ const ConfirmationBox = (props) => {
   const { current_outfit } = data;
   return (
     <Stack align="center">
-      <Stack.Item grow align="left">
+      <Stack.Item grow>
         <Dropdown
           width="200%"
           // I would add more options here but that would be excessively long,- flleeppyy
@@ -240,7 +240,7 @@ const ConfirmationBox = (props) => {
           onSelected={(value) => setApplyQuirks(value)}
         />
       </Stack.Item>
-      <Stack.Item align="right">
+      <Stack.Item>
         <Stack>
           <Stack.Item>
             <Button.Checkbox
