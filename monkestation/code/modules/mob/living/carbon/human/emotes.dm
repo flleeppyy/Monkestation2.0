@@ -50,9 +50,6 @@
 	if(booty.cooling_down)
 		return
 	booty.cooling_down = TRUE
-	if (!booty.superfart_armed)
-		to_chat(user, "<span class='warning'>You need to *assinhale before you can superfart!</span>")
-		return
 	var/turf/Location = get_turf(ass_holder)
 
 	ass_holder.clear_mood_event("superfart_armed")
