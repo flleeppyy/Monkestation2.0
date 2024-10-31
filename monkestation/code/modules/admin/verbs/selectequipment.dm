@@ -16,7 +16,7 @@
 			SSquirks.AssignQuirks(target_mob_living, user, omit_negatives = TRUE)
 		if("Negative Quirks Only")
 			SSquirks.AssignQuirks(target_mob_living, user, omit_positives = TRUE)
-		if("Neutarl Quirks Only")
+		if("Neutral Quirks Only")
 			SSquirks.AssignQuirks(target_mob_living, user, omit_positives = TRUE, omit_negatives = TRUE)
 
 	if(params["holyEffect"])
