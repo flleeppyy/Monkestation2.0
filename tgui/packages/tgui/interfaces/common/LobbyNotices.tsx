@@ -41,9 +41,6 @@ export const LobbyNotices = (props: { notices?: LobbyNoticesType }) => {
                     )}
               </>
             )}
-            {index < filteredLobbyNotices.length - 1 && (
-              <hr className="solid" />
-            )}
           </>
         </NoticeBox>
       ))}
