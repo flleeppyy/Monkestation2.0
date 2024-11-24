@@ -16,16 +16,25 @@
 
 /datum/controller/configuration/proc/ShowLobbyNotices(target)
 	if (!config.lobby_notices) return FALSE
-	var/final_notices = "<hr class='solid'>"
+	var/final_notices = ""
+	var/do_final_top_separator = FALSE
 	for (var/notice as anything in config.lobby_notices)
+		var/do_separator = FALSE
 		if (islist(notice))
 			var/list/_notice = notice
-			final_notices = "[final_notices]<br>[_notice["CHATBOX_SAFE"]]"
+			if (_notice["CHATBOX_SAFE"])
+				do_separator = TRUE
+				final_notices = "[final_notices]<br>[_notice["CHATBOX_SAFE"]]"
 		else
 			final_notices = "[final_notices]<br>[notice]"
-		final_notices = "[final_notices]<br><hr class='solid'>"
+			do_separator = TRUE
 
-		to_chat(target, final_notices)
+		if (do_separator)
+			do_final_top_separator = TRUE
+			final_notices = "[final_notices]<hr class='solid'>"
+
+	to_chat(target, "[do_final_top_separator ? "<hr class='solid'>" : ""][final_notices]")
+
 	return TRUE
 // I want to use this but i decided i didnt need to use it
 /*
