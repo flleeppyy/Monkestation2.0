@@ -1,16 +1,47 @@
-/datum/controller/configuration/LoadMOTD()
-	. = ..()
+/datum/controller/configuration
+	var/list/lobby_notices
 
-	var/cur_day = text2num(time2text(world.realtime, "DD", "PT"))
-	var/cur_mon = text2num(time2text(world.realtime, "MM", "PT"))
-	var/cur_year = text2num(time2text(world.realtime, "YYYY", "PT"))
+/datum/controller/configuration/proc/LoadMisc()
+	LoadImportantNotices()
 
-	if (!compare_dates(cur_year, cur_mon, cur_day, 2025, 1, 15))
-		motd = motd + "[motd]<br>" + "<span class='red big'>Monkestation admins are <span class='bold'>NO LONGER</span> accepting appeals for permanent bans until <span class='notice'>January 15th, 2025</span></span><br><hr><span class='yellowteamradio big'>Any permanent ban appeals made before said date will be <span class='bold red'>AUTOMATICALLY DENIED!</span></span><br><span class='big notice'>So don't get caught doing something stupid, ya hear?</span>"
+/datum/controller/configuration/proc/LoadImportantNotices()
+	var/rawnotices = file2text("[directory]/lobby_notices.json")
+	if(rawnotices)
+		var/parsed = safe_json_decode(rawnotices)
+		if(!parsed)
+			log_config("JSON parsing failure for lobby_notices.json")
+			DelayedMessageAdmins("JSON parsing failure for lobby_notices.json")
+		else
+			lobby_notices = parsed
 
+/datum/controller/configuration/proc/ShowLobbyNotices(target)
+	if (!config.lobby_notices) return FALSE
+	var/final_notices = "<hr class='solid'>"
+	for (var/notice as anything in config.lobby_notices)
+		if (islist(notice))
+			var/list/_notice = notice
+			final_notices = "[final_notices]<br>[_notice["CHATBOX_SAFE"]]"
+		else
+			final_notices = "[final_notices]<br>[notice]"
+		final_notices = "[final_notices]<br><hr class='solid'>"
+
+		to_chat(target, final_notices)
+	return TRUE
+// I want to use this but i decided i didnt need to use it
+/*
 /proc/compare_dates(year1, month1, day1, year2, month2, day2)
 		// TRUE if date1 >= date2, FALSE if date1 < date2
     var/comparable_date1 = year1 * 10000 + month1 * 100 + day1
     var/comparable_date2 = year2 * 10000 + month2 * 100 + day2
 
     return comparable_date1 >= comparable_date2
+*/
+
+/*  in some other proc
+	var/cur_day = text2num(time2text(world.realtime, "DD", "PT"))
+	var/cur_mon = text2num(time2text(world.realtime, "MM", "PT"))
+	var/cur_year = text2num(time2text(world.realtime, "YYYY", "PT"))
+
+	if (!compare_dates(cur_year, cur_mon, cur_day, 2025, 1, 15))
+		motd = motd + "[motd]<br>" + ""
+*/
