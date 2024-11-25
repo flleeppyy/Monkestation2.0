@@ -2,9 +2,9 @@
 	var/list/lobby_notices
 
 /datum/controller/configuration/proc/LoadMisc()
-	LoadImportantNotices()
+	load_important_notices()
 
-/datum/controller/configuration/proc/LoadImportantNotices()
+/datum/controller/configuration/proc/load_important_notices()
 	var/rawnotices = file2text("[directory]/lobby_notices.json")
 	if(rawnotices)
 		var/parsed = safe_json_decode(rawnotices)
