@@ -10005,22 +10005,6 @@
 /obj/structure/sign/warning/secure_area,
 /turf/closed/wall/r_wall,
 /area/station/maintenance/aft/greater)
-"cYI" = (
-/obj/structure/table/wood,
-/obj/item/radio/intercom/directional/east,
-/obj/machinery/light/warm/directional/east,
-/obj/effect/turf_decal/siding/thinplating/dark{
-	dir = 4
-	},
-/obj/item/radio/radio_mic{
-	pixel_y = 7
-	},
-/obj/item/device/cassette_tape/friday{
-	pixel_y = -6;
-	pixel_x = -8
-	},
-/turf/open/floor/cult,
-/area/station/service/library)
 "cYN" = (
 /obj/structure/chair/sofa/corp/right{
 	dir = 8;
@@ -27173,25 +27157,6 @@
 /obj/machinery/electroplater,
 /turf/open/floor/wood/large,
 /area/station/service/forge)
-"hPg" = (
-/obj/structure/table/reinforced,
-/obj/item/clothing/suit/hooded/ablative{
-	pixel_y = 7
-	},
-/obj/item/gun/energy/temperature/security{
-	pixel_y = 5
-	},
-/obj/structure/window/reinforced/spawner/directional/south,
-/obj/structure/window/reinforced/spawner/directional/east{
-	layer = 2.9;
-	pixel_x = 4
-	},
-/obj/effect/turf_decal/stripes/line{
-	dir = 8
-	},
-/obj/effect/turf_decal/delivery,
-/turf/open/floor/iron/dark/textured_large,
-/area/station/ai_monitored/security/armory)
 "hPi" = (
 /turf/open/floor/iron/textured_large,
 /area/station/command/cc_dock)
@@ -56344,6 +56309,22 @@
 	dir = 1
 	},
 /area/station/security/checkpoint/science/research)
+"pKs" = (
+/obj/structure/table/wood,
+/obj/item/radio/intercom/directional/east,
+/obj/machinery/light/warm/directional/east,
+/obj/effect/turf_decal/siding/thinplating/dark{
+	dir = 4
+	},
+/obj/item/radio/radio_mic{
+	pixel_y = 7
+	},
+/obj/item/cassette_tape/friday{
+	pixel_y = -6;
+	pixel_x = -8
+	},
+/turf/open/floor/cult,
+/area/station/service/library)
 "pKD" = (
 /obj/structure/extinguisher_cabinet/directional/north,
 /obj/effect/turf_decal/bot,
@@ -72722,6 +72703,25 @@
 	},
 /turf/open/floor/catwalk_floor,
 /area/station/maintenance/solars/starboard/fore)
+"uja" = (
+/obj/structure/table/reinforced,
+/obj/item/clothing/suit/hooded/ablative{
+	pixel_y = 7
+	},
+/obj/item/gun/energy/temperature/security{
+	pixel_y = 5
+	},
+/obj/structure/window/reinforced/spawner/directional/south,
+/obj/structure/window/reinforced/spawner/directional/east{
+	layer = 2.9;
+	pixel_x = 4
+	},
+/obj/effect/turf_decal/stripes/line{
+	dir = 8
+	},
+/obj/effect/turf_decal/delivery,
+/turf/open/floor/iron/dark/textured_large,
+/area/station/ai_monitored/security/armory)
 "ujo" = (
 /obj/structure/table/wood/fancy/orange,
 /obj/item/reagent_containers/pill/patch/libital{
@@ -125088,7 +125088,7 @@ jzQ
 nQl
 fLp
 dWg
-cYI
+pKs
 vZM
 uuO
 rCr
@@ -127103,7 +127103,7 @@ vwn
 ewC
 ybu
 cDc
-hPg
+uja
 pKY
 nRV
 iqx
