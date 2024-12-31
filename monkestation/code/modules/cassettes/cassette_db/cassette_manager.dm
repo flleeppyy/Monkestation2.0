@@ -28,10 +28,12 @@ SUBSYSTEM_DEF(cassettes)
 /// If `db` is TRUE, it will load the cassette from the database.
 /// If `db` is FALSE, the cassette will be loaded from a JSON in the `data/cassette_storage` folder.
 /// If `db` is null (the default), it will load from the database if the `CASSETTES_IN_DB` config option is set, otherwise it will load from the JSON files.
-/datum/controller/subsystem/cassettes/proc/load_cassette(id, db) as /datum/cassette
+/datum/controller/subsystem/cassettes/proc/load_cassette(id, db = null) as /datum/cassette
 	RETURN_TYPE(/datum/cassette)
 	if(!id)
 		return null
+	else if(istype(id, /datum/cassette)) // so i can be lazy
+		return id
 	if(id in cassettes)
 		return cassettes[id]
 	if(isnull(db))
