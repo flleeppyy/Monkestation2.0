@@ -16,10 +16,14 @@ GLOBAL_LIST_EMPTY_TYPED(music_listeners, /mob)
 
 /mob/proc/on_can_hear_music_trait_gain(datum/source)
 	SIGNAL_HANDLER
-	GLOB.music_listeners |= src
+	if(src in GLOB.music_listeners)
+		return
+	GLOB.music_listeners += src
 	SEND_GLOBAL_SIGNAL(COMSIG_GLOB_ADD_MUSIC_LISTENER, src)
 
 /mob/proc/on_can_hear_music_trait_loss(datum/source)
 	SIGNAL_HANDLER
+	if(!(src in GLOB.music_listeners))
+		return
 	GLOB.music_listeners -= src
 	SEND_GLOBAL_SIGNAL(COMSIG_GLOB_REMOVE_MUSIC_LISTENER, src)
