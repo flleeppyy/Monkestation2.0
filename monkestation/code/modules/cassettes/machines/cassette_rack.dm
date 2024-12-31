@@ -68,21 +68,17 @@
 	add_user_tapes(new_crewmember.ckey)
 
 /obj/structure/cassette_rack/prefilled/proc/add_user_tapes(user_ckey, max_amt = 3, expand_max_size = TRUE)
-	var/list/user_cassettes = SScassettes.get_cassettes_by_ckey(user_ckey)
-	if(!length(user_cassettes))
-		return FALSE
 	var/list/existing_cassettes = list()
 	for(var/obj/item/cassette_tape/tape in src)
-		if(tape.id)
-			existing_cassettes[tape.id] = TRUE
-	for(var/iter in 1 to min(max_amt, length(user_cassettes)))
-		var/datum/cassette/cassette = pick_n_take(user_cassettes)
-		if(existing_cassettes[cassette.id])
-			continue
-		new /obj/item/cassette_tape(src, cassette.id)
-	if(expand_max_size && !QDELETED(atom_storage))
-		atom_storage.max_slots += max_amt
-		atom_storage.max_total_storage += max_amt * WEIGHT_CLASS_SMALL
+		if(tape.cassette_data.id)
+			existing_cassettes |= tape.cassette_data.id
+	var/amount_spawned = 0
+	for(var/datum/cassette/cassette as anything in SScassettes.unique_random_cassettes(max_amt, CASSETTE_STATUS_APPROVED, user_ckey, existing_cassettes))
+		new /obj/item/cassette_tape(src, cassette)
+		amount_spawned++
+	if(expand_max_size && !QDELETED(atom_storage) && amount_spawned > 0)
+		atom_storage.max_slots += amount_spawned
+		atom_storage.max_total_storage += amount_spawned * WEIGHT_CLASS_SMALL
 	return TRUE
 
 #undef DEFAULT_BLANKS_TO_SPAWN

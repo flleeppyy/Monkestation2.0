@@ -156,15 +156,29 @@ SUBSYSTEM_DEF(cassettes)
 			ids |= id
 	rustg_file_write(ids, CASSETTE_ID_FILE)
 
-/// Gets all the cassettes authored by the given ckey.
-/datum/controller/subsystem/cassettes/proc/get_cassettes_by_ckey(user_ckey) as /list
+/// Returns all the cassettes that match the given arguments.
+/datum/controller/subsystem/cassettes/proc/filtered_cassettes(status, user_ckey, list/id_blacklist) as /list
 	RETURN_TYPE(/list/datum/cassette)
 	. = list()
-	user_ckey = ckey(user_ckey)
+	if(!isnull(user_ckey))
+		user_ckey = ckey(user_ckey)
 	for(var/id in cassettes)
+		if(!isnull(id_blacklist) && (id in id_blacklist))
+			continue
 		var/datum/cassette/cassette = cassettes[id]
-		if(cassette.author.ckey == user_ckey)
-			. += cassette
+		if(!isnull(user_ckey) && ckey(cassette.author.ckey) != user_ckey)
+			continue
+		if(!isnull(status) && cassette.status != status)
+			continue
+		. += cassette
+
+/// Returns a list containing up to the specified amount of random, unique cassettes that match the given arguments.
+/datum/controller/subsystem/cassettes/proc/unique_random_cassettes(amount = 1, status = CASSETTE_STATUS_APPROVED, user_ckey, list/id_blacklist) as /list
+	RETURN_TYPE(/list/datum/cassette)
+	. = list()
+	var/list/cassettes = filtered_cassettes(status, user_ckey, id_blacklist)
+	for(var/i in min(amount, length(cassettes)))
+		. += pick_n_take(cassettes)
 
 /datum/controller/subsystem/cassettes/proc/migrate_json_cassettes_to_db()
 	if(!SSdbcore.Connect())

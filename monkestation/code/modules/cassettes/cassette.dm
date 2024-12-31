@@ -9,13 +9,20 @@
 	var/flipped = FALSE
 	/// The data for this cassette.
 	var/datum/cassette/cassette_data
-	///are we random?
+	/// Should we just spawn a random cassette?
 	var/random = FALSE
+	/// ID of the cassette to spawn in as by default.
+	var/id
 
 /obj/item/cassette_tape/Initialize(mapload, spawned_id)
 	. = ..()
+	spawned_id ||= id
 	if(!isnull(spawned_id))
 		cassette_data = SScassettes.load_cassette(spawned_id)
+	else if(random)
+		var/list/random_cassette = SScassettes.unique_random_cassettes(amount = 1, status = CASSETTE_STATUS_APPROVED)
+		if(length(random_cassette))
+			cassette_data = random_cassette[1]
 	cassette_data ||= new
 	update_appearance(UPDATE_DESC | UPDATE_ICON_STATE)
 
