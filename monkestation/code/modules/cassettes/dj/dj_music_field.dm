@@ -26,7 +26,7 @@
 		remove_mob(inner_mob)
 
 /datum/proximity_monitor/advanced/dj_music/proc/add_mob(mob/living/target)
-	if(!isliving(target) || QDELING(target) || (target in listeners))
+	if(QDELING(src) || !isliving(target) || QDELING(target) || (target in listeners))
 		return
 	LAZYADD(listeners, target)
 	ADD_TRAIT(target, TRAIT_CAN_HEAR_MUSIC, REF(src))
