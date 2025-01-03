@@ -1,3 +1,4 @@
+#warn TODO: advanced cassette deck
 /obj/machinery/cassette/adv_cassette_deck
 	name = "Advanced Cassette Deck"
 	desc = "A more advanced less portable Cassette Deck. Useful for recording songs from our generation, or customizing the style of your cassettes."
@@ -57,6 +58,7 @@
 		ui = new(user, src, "CassetteDeck", name)
 		ui.open()
 
+/*
 /obj/machinery/cassette/adv_cassette_deck/ui_data(mob/user)
 	///all data for the tgui
 	var/list/data = list()
@@ -193,3 +195,4 @@
 			else
 				tape.icon_state = design_path[design_names.Find(selection)]
 				tape.side2_icon = design_path[design_names.Find(selection)]
+*/

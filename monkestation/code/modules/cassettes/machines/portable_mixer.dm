@@ -1,3 +1,4 @@
+#warn TODO: cassette mixer
 /obj/item/device/cassette_deck
 	name = "Dual Cassette Deck"
 	desc = "A Dual Cassette Deck, popular for its ability to copy songs from a cassette. A relic of the old times"
@@ -23,7 +24,7 @@
 
 /obj/item/device/cassette_deck/AltClick(mob/user)
 	if(recieve || send)
-		eject_tape(user)
+		//eject_tape(user)
 		return
 	return ..()
 
@@ -35,12 +36,13 @@
 	if(!istype(cassette, /obj/item/cassette_tape))
 		return
 	if(!send || !recieve)
-		insert_tape(cassette)
+		//insert_tape(cassette)
 		playsound(src,'sound/weapons/handcuffs.ogg',20,1)
 		to_chat(user,("You insert \the [cassette] into \the [src]"))
 	else
 		to_chat(user,("Remove a tape first!"))
 
+/*
 /obj/item/device/cassette_deck/attack_self(mob/user)
 	. = ..()
 	if(!recieve)
@@ -113,3 +115,4 @@
 		send = null
 		broke_approval = FALSE
 		playsound(src,'sound/weapons/handcuffs.ogg',20,1)
+*/

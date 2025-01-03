@@ -1,3 +1,4 @@
+#warn TODO: walkmen
 GLOBAL_LIST_INIT(parsed_audio, list())
 
 GLOBAL_LIST_INIT(youtube_exempt, list(
@@ -43,6 +44,7 @@ GLOBAL_LIST_INIT(youtube_exempt, list(
 	///cooldown used by the next song to stop overlapping sounds between url based songs and normal ones
 	COOLDOWN_DECLARE(next_song_use)
 
+/*
 /obj/item/device/walkman/Initialize()
 	. = ..()
 	design = rand(1, 5)
@@ -359,6 +361,7 @@ GLOBAL_LIST_INIT(youtube_exempt, list(
 		return
 
 	update_song(current_song, current_listener, 0)
+*/
 
 /*
 	ACTION BUTTONS
@@ -390,10 +393,12 @@ GLOBAL_LIST_INIT(youtube_exempt, list(
 	..()
 	name = "Next song"
 
+/*
 /datum/action/item_action/walkman/next_song/Trigger(trigger_flags)
 	if(target)
 		var/obj/item/device/walkman/walkM = target
 		walkM.next_song(owner)
+*/
 
 /datum/action/item_action/walkman/restart_song
 	button_icon_state = "walkman_restart"
@@ -402,10 +407,13 @@ GLOBAL_LIST_INIT(youtube_exempt, list(
 	..()
 	name = "Restart song"
 
+/*
 /datum/action/item_action/walkman/restart_song/Trigger(trigger_flags)
 	if(target)
 		var/obj/item/device/walkman/walkM = target
 		walkM.restart_song(owner)
+
+*/
 
 #undef sound_to
 #undef NEXT_SONG_USE_TIMER

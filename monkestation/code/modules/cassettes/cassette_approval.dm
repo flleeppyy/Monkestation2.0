@@ -1,3 +1,5 @@
+#warn TODO: cassette reviewing/approvals
+/*
 GLOBAL_LIST_INIT(cassette_reviews, list())
 
 #define ADMIN_OPEN_REVIEW(id) "(<A href='?_src_=holder;[HrefToken(forceGlobal = TRUE)];open_music_review=[id]'>Open Review</a>)"
@@ -203,3 +205,4 @@ GLOBAL_LIST_INIT(cassette_reviews, list())
 	var/datum/cassette_review/cassette = GLOB.cassette_reviews[action]
 	cassette.ui_interact(ui.user)
 
+*/
