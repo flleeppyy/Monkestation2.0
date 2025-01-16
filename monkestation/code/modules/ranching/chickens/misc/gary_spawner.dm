@@ -19,6 +19,7 @@ GLOBAL_LIST(possible_gary_hideouts)
 	return INITIALIZE_HINT_QDEL
 
 /proc/spawn_gary()
+	return // Disabling gary because he's bugged and stealing shit from borgs.
 	if(!LAZYLEN(GLOB.possible_gary_hideouts))
 		log_game("No valid Gary hideout spawners available, not spawning Gary.")
 		return
