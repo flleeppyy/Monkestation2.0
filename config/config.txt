@@ -5,7 +5,6 @@ $include dbconfig.txt
 $include comms.txt
 $include logging.txt
 $include resources.txt
-$include interviews.txt
 $include lua.txt
 $include auxtools.txt
 
@@ -298,10 +297,6 @@ NOTIFY_NEW_PLAYER_ACCOUNT_AGE 1
 ##	Requires database
 #PANIC_BUNKER
 
-## Uncomment to enable the interview system for players who are below the living hour requirement instead of explicitly blocking them from the server
-## Note this requires the PANIC_BUNKER to be enabled to do anything.
-#PANIC_BUNKER_INTERVIEW
-
 ## If a player connects during a bunker with less then or this amount of living time (Minutes), we deny the connection
 #PANIC_BUNKER_LIVING 90
 
@@ -516,6 +511,7 @@ URGENT_AHELP_COOLDOWN 300
 
 ## The name of the webhook
 #ADMINHELP_WEBHOOK_NAME
+
 
 ## Sets an MOTD of the server.
 ## You can use this multiple times, and the MOTDs will be appended in order.
