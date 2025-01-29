@@ -57,7 +57,7 @@
 		qdel(query_client_in_db)
 
 	//Whitelist
-	if(!real_bans_only && !C && CONFIG_GET(flag/usewhitelist))
+	if(!real_bans_only && CONFIG_GET(flag/usewhitelist))
 		if(!check_whitelist(ckey))
 			if (admin || mentor)
 				log_admin("The admin/mentor [ckey] has been allowed to bypass the whitelist")
@@ -69,7 +69,7 @@
 				return list("reason"="whitelist", "desc" = "\nReason: You are not on the white list for this server")
 
 	//Guest Checking
-	if(!real_bans_only && !C && is_guest_key(key))
+	if(!real_bans_only && is_guest_key(key))
 		if (CONFIG_GET(flag/guest_ban))
 			log_access("Failed Login: [ckey] - Guests not allowed")
 			return list("reason"="guest", "desc"="\nReason: Guests not allowed. Please sign in with a byond account.")
@@ -79,7 +79,7 @@
 
 	//Population Cap Checking
 	var/extreme_popcap = CONFIG_GET(number/extreme_popcap)
-	if(!real_bans_only && !C && extreme_popcap)
+	if(!real_bans_only && extreme_popcap)
 		var/popcap_value = GLOB.clients.len
 		if(popcap_value >= extreme_popcap && !GLOB.joined_player_list.Find(ckey))
 			if(!(CONFIG_GET(flag/byond_member_bypass_popcap) && world.IsSubscribed(ckey, "BYOND")) && !(admin || mentor || C.player_details.patreon.access_rank > 0))
