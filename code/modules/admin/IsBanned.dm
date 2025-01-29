@@ -87,9 +87,13 @@
 		var/popcap_value = GLOB.clients.len
 		if(popcap_value >= extreme_popcap && !GLOB.joined_player_list.Find(ckey))
 			if (admin || mentor || supporter)
-				log_access("Popcap Login: [ckey] - Is a(n) [admin ? "admin" : mentor ? "mentor" : supporter ? "patreon supporter" : "???"], therefore allowed passed the popcap of [extreme_popcap] - [popcap_value] clients connected")
+				var/msg = "Popcap Login: [ckey] - Is a(n) [admin ? "admin" : mentor ? "mentor" : supporter ? "patreon supporter" : "???"], therefore allowed passed the popcap of [extreme_popcap] - [popcap_value] clients connected"
+				log_access(msg)
+				message_admins(msg)
 			if(!CONFIG_GET(flag/byond_member_bypass_popcap) || !world.IsSubscribed(ckey, "BYOND"))
-				log_access("Failed Login: [ckey] - Population cap reached")
+				var/msg = "Failed Login: [ckey] - Population cap reached"
+				log_access(msg)
+				message_admins(msg)
 				return list("reason"="popcap", "desc"= "\nReason: [CONFIG_GET(string/extreme_popcap_message)]")
 
 	if(CONFIG_GET(flag/sql_enabled))
