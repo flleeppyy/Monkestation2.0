@@ -18,6 +18,7 @@
 		return ..() //shunt world topic banchecks to purely to byond's internal ban system
 
 	var/admin = FALSE
+	var/mentor = FALSE
 	var/ckey = ckey(key)
 
 	var/client/C = GLOB.directory[ckey]
@@ -29,8 +30,11 @@
 	//magic voodo to check for a key in a list while also adding that key to the list without having to do two associated lookups
 	var/message = !checkedckeys[ckey]++
 
-	if(GLOB.admin_datums[ckey] || GLOB.deadmins[ckey])
+	if (is_admin(C))
 		admin = TRUE
+
+	if (C.is_mentor())
+		mentor = TRUE
 
 	if(!real_bans_only && !admin && CONFIG_GET(flag/panic_bunker) && !CONFIG_GET(flag/panic_bunker_interview))
 		var/datum/db_query/query_client_in_db = SSdbcore.NewQuery(
@@ -55,10 +59,10 @@
 	//Whitelist
 	if(!real_bans_only && !C && CONFIG_GET(flag/usewhitelist))
 		if(!check_whitelist(ckey))
-			if (admin)
-				log_admin("The admin [ckey] has been allowed to bypass the whitelist")
+			if (admin || mentor)
+				log_admin("The admin/mentor [ckey] has been allowed to bypass the whitelist")
 				if (message)
-					message_admins(span_adminnotice("The admin [ckey] has been allowed to bypass the whitelist"))
+					message_admins(span_adminnotice("The admin/mentor [ckey] has been allowed to bypass the whitelist"))
 					addclientmessage(ckey,span_adminnotice("You have been allowed to bypass the whitelist"))
 			else
 				log_access("Failed Login: [ckey] - Not on whitelist")
@@ -75,7 +79,7 @@
 
 	//Population Cap Checking
 	var/extreme_popcap = CONFIG_GET(number/extreme_popcap)
-	if(!real_bans_only && !C && extreme_popcap && !admin)
+	if(!real_bans_only && !C && extreme_popcap && !admin && !mentor && !(C.player_details.patreon.access_rank > 0))
 		var/popcap_value = GLOB.clients.len
 		if(popcap_value >= extreme_popcap && !GLOB.joined_player_list.Find(ckey))
 			if(!CONFIG_GET(flag/byond_member_bypass_popcap) || !world.IsSubscribed(ckey, "BYOND"))
