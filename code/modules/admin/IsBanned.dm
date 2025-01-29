@@ -19,6 +19,7 @@
 
 	var/admin = FALSE
 	var/mentor = FALSE
+	var/supporter = FALSE
 	var/ckey = ckey(key)
 
 	var/client/C = GLOB.directory[ckey]
@@ -30,11 +31,14 @@
 	//magic voodo to check for a key in a list while also adding that key to the list without having to do two associated lookups
 	var/message = !checkedckeys[ckey]++
 
-	if (is_admin(C))
+	if (GLOB.admin_datums[ckey] || GLOB.deadmins[ckey] || (ckey in GLOB.protected_admins))
 		admin = TRUE
 
-	if (C.is_mentor())
+	if (raw_is_mentor(ckey))
 		mentor = TRUE
+
+	if (raw_get_patreon_rank(ckey) > 0)
+		supporter = TRUE
 
 	if(!real_bans_only && !admin && CONFIG_GET(flag/panic_bunker) && !CONFIG_GET(flag/panic_bunker_interview))
 		var/datum/db_query/query_client_in_db = SSdbcore.NewQuery(
@@ -79,9 +83,11 @@
 
 	//Population Cap Checking
 	var/extreme_popcap = CONFIG_GET(number/extreme_popcap)
-	if(!real_bans_only && !C && extreme_popcap && !admin && !mentor && !(C.player_details.patreon.access_rank > 0))
+	if(!real_bans_only && !C && extreme_popcap)
 		var/popcap_value = GLOB.clients.len
 		if(popcap_value >= extreme_popcap && !GLOB.joined_player_list.Find(ckey))
+			if (admin || mentor || supporter)
+				log_access("Popcap Login: [ckey] - Is a(n) [admin ? "admin" : mentor ? "mentor" : supporter ? "patreon supporter" : "???"], therefore allowed passed the popcap of [extreme_popcap] - [popcap_value] clients connected")
 			if(!CONFIG_GET(flag/byond_member_bypass_popcap) || !world.IsSubscribed(ckey, "BYOND"))
 				log_access("Failed Login: [ckey] - Population cap reached")
 				return list("reason"="popcap", "desc"= "\nReason: [CONFIG_GET(string/extreme_popcap_message)]")

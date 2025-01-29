@@ -226,7 +226,7 @@
 	var/mob/dead/new_player/new_player = hud.mymob
 
 	//Allow admins and Patreon supporters to bypass the cap/queue
-	if ((relevant_cap && living_player_count() >= relevant_cap) && (new_player.client.player_details.patreon.access_rank > 0 || is_admin(new_player.client) || new_player.client?.is_mentor()))
+	if ((relevant_cap && living_player_count() >= relevant_cap) && (new_player.client.player_details.patreon.is_donator() || is_admin(new_player.client) || new_player.client?.is_mentor()))
 		to_chat(new_player, span_notice("The server is currently overcap, but you are a(n) patreon/mentor/admin!"))
 	else if (SSticker.queued_players.len || (relevant_cap && living_player_count() >= relevant_cap))
 		to_chat(new_player, span_danger("[CONFIG_GET(string/hard_popcap_message)]"))

@@ -53,3 +53,9 @@
 
 /datum/patreon_data/proc/is_donator()
 	return owned_rank && owned_rank != NO_RANK && owned_rank != UNSUBBED
+
+/proc/raw_get_patreon_rank(ckey)
+	var/datum/player_details/playerdetails = new(ckey)
+	var/datum/patreon_data/patreonthing = new(playerdetails)
+
+	return patreonthing.access_rank

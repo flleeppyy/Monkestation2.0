@@ -462,7 +462,7 @@ SUBSYSTEM_DEF(job)
 
 		// Loop through all unassigned players
 		for(var/mob/dead/new_player/player in unassigned)
-			if((player.client.player_details.patreon.access_rank == 0 && !is_admin(player.client) && !player.client.is_mentor()) && PopcapReached())
+			if(!(player.client.player_details.patreon.is_donator() || is_admin(player.client) || player.client.is_mentor()) && PopcapReached())
 				RejectPlayer(player)
 
 			// Loop through all jobs
