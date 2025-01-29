@@ -57,7 +57,7 @@
 		qdel(query_client_in_db)
 
 	//Whitelist
-	if(!real_bans_only && CONFIG_GET(flag/usewhitelist))
+	if(!real_bans_only && !C && CONFIG_GET(flag/usewhitelist))
 		if(!check_whitelist(ckey))
 			if (admin || mentor)
 				log_admin("The admin/mentor [ckey] has been allowed to bypass the whitelist")
@@ -66,10 +66,10 @@
 					addclientmessage(ckey,span_adminnotice("You have been allowed to bypass the whitelist"))
 			else
 				log_access("Failed Login: [ckey] - Not on whitelist")
-				return list("reason"="whitelist", "desc" = "\nReason: You are not on the whitelist for this server")
+				return list("reason"="whitelist", "desc" = "\nReason: You are not on the white list for this server")
 
 	//Guest Checking
-	if(!real_bans_only && is_guest_key(key))
+	if(!real_bans_only && !C && is_guest_key(key))
 		if (CONFIG_GET(flag/guest_ban))
 			log_access("Failed Login: [ckey] - Guests not allowed")
 			return list("reason"="guest", "desc"="\nReason: Guests not allowed. Please sign in with a byond account.")
@@ -79,13 +79,10 @@
 
 	//Population Cap Checking
 	var/extreme_popcap = CONFIG_GET(number/extreme_popcap)
-	if(!real_bans_only && extreme_popcap)
-		log_access("FUCK1")
+	if(!real_bans_only && !C && extreme_popcap && !admin && !mentor && !(C.player_details.patreon.access_rank > 0))
 		var/popcap_value = GLOB.clients.len
 		if(popcap_value >= extreme_popcap && !GLOB.joined_player_list.Find(ckey))
-			log_access("FUCK2, [!(CONFIG_GET(flag/byond_member_bypass_popcap) && world.IsSubscribed(ckey, "BYOND"))] [!(admin || mentor || C.player_details.patreon.access_rank > 0)]")
-			if(!(CONFIG_GET(flag/byond_member_bypass_popcap) && world.IsSubscribed(ckey, "BYOND")) && !(admin || mentor || C.player_details.patreon.access_rank > 0))
-				log_access("FUCK3")
+			if(!CONFIG_GET(flag/byond_member_bypass_popcap) || !world.IsSubscribed(ckey, "BYOND"))
 				log_access("Failed Login: [ckey] - Population cap reached")
 				return list("reason"="popcap", "desc"= "\nReason: [CONFIG_GET(string/extreme_popcap_message)]")
 
