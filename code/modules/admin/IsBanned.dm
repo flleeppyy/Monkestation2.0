@@ -37,7 +37,7 @@
 	if (raw_is_mentor(ckey))
 		mentor = TRUE
 
-	if (raw_get_patreon_rank(ckey) > 0)
+	if (get_patreon_rank(ckey) > 0)
 		supporter = TRUE
 
 	if(!real_bans_only && !admin && CONFIG_GET(flag/panic_bunker) && !CONFIG_GET(flag/panic_bunker_interview))
