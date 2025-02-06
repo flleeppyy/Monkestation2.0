@@ -5,6 +5,7 @@
 	icon = 'monkestation/code/modules/cassettes/icons/walkman.dmi'
 	icon_state = "cassette_flip"
 	w_class = WEIGHT_CLASS_SMALL
+	item_flags = NOBLUDGEON
 	/// If the cassette is flipped, for playing second list of songs.
 	var/flipped = FALSE
 	/// The data for this cassette.
