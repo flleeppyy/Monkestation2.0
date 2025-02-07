@@ -53,12 +53,12 @@
 	if(QDELETED(client)) // client disconnected during overwatch check
 		return FALSE
 
-	if(QDELETED(client)) // client disconnected during- yeah you get the point
-		return FALSE
-
 	if(SSticker.current_state < GAME_STATE_SETTING_UP)
 		var/tl = SSticker.GetTimeLeft()
 		to_chat(src, "Please set up your character and select \"Ready\". The game will start [tl > 0 ? "in about [DisplayTimeText(tl)]" : "soon"].")
+
+	if(QDELETED(client)) // client disconnected during- yeah you get the point
+		return FALSE
 
 	if(client.not_discord_verified)
 		register_for_verification()

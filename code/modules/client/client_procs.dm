@@ -548,23 +548,24 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	if(!tooltips)
 		tooltips = new /datum/tooltip(src)
 
-	var/do_i_run_over_this_liberal_or_do_i_drive_around_them = FALSE
+	var/polling_tripped = FALSE
 	if (SSplexora.enabled)
 		var/list/plexora_poll_result = SSplexora.poll_ckey_for_verification(ckey)
 		switch(plexora_poll_result["polling_response"])
 			if (PLEXORA_CKEYPOLL_FAILED)
 				// It'll be fine... TODO: add counter for this ckey's failure, then just kick them? maybe.
+				stack_trace("Ckey polling failed for [ckey]. [json_encode(plexora_poll_result)]")
 				qdel(src)
 			if (PLEXORA_CKEYPOLL_NOTLINKED)
-				do_i_run_over_this_liberal_or_do_i_drive_around_them = TRUE
+				polling_tripped = TRUE
 			if (PLEXORA_CKEYPOLL_RECORDNOTVALID)
-				do_i_run_over_this_liberal_or_do_i_drive_around_them = TRUE
+				polling_tripped = TRUE
 			if (PLEXORA_CKEYPOLL_LINKED_ABSENT)
-				do_i_run_over_this_liberal_or_do_i_drive_around_them = TRUE
+				polling_tripped = TRUE
 			if (PLEXORA_CKEYPOLL_LINKED_DELETED)
-				do_i_run_over_this_liberal_or_do_i_drive_around_them = TRUE
+				polling_tripped = TRUE
 			if (PLEXORA_CKEYPOLL_LINKED_BANNED)
-				do_i_run_over_this_liberal_or_do_i_drive_around_them = TRUE
+				polling_tripped = TRUE
 				message_admins(span_warning("<B>PLEXORA: </B>[key_name_admin(src)] is banned from the Discord! Kicking client. Discord ID: [plexora_poll_result["discord_id"]] Discord Username: [plexora_poll_result["discord_username"]] "))
 				log_admin_private(span_warning("<B>PLEXORA: </B>[key_name_admin(src)] is banned from the Discord! Kicking client. Discord ID: [plexora_poll_result["discord_id"]] Discord Username: [plexora_poll_result["discord_username"]] "))
 				kick_client(src, "You are banned from the Discord.", TRUE)
@@ -583,7 +584,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 	fully_created = TRUE
 
-	if (do_i_run_over_this_liberal_or_do_i_drive_around_them)
+	if (polling_tripped)
 		not_discord_verified = TRUE
 		register_for_verification()
 	else
