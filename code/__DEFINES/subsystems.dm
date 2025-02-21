@@ -164,6 +164,7 @@
 #define INIT_ORDER_OUTPUTS 35
 #define INIT_ORDER_RESTAURANT 34
 #define INIT_ORDER_POLLUTION 32
+#define INIT_ORDER_FLUIDS 32 // Needs to be above atoms, as some atoms may want to start fluids/gases on init
 #define INIT_ORDER_CASSETTES 31 // monkestation addition: cassettes initialize before atoms, so that cassette stuff can be used in Initialize()
 #define INIT_ORDER_ATOMS 30
 #define INIT_ORDER_ARMAMENTS 27
@@ -211,7 +212,6 @@
 #define FIRE_PRIORITY_GARBAGE 15
 #define FIRE_PRIORITY_DATABASE 16
 #define FIRE_PRIORITY_WET_FLOORS 20
-#define FIRE_PRIORITY_FLUIDS 20
 #define FIRE_PRIORITY_AIR 20
 #define FIRE_PRIORITY_NPC 20
 #define FIRE_PRIORITY_HYPERSPACE_DRIFT 20
@@ -234,6 +234,7 @@
 #define FIRE_PRIORITY_PLEXORA 60 // monkestation addition: plexora
 #define FIRE_PRIORITY_PARALLAX 65
 #define FIRE_PRIORITY_INSTRUMENTS 80
+#define FIRE_PRIORITY_FLUIDS 80
 #define FIRE_PRIORITY_STAMINA 95
 #define FIRE_PRIORITY_MOBS 100
 #define FIRE_PRIORITY_ASSETS 105

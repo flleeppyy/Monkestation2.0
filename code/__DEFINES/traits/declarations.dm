@@ -257,7 +257,7 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 /// These mobs have particularly hygienic tongues
 /* #define TRAIT_WOUND_LICKER "wound_licker" */
 /// Mobs with this trait are allowed to use silicon emotes
-/* #define TRAIT_SILICON_EMOTES_ALLOWED "silicon_emotes_allowed" */
+#define TRAIT_SILICON_EMOTES_ALLOWED "silicon_emotes_allowed"
 
 /// This trait designate that the mob was originally a monkey
 /* #define TRAIT_BORN_MONKEY "born_as_a_monkey" */
@@ -819,6 +819,12 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 #define TRAIT_HAUNTED "haunted"
 /// An item that, if it has contents, will ignore its contents when scanning for contraband.
 /* #define TRAIT_CONTRABAND_BLOCKER "contraband_blocker" */
+/// For edible items that cannot be composted inside hydro trays
+/* #define TRAIT_UNCOMPOSTABLE "uncompostable" */
+/// Items with this trait will not have their worn icon overlayed.
+#define TRAIT_NO_WORN_ICON "no_worn_icon"
+/// Items with this trait will not appear when examined.
+#define TRAIT_EXAMINE_SKIP "examine_skip"
 
 //quirk traits
 #define TRAIT_ALCOHOL_TOLERANCE "alcohol_tolerance"
