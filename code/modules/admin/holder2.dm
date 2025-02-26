@@ -75,7 +75,6 @@ GLOBAL_PROTECT(href_token)
 		activate()
 	else
 		deactivate()
-	plane_debug = new(src)
 
 /datum/admins/Destroy()
 	if(IsAdminAdvancedProcCall())
@@ -96,7 +95,7 @@ GLOBAL_PROTECT(href_token)
 	deadmined = FALSE
 	if(owner)
 		rementor(owner)
-	QDEL_NULL(plane_debug)
+	plane_debug = new(src)
 	if (GLOB.directory[target])
 		associate(GLOB.directory[target]) //find the client for a ckey if they are connected and associate them with us
 
@@ -109,6 +108,7 @@ GLOBAL_PROTECT(href_token)
 		return
 	GLOB.deadmins[target] = src
 	GLOB.admin_datums -= target
+	QDEL_NULL(plane_debug)
 
 	if(owner)
 		// basically if they're a mentor in the mentors file, we can let them keep their mentor status
@@ -169,6 +169,7 @@ GLOBAL_PROTECT(href_token)
 		owner.mentor_datum_set()
 
 	try_give_profiling()
+	try_give_devtools()
 
 /datum/admins/proc/disassociate()
 	if(IsAdminAdvancedProcCall())
@@ -404,6 +405,11 @@ GLOBAL_PROTECT(href_token)
 		combined_flags |= rank.can_edit_rights
 
 	return combined_flags
+
+/datum/admins/proc/try_give_devtools()
+	if(!(rank_flags() & R_DEBUG) || owner.byond_version < 516)
+		return
+	winset(owner, null, "browser-options=byondstorage,find,refresh,devtools")
 
 /datum/admins/proc/try_give_profiling()
 	if (CONFIG_GET(flag/forbid_admin_profiling))
