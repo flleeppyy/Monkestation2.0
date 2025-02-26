@@ -29,6 +29,7 @@ SUBSYSTEM_DEF(plexora)
 	init_order = INIT_ORDER_PLEXORA
 	priority = FIRE_PRIORITY_PLEXORA
 	runlevels = ALL
+	COOLDOWN_DECLARE(plexora_scream)
 
 #ifdef UNIT_TESTS
 	flags = SS_NO_INIT | SS_NO_FIRE
@@ -115,6 +116,7 @@ SUBSYSTEM_DEF(plexora)
 	var/datum/http_response/response = request.into_response()
 	if (response.errored)
 		plexora_is_alive = FALSE
+		scream_at_admins("PLEXORA IS DOWN!", "I REPEAT, PLEXORA IS DOWN, SHE MUST BE RESTARTED ON THE SERVER! <@710227752963407935> <@710227752963407935> <@710227752963407935> <@710227752963407935> <@710227752963407935> <@710227752963407935><@710227752963407935>")
 		log_admin("Failed to check if Plexora is alive! She probably isn't. Check config on both sides")
 		CRASH("Failed to check if Plexora is alive! She probably isn't. Check config on both sides")
 	else
@@ -126,6 +128,24 @@ SUBSYSTEM_DEF(plexora)
 
 		plexora_is_alive = TRUE
 		return TRUE
+
+/datum/controller/subsystem/plexora/proc/scream_at_admins(what, why)
+	var/webhook_url = CONFIG_GET(string/extremely_urgent_webhook_url)
+	if (COOLDOWN_FINISHED(src, plexora_scream) && webhook_url)
+		http_request(
+			RUSTG_HTTP_METHOD_POST,
+			webhook_url,
+			json_encode( \
+				list(
+					"content" = "EXTREMELY URGENT!!",
+					"embeds" = list(list(
+						"title" = what,
+						"description" = why,
+					))
+				) \
+			),
+		).begin_async()
+		COOLDOWN_START(src, plexora_scream, 1 MINUTE + 30 SECONDS)
 
 /datum/controller/subsystem/plexora/fire()
 	/*if((cur_day == "Sat") && (cur_hour >= 12 && cur_hour <= 18))
@@ -369,7 +389,7 @@ SUBSYSTEM_DEF(plexora)
 /datum/controller/subsystem/plexora/proc/poll_ckey_for_verification(ckey)
 	var/datum/http_request/request = new(
 		RUSTG_HTTP_METHOD_POST,
-		"http://[http_root]:[http_port]/lookupckey",
+		"[base_url]/lookupckey",
 		json_encode(list(
 			"ckey" = ckey
 		)),

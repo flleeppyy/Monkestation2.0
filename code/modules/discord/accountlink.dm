@@ -16,13 +16,12 @@
 	// Simple sanity check to prevent a user doing this too often
 	var/cached_one_time_token = SSplexora.reverify_cache[ckey]
 	if(cached_one_time_token && cached_one_time_token != "")
-		message = "You already generated your one time token, it is [cached_one_time_token], if you need a new one, you will have to wait until the round ends, or switch to another server, try verifying yourself in discord by using the command <span class='warning'>\" /verifydiscord token:[cached_one_time_token] \"</span><br>If that doesn't work, type in /verifydiscord to show the command, then copy and paste the token." // monkestation edit: PLEXORA
-
+		message = "[span_big(span_red("DO NOT SHARE THIS TOKEN!!!"))]<br>You already generated your one time token, it is [cached_one_time_token], if you need a new one, you will have to wait until the round ends. try verifying yourself in discord by using the command /verifydiscord" // monkestation edit: PLEXORA
 	else
 		// Will generate one if an expired one doesn't exist already, otherwise will grab existing token
 		var/one_time_token = SSplexora.get_or_generate_one_time_token_for_ckey(ckey)
 		SSplexora.reverify_cache[ckey] = one_time_token
-		message = "Your one time token is: [one_time_token], you can now verify yourself in discord by using the command <span class='warning'>\" /verifydiscord token:[one_time_token] \"</span><br>If that doesn't work, type in /verifydiscord to show the command, then copy and paste the token." // monkestation edit: PLEXORA
+		message = "[span_big(span_red("DO NOT SHARE THIS TOKEN!!!"))]<br>Your one time token is: [one_time_token], you can now verify yourself in discord by using the command /verifydiscord in the discord server." // monkestation edit: PLEXORA
 
 	//Now give them a browse window so they can't miss whatever we told them
 	var/datum/browser/window = new/datum/browser(src, "discordverification", "Discord verification")

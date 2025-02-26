@@ -67,7 +67,7 @@
 		ready = PLAYER_NOT_READY
 		return FALSE
 
-	if(interview_safety(src, "attempting to observe"))
+	if(verification_safety(src, "attempting to observe"))
 		qdel(client)
 		return FALSE
 
@@ -147,7 +147,7 @@
 	return JOB_AVAILABLE
 
 /mob/dead/new_player/proc/AttemptLateSpawn(rank)
-	if(interview_safety(src, "attempting to latejoin"))
+	if(verification_safety(src, "attempting to latejoin"))
 		qdel(client)
 		return FALSE
 
@@ -367,7 +367,7 @@
  * This proc will both prepare the user by removing all verbs from them, as well as
  * giving them the verification form and forcing it to appear.
  */
-/mob/dead/new_player/proc/register_for_verification()
+/mob/dead/new_player/proc/register_for_verification(show_form = TRUE)
 	// First we detain them by removing all the verbs they have on client
 	for (var/v in client.verbs)
 		var/procpath/verb_path = v
@@ -379,13 +379,14 @@
 		remove_verb(src, verb_path)
 
 	// Then we show them the discord verification form.
-	client.verify_in_discord()
+	if (show_form)
+		client.verify_in_discord()
 
 	// Add verb for re-opening the discord verirication panel, fixing chat and re-init the verbs for the stat panel
 	add_verb(client, /client/verb/fix_tgui_panel)
 	add_verb(client, /client/verb/verify_in_discord)
 
-/client/proc/register_for_verification()
+/client/proc/register_for_verification(show_form = TRUE)
 	// First we detain them by removing all the verbs they have on client
 	for (var/v in verbs)
 		var/procpath/verb_path = v
@@ -397,7 +398,8 @@
 		remove_verb(mob, verb_path)
 
 	// Then we show them the discord verification form.
-	src.verify_in_discord()
+	if (show_form)
+		src.verify_in_discord()
 
 	// Add verb for re-opening the discord verirication panel, fixing chat and re-init the verbs for the stat panel
 	add_verb(src, /client/verb/fix_tgui_panel)

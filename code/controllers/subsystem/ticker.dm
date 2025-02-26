@@ -413,7 +413,7 @@ SUBSYSTEM_DEF(ticker)
 
 /datum/controller/subsystem/ticker/proc/create_character(mob/dead/new_player/player)
 	if(player.ready == PLAYER_READY_TO_PLAY && player.mind)
-		if(interview_safety(player, "readied up"))
+		if(verification_safety(player, "readied up"))
 			player.ready = PLAYER_NOT_READY
 			QDEL_IN(player.client, 0)
 			return

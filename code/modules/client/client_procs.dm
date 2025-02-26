@@ -552,25 +552,36 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		tooltips = new /datum/tooltip(src)
 
 	var/polling_tripped = FALSE
+	var/show_form = TRUE
 	if (SSplexora.enabled)
 		var/list/plexora_poll_result = SSplexora.poll_ckey_for_verification(ckey)
 		switch(plexora_poll_result["polling_response"])
+			if (PLEXORA_DOWN)
+				message_admins("PLEXORA IS DOWN! PLEASE PING @FLLEEPPYY ON DISCORD! Players will freely flow in without verification if Plexora is down.")
+				// Just let people through.
 			if (PLEXORA_CKEYPOLL_FAILED)
+				polling_tripped = TRUE
 				// It'll be fine... TODO: add counter for this ckey's failure, then just kick them? maybe.
 				stack_trace("Ckey polling failed for [ckey]. [json_encode(plexora_poll_result)]")
+				message_admins("Ckey polling failed for [key_name_admin(ckey)]. Kicking them from the server. Check runtimes")
+				var/log = "Ckey polling failed for [ckey]. Kicking them from the server. Check runtimes"
+				log_admin_private(log)
+				log_access(log)
 				qdel(src)
-			if (PLEXORA_CKEYPOLL_NOTLINKED)
+			if (PLEXORA_CKEYPOLL_NOTLINKED, PLEXORA_CKEYPOLL_RECORDNOTVALID)
 				polling_tripped = TRUE
-			if (PLEXORA_CKEYPOLL_RECORDNOTVALID)
+				to_chat_immediate(src, span_red(span_big(span_notice("Welcome to Monkestation! Your client is [span_bold("NOT verified")]! Please go to the OOC tab and click 'Verify Discord Account' to begin the verification process."))))
+			if (PLEXORA_CKEYPOLL_LINKED_ABSENT, PLEXORA_CKEYPOLL_LINKED_DELETED)
+				show_form = FALSE
 				polling_tripped = TRUE
-			if (PLEXORA_CKEYPOLL_LINKED_ABSENT)
-				polling_tripped = TRUE
-			if (PLEXORA_CKEYPOLL_LINKED_DELETED)
-				polling_tripped = TRUE
+				to_chat_immediate(src, span_danger("Your current linked Discord account is not present in the Discord server! <a href='[CONFIG_GET(string/discordurl)]'>Please rejoin before you can play</a>."))
+				to_chat_immediate(src, span_danger("If your previous Discord account has been deleted, or lost, please open a ticket in the Discord."))
 			if (PLEXORA_CKEYPOLL_LINKED_BANNED)
 				polling_tripped = TRUE
-				message_admins(span_warning("<B>PLEXORA: </B>[key_name_admin(src)] is banned from the Discord! Kicking client. Discord ID: [plexora_poll_result["discord_id"]] Discord Username: [plexora_poll_result["discord_username"]] "))
-				log_admin_private(span_warning("<B>PLEXORA: </B>[key_name_admin(src)] is banned from the Discord! Kicking client. Discord ID: [plexora_poll_result["discord_id"]] Discord Username: [plexora_poll_result["discord_username"]] "))
+				message_admins(span_warning("</B>[key_name_admin(src)] is banned from the Discord! Kicking client. Discord ID: [plexora_poll_result["discord_id"]] Discord Username: [plexora_poll_result["discord_username"]]"))
+				var/log = "Failed Login: [ckey] is banned from the Discord! Kicking client. Discord ID: [plexora_poll_result["discord_id"]] Discord Username: [plexora_poll_result["discord_username"]]"
+				log_access(log)
+				log_suspicious_login(log)
 				kick_client(src, "You are banned from the Discord.", TRUE)
 				return
 
@@ -589,7 +600,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 	if (polling_tripped)
 		not_discord_verified = TRUE
-		register_for_verification()
+		register_for_verification(show_form)
 	else
 		not_discord_verified = FALSE
 

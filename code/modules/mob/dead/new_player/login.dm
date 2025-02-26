@@ -64,8 +64,4 @@
 	if(QDELETED(client)) // client disconnected during- yeah you get the point
 		return FALSE
 
-	if(client.not_discord_verified)
-		register_for_verification()
-		return
-
 	addtimer(CALLBACK(client, TYPE_PROC_REF(/client, playtitlemusic)), 4 SECONDS, TIMER_DELETE_ME)

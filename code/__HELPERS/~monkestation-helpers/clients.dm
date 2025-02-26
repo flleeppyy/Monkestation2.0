@@ -30,26 +30,21 @@
 	var/client/client = CLIENT_FROM_VAR(doohickey)
 	return client?.holder
 
-/proc/should_be_interviewing(mob/target)
+/proc/should_be_verifying(mob/target)
 	. = FALSE
 	if(QDELETED(target))
 		return
-	. = target.client?.interviewee
+	. = target.client?.not_discord_verified
 	var/ckey = target.ckey
 	if(ckey)
-		if(ckey in GLOB.interviews.approved_ckeys)
+		if(is_admin(target.client) || target.client.is_mentor())
 			return FALSE
-		var/datum/interview/interview = GLOB.interviews.open_interviews[ckey]
-		if(interview && interview.status != INTERVIEW_APPROVED)
-			return TRUE
-		if(ckey in GLOB.interviews.cooldown_ckeys)
-			return TRUE
 
-/proc/interview_safety(mob/target, context)
-	. = should_be_interviewing(target)
+/proc/verification_safety(mob/target, context)
+	. = should_be_verifying(target)
 	if(.)
-		message_admins(span_danger("<b>WARNING</b>: [ADMIN_SUSINFO(target)] has seemingly bypassed an interview! (context: [context]) <i>note: this detection is still wip, tell absolucy if it's causing false positives</i>"))
-		log_admin_private("[key_name(target)] has seemingly bypassed an interview! (context: [context])")
+		message_admins(span_danger("<b>WARNING</b>: [ADMIN_SUSINFO(target)] has seemingly bypassed verification! (context: [context]) <i>note: this detection is still wip, tell absolucy if it's causing false positives</i>"))
+		log_admin_private("[key_name(target)] has seemingly bypassed verification! (context: [context])")
 		if(isnewplayer(target))
 			var/mob/dead/new_player/dingbat = target
 			if(dingbat.ready == PLAYER_READY_TO_PLAY)
