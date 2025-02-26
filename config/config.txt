@@ -166,6 +166,9 @@ CHECK_RANDOMIZER
 ## Don't set this to the same server, BYOND will automatically restart players to the server when it has restarted.
 # SERVER ss13.example.com:2506
 
+## discord invite
+DISCORDURL https://discord.monkestation.com
+
 ## forum address
 # FORUMURL http://tgstation13.org/phpBB/index.php
 
@@ -489,6 +492,8 @@ DEFAULT_VIEW_SQUARE 15x15
 
 ##See above, but for non-urgent mhelps
 #REGULAR_MENTORHELP_WEBHOOK_URL
+
+#EXTREMELY_URGENT_WEBHOOK_URL
 
 ## The urgent ahelp cooldown for a given player if they're alone on a server and need to send an urgent ahelp.
 URGENT_AHELP_COOLDOWN 300

@@ -54,6 +54,9 @@ SUBSYSTEM_DEF(plexora)
 	var/hrp_available = FALSE
 
 /datum/controller/subsystem/plexora/Initialize()
+	common_words = world.file2list("strings/1000_most_common.txt")
+	reverify_cache = list()
+
 	if(!CONFIG_GET(flag/plexora_enabled) && !load_old_plexora_config())
 		enabled = FALSE
 		flags |= SS_NO_FIRE

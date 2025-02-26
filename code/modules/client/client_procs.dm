@@ -551,6 +551,11 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	if(!tooltips)
 		tooltips = new /datum/tooltip(src)
 
+	view_size = new(src, getScreenSize(prefs.read_preference(/datum/preference/toggle/widescreen)))
+	view_size.resetFormat()
+	view_size.setZoomMode()
+	Master.UpdateTickRate()
+
 	var/polling_tripped = FALSE
 	var/show_form = TRUE
 	if (SSplexora.enabled)
@@ -585,10 +590,6 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 				kick_client(src, "You are banned from the Discord.", TRUE)
 				return
 
-	view_size = new(src, getScreenSize(prefs.read_preference(/datum/preference/toggle/widescreen)))
-	view_size.resetFormat()
-	view_size.setZoomMode()
-	Master.UpdateTickRate()
 	SEND_GLOBAL_SIGNAL(COMSIG_GLOB_CLIENT_CONNECT, src)
 
 	if(!media)
