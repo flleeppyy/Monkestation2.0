@@ -47,14 +47,10 @@ SUBSYSTEM_DEF(plexora)
 	// People who have tried to verify this round already
 	var/list/reverify_cache
 
-	// Common words list, used to generate one time tokens
-	var/list/common_words
-
 	//other thingys!
 	var/hrp_available = FALSE
 
 /datum/controller/subsystem/plexora/Initialize()
-	common_words = world.file2list("strings/1000_most_common.txt")
 	reverify_cache = list()
 
 	if(!CONFIG_GET(flag/plexora_enabled) && !load_old_plexora_config())
@@ -151,10 +147,6 @@ SUBSYSTEM_DEF(plexora)
 		COOLDOWN_START(src, plexora_scream, 1 MINUTE + 30 SECONDS)
 
 /datum/controller/subsystem/plexora/fire()
-	/*if((cur_day == "Sat") && (cur_hour >= 12 && cur_hour <= 18))
-  	//hrp_available = check_byondserver_status("7cfa7daf")
-	//else
-    		hrp_available = FALSE */
 	if(!is_plexora_alive()) return
 	// Send current status to Plexora
 	var/datum/world_topic/status/status_handler = new()
@@ -476,10 +468,8 @@ SUBSYSTEM_DEF(plexora)
 
 	var/not_unique = TRUE
 	var/one_time_token = ""
-	// While there's a collision in the token, generate a new one (should rarely happen)
 	while(not_unique)
-		//Column is varchar 100, so we trim just in case someone does us the dirty later
-		one_time_token = trim("[pick(common_words)]-[pick(common_words)]-[pick(common_words)]-[pick(common_words)]-[pick(common_words)]-[pick(common_words)]", 100)
+		one_time_token = trim(uppertext("PLX-VERIFY-[trim(ckey_for, 5)]-[random_string(16, hex_characters)]"), 100)
 
 		not_unique = find_discord_link_by_token(one_time_token, timebound = TRUE)
 
