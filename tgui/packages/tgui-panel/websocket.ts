@@ -86,9 +86,8 @@ export const websocketMiddleware = (store) => {
     };
     if (type === updateSettings.type || type === loadSettings.type) {
       if (!payload.websocketEnabled) {
-        websocket?.close(WEBSOCKET_DISABLED, 'Websocket disabled');
+        websocket?.close(WEBSOCKET_DISABLED);
         websocket = null;
-        if (type !== loadSettings.type) sendWSNotice('Websocket disabled.');
       } else if (
         !websocket ||
         websocket.url !== payload.websocketServer ||
