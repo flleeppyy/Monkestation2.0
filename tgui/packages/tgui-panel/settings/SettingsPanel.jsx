@@ -433,7 +433,8 @@ const ExperimentalSettings = (props, context) => {
                         'forwards all data/payloads from the server, to the websocket. Allowing ' +
                         'you to have in-game actions reflect in other services, or the real ' +
                         'world, (ex. Reactive RGB, haptics, play effects/animations in vtubing ' +
-                        'software, etc)</span></div>',
+                        'software, etc). You can find more information ' +
+                        '<a href="https://github.com/Monkestation/Monkestation2.0/pull/5744">here in the pull request.</a></span></div>',
                     },
                   ]);
                 }}
