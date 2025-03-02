@@ -3,10 +3,12 @@ import { chatRenderer } from './chat/renderer';
 import { loadSettings, updateSettings } from './settings/actions';
 import { selectSettings } from './settings/selectors';
 
-const sendWSNotice = (message) => {
+const sendWSNotice = (message, small = false) => {
   chatRenderer.processBatch([
     {
-      html: `<div class="boxed_message"><center><span class='alertwarning'>${message}</span></center></div>`,
+      html: small
+        ? `<span class='adminsay'>${message}</span>`
+        : `<div class="boxed_message"><center><span class='alertwarning'>${message}</span></center></div>`,
     },
   ]);
 };
@@ -46,7 +48,7 @@ export const websocketMiddleware = (store) => {
     }
 
     websocket.addEventListener('open', () => {
-      sendWSNotice('Websocket connected!');
+      sendWSNotice('Websocket connected!', true);
     });
 
     websocket.addEventListener('close', function closeEventThing(ev) {
@@ -86,7 +88,7 @@ export const websocketMiddleware = (store) => {
       if (!payload.websocketEnabled) {
         websocket?.close(WEBSOCKET_DISABLED, 'Websocket disabled');
         websocket = null;
-        sendWSNotice('Websocket disabled.');
+        sendWSNotice('Websocket disabled.', true);
       } else if (
         !websocket ||
         websocket.url !== payload.websocketServer ||
@@ -94,7 +96,7 @@ export const websocketMiddleware = (store) => {
           (!websocket || websocket.readyState !== websocket.OPEN))
       ) {
         websocket?.close(WEBSOCKET_REATTEMPT, 'Websocket settings changed');
-        sendWSNotice('Websocket enabled.');
+        sendWSNotice('Websocket enabled.', true);
         setupWebsocket(store);
       }
       return next(action);
@@ -109,7 +111,7 @@ export const websocketMiddleware = (store) => {
     if (type === disconnectWebsocket.type) {
       websocket?.close(WEBSOCKET_DISABLED);
       websocket = null;
-      sendWSNotice('Websocket forcefully disconnected.');
+      sendWSNotice('Websocket forcefully disconnected.', true);
     }
 
     websocket &&
