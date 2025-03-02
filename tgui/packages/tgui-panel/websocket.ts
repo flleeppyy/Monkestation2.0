@@ -3,6 +3,14 @@ import { chatRenderer } from './chat/renderer';
 import { loadSettings, updateSettings } from './settings/actions';
 import { selectSettings } from './settings/selectors';
 
+const sendWSNotice = (message) => {
+  chatRenderer.processBatch([
+    {
+      html: `<div class="boxed_message"><center><span class='alertwarning'>${message}</span></center></div>`,
+    },
+  ]);
+};
+
 export const reconnectWebsocket = createAction('websocket/reconnect');
 export const disconnectWebsocket = createAction('websocket/disconnect');
 
@@ -115,11 +123,3 @@ export const websocketMiddleware = (store) => {
     return next(action);
   };
 };
-
-function sendWSNotice(message) {
-  chatRenderer.processBatch([
-    {
-      html: `<div class="boxed_message"><center><span class='alertwarning'>${message}</span></center></div>`,
-    },
-  ]);
-}
