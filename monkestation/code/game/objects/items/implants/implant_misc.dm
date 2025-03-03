@@ -5,7 +5,7 @@
 /obj/item/storage/box/syndie_kit/weapons_auth
 	name = "Weapons Authorization kit"
 
-/obj/item/storage/box/syndie_kit/emp/PopulateContents()
+/obj/item/storage/box/syndie_kit/weapons_auth/PopulateContents()
 	new /obj/item/implanter/weapons_auth(src)
 
 /obj/item/implant/radio/implant(mob/living/target, mob/user, silent, force)
