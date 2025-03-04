@@ -84,7 +84,16 @@ export const websocketMiddleware = (store) => {
         websocketServer: string;
       };
     };
+    if (!payload) return next(action);
     if (type === updateSettings.type || type === loadSettings.type) {
+      if (typeof payload?.websocketEnabled === 'undefined') {
+        store.dispatch(
+          updateSettings({
+            websocketEnabled: false,
+          }),
+        );
+        return next(action);
+      }
       if (!payload.websocketEnabled) {
         websocket?.close(WEBSOCKET_DISABLED);
         websocket = null;
