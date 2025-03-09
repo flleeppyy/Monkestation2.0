@@ -1,4 +1,4 @@
-import { Dispatch, useDispatch } from 'common/redux';
+import type { Dispatch } from 'common/redux';
 import type { Page } from '../chat/types';
 import { importSettings } from './actions';
 
@@ -19,10 +19,10 @@ export function exportChatSettings(
   Byond.saveBlob(new Blob([jsonString], { type: mimeType }), filename, '.json');
 }
 
-export function importChatSettings(
+export const importChatSettings = (
   dispatch: Dispatch,
   settings: string | string[],
-) {
+) => {
   if (Array.isArray(settings)) {
     return;
   }
@@ -34,4 +34,4 @@ export function importChatSettings(
   delete ourImport['chatPages'];
 
   dispatch(importSettings(ourImport, pageRecord));
-}
+};
