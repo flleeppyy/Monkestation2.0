@@ -2,10 +2,10 @@ import type { Dispatch } from 'common/redux';
 import type { Page } from '../chat/types';
 import { importSettings } from './actions';
 
-export function exportChatSettings(
+export const exportChatSettings = (
   settings: Record<string, any>,
   pages: Record<string, Page>[],
-) {
+) => {
   const filename = `ss13-chatsettings-${new Date().toJSON().slice(0, 10)}.json`;
   const mimeType = 'application/json';
 
@@ -17,7 +17,7 @@ export function exportChatSettings(
   const jsonString = JSON.stringify(exportObject, null, ' ');
 
   Byond.saveBlob(new Blob([jsonString], { type: mimeType }), filename, '.json');
-}
+};
 
 export const importChatSettings = (
   dispatch: Dispatch,
