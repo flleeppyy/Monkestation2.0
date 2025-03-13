@@ -54,18 +54,9 @@
 	STOP_PROCESSING(SSstamina, src)
 	return ..()
 
-/// Updates processing status whenever the mob's stat changes.
-/datum/stamina_container/proc/on_stat_changed(mob/living/source, new_stat)
-	SIGNAL_HANDLER
-	if(QDELETED(parent))
-		return
-	if(parent.stat == DEAD)
-		STOP_PROCESSING(SSstamina, src)
-	else
-		START_PROCESSING(SSstamina, src)
-
-/datum/stamina_container/proc/update(seconds_per_tick)
-	if(process_stamina)
+/datum/stamina_container/proc/update(seconds_per_tick = 1)
+	var/last_current = current
+	if(process_stamina == TRUE)
 		if(!is_regenerating)
 			if(!COOLDOWN_FINISHED(src, paused_stamina))
 				return
