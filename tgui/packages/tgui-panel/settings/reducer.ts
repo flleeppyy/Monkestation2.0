@@ -40,6 +40,8 @@ const initialState = {
     activeTab: SETTINGS_TABS[0].id,
   },
   initialized: false,
+  websocketEnabled: false,
+  websocketServer: '',
 };
 
 export const settingsReducer = (state = initialState, action) => {
