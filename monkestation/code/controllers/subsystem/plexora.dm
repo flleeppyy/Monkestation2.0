@@ -1022,7 +1022,7 @@ SUBSYSTEM_DEF(plexora)
 	msg = keywords_lookup(msg)
 
 	// TODO: Load sender's color prefs? idk
-	msg = span_adminsay("[span_prefix("ADMIN (DISCORD):")]<EM>[sender]</EM>: <span class='message linkify'>[msg]</span>")
+	msg = span_adminsay("[span_prefix("ADMIN (DISCORD):")] <EM>[sender]</EM>: <span class='message linkify'>[msg]</span>")
 
 	to_chat(GLOB.admins,
 		type = MESSAGE_TYPE_ADMINCHAT,
