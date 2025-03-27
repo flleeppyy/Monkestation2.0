@@ -24,13 +24,18 @@
 
 	log_mentor("MSAY: [key_name(src)] : [msg]")
 	msg = keywords_lookup(msg)
+	var/prefix = "MENTOR"
+	var/prefix_color = "#E236D8"
 	if(mentor_datum?.is_contributor)
-		msg = "<b><font color = #16abf9><span class='prefix'>CONTRIB:</span> <EM>[key_name(src, 0, 0)]</EM>: <span class='message linkify'>[msg]</span></font></b>"
+		prefix = "CONTRIB"
+		prefix_color = "#16ABF9"
 	else if(check_rights_for(src, R_ADMIN, 0))
-		msg = "<b><font color = #8A2BE2><span class='prefix'>STAFF:</span> <EM>[key_name(src, 0, 0)]</EM>: <span class='message linkify'>[msg]</span></font></b>"
-	else
-		msg = "<b><font color = #E236D8><span class='prefix'>MENTOR:</span> <EM>[key_name(src, 0, 0)]</EM>: <span class='message linkify'>[msg]</span></font></b>"
+		prefix = "STAFF"
+		prefix_color = "#8A2BE2"
 
+	msg = "<b><font color = '[prefix_color]'><span class='prefix'>[prefix]:</span> <EM>[key_name(src, 0, 0)]</EM>: <span class='message linkify'>[msg]</span></font></b>"
+
+	SSplexora.relay_mentor_say(src, msg, prefix)
 	to_chat(GLOB.admins | GLOB.mentors,
 		type = MESSAGE_TYPE_MODCHAT,
 		html = msg,
