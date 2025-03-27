@@ -203,20 +203,6 @@ SUBSYSTEM_DEF(plexora)
 		"computer_id" = interview.owner?.computer_id,
 	))
 
-
-/datum/controller/subsystem/plexora/proc/relay_mentor_say(client/user, message, prefix)
-	http_basicasync("relay_adminsay", list(
-		"prefix" = prefix,
-		"key" = user.ckey,
-		"message" = message
-	))
-
-/datum/controller/subsystem/plexora/proc/relay_admin_say(client/user, message)
-	http_basicasync("relay_adminsay", list(
-		"key" = user.ckey,
-		"message" = message
-	))
-
 /datum/controller/subsystem/plexora/proc/check_byondserver_status(id)
 	if (isnull(id)) return
 
@@ -234,6 +220,20 @@ SUBSYSTEM_DEF(plexora)
 	else
 		var/list/json_body = json_decode(response.body)
 		return json_body["alive_likely"]
+
+
+/datum/controller/subsystem/plexora/proc/relay_mentor_say(client/user, message, prefix)
+	http_basicasync("relay_adminsay", list(
+		"prefix" = prefix,
+		"key" = user.ckey,
+		"message" = message
+	))
+
+/datum/controller/subsystem/plexora/proc/relay_admin_say(client/user, message)
+	http_basicasync("relay_adminsay", list(
+		"key" = user.ckey,
+		"message" = message
+	))
 
 // note: recover_all_SS_and_recreate_master to force mc shit
 
