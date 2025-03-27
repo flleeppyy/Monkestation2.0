@@ -33,9 +33,9 @@
 		prefix = "STAFF"
 		prefix_color = "#8A2BE2"
 
+	SSplexora.relay_mentor_say(src, msg, prefix)
 	msg = "<b><font color = '[prefix_color]'><span class='prefix'>[prefix]:</span> <EM>[key_name(src, 0, 0)]</EM>: <span class='message linkify'>[msg]</span></font></b>"
 
-	SSplexora.relay_mentor_say(src, msg, prefix)
 	to_chat(GLOB.admins | GLOB.mentors,
 		type = MESSAGE_TYPE_MODCHAT,
 		html = msg,
