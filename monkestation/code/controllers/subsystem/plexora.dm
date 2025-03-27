@@ -226,13 +226,15 @@ SUBSYSTEM_DEF(plexora)
 	http_basicasync("relay_mentor_say", list(
 		"prefix" = prefix,
 		"key" = user.key,
-		"message" = message
+		"message" = message,
+		"icon_b64" = icon2base64(getFlatIcon(user.mob, SOUTH, no_anim = TRUE)),
 	))
 
 /datum/controller/subsystem/plexora/proc/relay_admin_say(client/user, message)
 	http_basicasync("relay_admin_say", list(
 		"key" = user.key,
 		"message" = message
+		"icon_b64" = icon2base64(getFlatIcon(user.mob, SOUTH, no_anim = TRUE)),
 	))
 
 // note: recover_all_SS_and_recreate_master to force mc shit

@@ -9,6 +9,8 @@
 	if(!msg)
 		return
 
+	SSplexora.relay_admin_say(src, msg)
+
 	if(findtext(msg, "@") || findtext(msg, "#"))
 		var/list/link_results = check_asay_links(msg)
 		if(length(link_results))
@@ -23,7 +25,6 @@
 				SEND_SOUND(iter_admin_client.mob, sound('sound/misc/asay_ping.ogg'))
 
 	mob.log_talk(msg, LOG_ASAY)
-	SSplexora.relay_admin_say(src, msg)
 	msg = keywords_lookup(msg)
 	var/asay_color = prefs.read_preference(/datum/preference/color/asay_color)
 	var/custom_asay_color = (CONFIG_GET(flag/allow_admin_asaycolor) && asay_color) ? "<font color=[asay_color]>" : "<font color='[DEFAULT_ASAY_COLOR]'>"
