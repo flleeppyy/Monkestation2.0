@@ -223,14 +223,14 @@ SUBSYSTEM_DEF(plexora)
 
 
 /datum/controller/subsystem/plexora/proc/relay_mentor_say(client/user, message, prefix)
-	http_basicasync("relay_adminsay", list(
+	http_basicasync("relay_mentor_say", list(
 		"prefix" = prefix,
 		"key" = user.ckey,
 		"message" = message
 	))
 
 /datum/controller/subsystem/plexora/proc/relay_admin_say(client/user, message)
-	http_basicasync("relay_adminsay", list(
+	http_basicasync("relay_admin_say", list(
 		"key" = user.ckey,
 		"message" = message
 	))
