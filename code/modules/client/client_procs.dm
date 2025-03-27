@@ -544,16 +544,6 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	if(!tooltips)
 		tooltips = new /datum/tooltip(src)
 
-<<<<<<< HEAD
-=======
-	if(((player_age != -1) && player_age < CONFIG_GET(number/minimum_age)) && !(ckey in GLOB.interviews.approved_ckeys) && !is_mentor() && !is_admin(src))
-		interviewee = TRUE
-		register_for_interview()
-
-	if (!interviewee)
-		initialize_menus()
-
->>>>>>> f9f566ab6e314d779c83f0755bd17261ba2de617
 	view_size = new(src, getScreenSize(prefs.read_preference(/datum/preference/toggle/widescreen)))
 	view_size.resetFormat()
 	view_size.setZoomMode()
