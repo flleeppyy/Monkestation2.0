@@ -6,7 +6,7 @@
 		to_chat(src, span_danger("Error: Only mentors and administrators may use this command."), confidential = TRUE)
 		return
 
-	msg = emoji_parse(copytext(sanitize(msg), 1, MAX_MESSAGE_LEN))
+	msg = emoji_parse(copytext_char(sanitize(msg), 1, MAX_MESSAGE_LEN))
 	if(!msg)
 		return
 
