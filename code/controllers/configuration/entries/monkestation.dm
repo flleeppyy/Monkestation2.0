@@ -90,6 +90,8 @@
 	if(.)
 		config_entry_value *= 600 // documented as minutes
 
+/datum/config_entry/flag/require_discord_verification
+
 /datum/config_entry/flag/plexora_enabled
 
 /datum/config_entry/string/plexora_url

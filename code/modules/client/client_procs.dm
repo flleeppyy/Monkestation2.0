@@ -551,7 +551,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 	var/polling_tripped = FALSE
 	var/show_form = TRUE
-	if (SSplexora.enabled)
+	if (SSplexora.enabled && CONFIG_GET(flag/require_discord_verification))
 		var/list/plexora_poll_result = SSplexora.poll_ckey_for_verification(ckey)
 		switch(plexora_poll_result["polling_response"])
 			if (PLEXORA_DOWN)

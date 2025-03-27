@@ -904,7 +904,7 @@ SUBSYSTEM_DEF(plexora)
 		prefs = client.prefs
 
 	if (coinstogive)
-		prefs.adjust_metacoins(ckey, coinstogive, "User verified", donator_multipler = FALSE, respects_roundcap = FALSE, announces = FALSE)
+		prefs.adjust_metacoins(ckey, coinstogive, "User verified", donator_multiplier = FALSE, respects_roundcap = FALSE, announces = FALSE)
 
 	if(QDELETED(client))
 		message_admins("\[Plexora\] User has verified via the Discord (Offline): [ckey] - Discord ID/Username: [discord_id]/[discord_username]")
