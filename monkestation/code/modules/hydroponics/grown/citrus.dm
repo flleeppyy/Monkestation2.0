@@ -1,5 +1,5 @@
 /obj/item/food/grown/citrus/lemon/suicide_act(mob/living/user)
-	user.visible_message(span_suicide("[name] tries to make life take the lemons back! It looks like [user.p_theyre()] trying to commit suicide!"))
+	user.visible_message(span_suicide("[user] tries to make life take the lemons back! It looks like [user.p_theyre()] trying to commit suicide!"))
 	ADD_TRAIT(user, TRAIT_DISFIGURED, TRAIT_GENERIC)
 	user.set_light_color(COLOR_VERY_SOFT_YELLOW)
 	user.set_light(2)
