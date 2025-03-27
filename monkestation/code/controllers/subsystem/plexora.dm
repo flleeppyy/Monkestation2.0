@@ -469,7 +469,7 @@ SUBSYSTEM_DEF(plexora)
 	var/not_unique = TRUE
 	var/one_time_token = ""
 	while(not_unique)
-		one_time_token = trim(uppertext("PLX-VERIFY-[trim(ckey_for, 5)]-[random_string(16, hex_characters)]"), 100)
+		one_time_token = trim(uppertext("PLX-VERIFY-[trim(ckey_for, 5)]-[random_string(16, GLOB.hex_characters)]"), 100)
 
 		not_unique = find_discord_link_by_token(one_time_token, timebound = TRUE)
 
