@@ -474,17 +474,17 @@ SUBSYSTEM_DEF(plexora)
 		not_unique = find_discord_link_by_token(one_time_token, timebound = TRUE)
 
 	// Insert into the table, null in the discord id, id and timestamp and valid fields so the db fills them out where needed
-	var/datum/db_query/query_insert_link_record = SSdbcore.NewQuery(
-		"INSERT INTO [format_table_name("discord_links")] (ckey, one_time_token) VALUES(:ckey, :token)",
-		list("ckey" = ckey_for, "token" = one_time_token)
+	var/datum/db_query/query_upsert_link_record = SSdbcore.NewQuery(
+    "INSERT INTO [format_table_name("discord_links")] (ckey, one_time_token) VALUES (:ckey, :token) ON DUPLICATE KEY UPDATE one_time_token = VALUES(one_time_token)",
+    list("ckey" = ckey_for, "token" = one_time_token)
 	)
 
-	if(!query_insert_link_record.Execute())
-		qdel(query_insert_link_record)
+	if(!query_upsert_link_record.Execute())
+		qdel(query_upsert_link_record)
 		return ""
 
 	//Cleanup
-	qdel(query_insert_link_record)
+	qdel(query_upsert_link_record)
 	return one_time_token
 
 /**
