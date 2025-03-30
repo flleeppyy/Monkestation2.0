@@ -25,9 +25,6 @@
 	default = "<@&999008528595419278>"
 	protection = CONFIG_ENTRY_LOCKED
 
-/datum/config_entry/string/extremely_urgent_webhook_url
-	protection = CONFIG_ENTRY_LOCKED
-
 /datum/config_entry/string/bot_dump_url
 
 //API key for Github Issues.

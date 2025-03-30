@@ -395,6 +395,45 @@ SUBSYSTEM_DEF(overwatch)
 			qdel(query_datediff)
 	return cached_player_age
 
+// I believe this code is still useful somewhere, but the code I've removed for discord verification doesn't use it now.
+// - Chen
+/*
+/datum/controller/subsystem/overwatch/proc/CheckActiveBans(client/C)
+	if(C.ckey in GLOB.interviews.approved_ckeys) // if these are already approved no point querying as they will be allowed regardless
+		return
+	var/living_minutes = C.get_exp_living(TRUE)
+	if(living_minutes >= 30)
+		return
+
+	if(!CONFIG_GET(string/centcom_ban_db))
+		return
+
+	var/datum/http_request/request = new()
+	request.prepare(RUSTG_HTTP_METHOD_GET, "[CONFIG_GET(string/centcom_ban_db)]/[C.ckey]", "", "")
+	request.begin_async()
+	UNTIL(request.is_complete())
+	var/datum/http_response/response = request.into_response()
+	var/list/bans
+	if(response.errored)
+		return
+	if(response.status_code != 200)
+		return
+	if(response.body == "[]")
+		return
+	var/active_ban_count = 0
+	bans = json_decode(response.body)
+	for(var/list/ban in bans)
+		if(ban["type"] != "Server")
+			continue
+		if(!ban["active"])
+			continue
+		active_ban_count++
+
+	if(active_ban_count >= max_ban_count)
+		return TRUE
+	return FALSE
+*/
+
 /client/proc/Overwatch_toggle()
 	set category = "Server"
 	set name = "Toggle Overwatch"

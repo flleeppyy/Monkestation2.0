@@ -493,8 +493,6 @@ DEFAULT_VIEW_SQUARE 15x15
 ##See above, but for non-urgent mhelps
 #REGULAR_MENTORHELP_WEBHOOK_URL
 
-#EXTREMELY_URGENT_WEBHOOK_URL
-
 ## The urgent ahelp cooldown for a given player if they're alone on a server and need to send an urgent ahelp.
 URGENT_AHELP_COOLDOWN 300
 
@@ -517,7 +515,6 @@ URGENT_AHELP_COOLDOWN 300
 
 ## The name of the webhook
 #ADMINHELP_WEBHOOK_NAME
-
 
 ## Sets an MOTD of the server.
 ## You can use this multiple times, and the MOTDs will be appended in order.

@@ -47,11 +47,12 @@ SUBSYSTEM_DEF(plexora)
 	// People who have tried to verify this round already
 	var/list/reverify_cache
 
-	//other thingys!
-	var/hrp_available = FALSE
+	// Listed of people who are allowed to join without discord verification. Loaded at init
+	var/list/allowed_ckeys
 
 /datum/controller/subsystem/plexora/Initialize()
 	reverify_cache = list()
+	loaded_allowed_ckeys()
 
 	if(!CONFIG_GET(flag/plexora_enabled) && !load_old_plexora_config())
 		enabled = FALSE
@@ -105,6 +106,19 @@ SUBSYSTEM_DEF(plexora)
 	CONFIG_SET(string/plexora_url, "http://[old_config["ip"]]:[old_config["port"]]")
 	return TRUE
 
+/datum/controller/subsystem/plexora/proc/loaded_allowed_ckeys()
+	LAZYINITLIST(allowed_ckeys)
+	if (!enabled || !fexists("[global.config.directory]/allowed_ckeys.txt"))
+		return
+	allowed_ckeys.Cut()
+	var/list/lines = world.file2list("[global.config.directory]/allowed_ckeys.txt")
+	for(var/line in lines)
+		if(!length(line))
+			continue
+		if(findtextEx(line, "#", 1, 2))
+			continue
+		LAZYADD(allowed_ckeys, line)
+
 /datum/controller/subsystem/plexora/proc/is_plexora_alive()
 	. = FALSE
 	if(!enabled) return
@@ -115,7 +129,6 @@ SUBSYSTEM_DEF(plexora)
 	var/datum/http_response/response = request.into_response()
 	if (response.errored)
 		plexora_is_alive = FALSE
-		scream_at_admins("PLEXORA IS DOWN!", "I REPEAT, PLEXORA IS DOWN, SHE MUST BE RESTARTED ON THE SERVER! <@710227752963407935> <@710227752963407935> <@710227752963407935> <@710227752963407935> <@710227752963407935> <@710227752963407935><@710227752963407935>")
 		log_admin("Failed to check if Plexora is alive! She probably isn't. Check config on both sides")
 		CRASH("Failed to check if Plexora is alive! She probably isn't. Check config on both sides")
 	else
@@ -127,24 +140,6 @@ SUBSYSTEM_DEF(plexora)
 
 		plexora_is_alive = TRUE
 		return TRUE
-
-/datum/controller/subsystem/plexora/proc/scream_at_admins(what, why)
-	var/webhook_url = CONFIG_GET(string/extremely_urgent_webhook_url)
-	if (COOLDOWN_FINISHED(src, plexora_scream) && webhook_url)
-		http_request(
-			RUSTG_HTTP_METHOD_POST,
-			webhook_url,
-			json_encode( \
-				list(
-					"content" = "EXTREMELY URGENT!!",
-					"embeds" = list(list(
-						"title" = what,
-						"description" = why,
-					))
-				) \
-			),
-		).begin_async()
-		COOLDOWN_START(src, plexora_scream, 1 MINUTE + 30 SECONDS)
 
 /datum/controller/subsystem/plexora/fire()
 	if(!is_plexora_alive()) return
@@ -398,6 +393,9 @@ SUBSYSTEM_DEF(plexora)
  * Returns one of the values defined in __DEFINES/~monkestation/plexora.dm
  */
 /datum/controller/subsystem/plexora/proc/poll_ckey_for_verification(ckey)
+	if (!enabled || (ckey in allowed_ckeys))
+		return PLEXORA_CKEYPOLL_LINKED
+
 	var/datum/http_request/request = new(
 		RUSTG_HTTP_METHOD_POST,
 		"[base_url]/lookupckey",
