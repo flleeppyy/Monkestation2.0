@@ -1336,3 +1336,67 @@ SUBSYSTEM_DEF(plexora)
 #undef OLD_PLEXORA_CONFIG
 #undef AUTH_HEADER
 #undef TOPIC_EMITTER
+
+/* Discord Verification Window */
+
+/client/verb/verify_in_discord()
+	set category = "OOC"
+	set name = "Verify Discord Account"
+	set desc = "Verify your discord account with your BYOND account"
+
+	if(!CONFIG_GET(flag/sql_enabled))
+		to_chat(src, span_warning("This feature requires the SQL backend to be running."))
+		return
+
+	if(!SSplexora || !SSplexora.reverify_cache)
+		// This should NOT fucking happen under any circumstance.
+		to_chat(src, span_warning("Wait for the Discord subsystem to finish initialising"))
+		return
+
+	var/datum/discord_verification/tgui = new(usr)
+	tgui.ui_interact(usr)
+
+/datum/discord_verification
+	var/verification_code
+	var/discord_invite
+
+/datum/discord_verification/New(client/user)
+	var/cached_one_time_token = SSplexora.reverify_cache[user.ckey]
+	if(cached_one_time_token && cached_one_time_token != "")
+		verification_code = cached_one_time_token
+	else
+		var/one_time_token = SSplexora.get_or_generate_one_time_token_for_ckey(user.ckey)
+		SSplexora.reverify_cache[user.ckey] = one_time_token
+
+	discord_invite = CONFIG_GET(string/discordurl)
+
+/datum/discord_verification/ui_state(mob/user)
+	return GLOB.always_state
+
+/datum/discord_verification/ui_close()
+	qdel(src)
+
+/datum/discord_verification/ui_assets(mob/user)
+	return list(
+		get_asset_datum(/datum/asset/simple/discord_verification),
+	)
+
+/datum/discord_verification/ui_data(mob/user)
+	var/list/data = list()
+	data["verification_code"] = verification_code
+	data["discord_invite"] = discord_invite
+	return data
+
+/datum/discord_verification/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "DiscordVerification")
+		ui.open()
+
+/datum/asset/simple/discord_verification
+	assets = list(
+		"dverify_image1.png" = 'icons/ui_icons/tgui/dverify_image1.png',
+		"dverify_image2.png" = 'icons/ui_icons/tgui/dverify_image2.png',
+		"dverify_image3.png" = 'icons/ui_icons/tgui/dverify_image3.png',
+		"dverify_image4.png" = 'icons/ui_icons/tgui/dverify_image4.png',
+	)
