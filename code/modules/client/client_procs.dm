@@ -590,8 +590,6 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	media.open()
 	media.update_music()
 
-	fully_created = TRUE
-
 	if (polling_tripped)
 		not_discord_verified = TRUE
 		register_for_verification(show_form)
@@ -600,6 +598,9 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 	if (!not_discord_verified)
 		initialize_menus()
+
+	fully_created = TRUE
+
 //////////////
 //DISCONNECT//
 //////////////

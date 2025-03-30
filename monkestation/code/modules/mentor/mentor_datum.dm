@@ -18,8 +18,7 @@ GLOBAL_PROTECT(mentor_href_token)
 	var/not_active = FALSE
 	var/from_file = FALSE
 
-/datum/mentors/New(ckey, fromfile = FALSE)
-	from_file = fromfile
+/datum/mentors/New(ckey)
 	if(!ckey)
 		QDEL_IN(src, 0)
 		CRASH("Mentor datum created without a ckey")
@@ -75,4 +74,4 @@ GLOBAL_PROTECT(mentor_href_token)
 			continue
 		if(findtextEx(line, "#", 1, 2))
 			continue
-		new /datum/mentors(line, TRUE)
+		new /datum/mentors(line)
