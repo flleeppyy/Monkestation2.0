@@ -651,10 +651,6 @@ CREATE TABLE `discord_links` (
   `discord_id` bigint(20) DEFAULT NULL,
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
   `one_time_token` varchar(100) NOT NULL,
-  `valid` tinyint(1) NOT NULL DEFAULT 0,
-  `cached_state` tinyint(3) unsigned DEFAULT NULL,
-  `cached_timestamp` timestamp NULL DEFAULT NULL,
-  `cached_username` tinytext DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ckey` (`ckey`)
 ) ENGINE=InnoDB;
