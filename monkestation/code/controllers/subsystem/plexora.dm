@@ -50,6 +50,8 @@ SUBSYSTEM_DEF(plexora)
 	// Listed of people who are allowed to join without discord verification. Loaded at init
 	var/list/allowed_ckeys
 
+	var/list/failed_ckeys_count = list()
+
 /datum/controller/subsystem/plexora/Initialize()
 	reverify_cache = list()
 	loaded_allowed_ckeys()
@@ -1366,6 +1368,10 @@ SUBSYSTEM_DEF(plexora)
 		var/one_time_token = SSplexora.get_or_generate_one_time_token_for_ckey(user.ckey)
 		SSplexora.reverify_cache[user.ckey] = one_time_token
 
+	if (!user.discord_details)
+		var/list/plexora_poll_result = SSplexora.poll_ckey_for_verification(user.ckey)
+		user.discord_details = new /datum/discord_details(plexora_poll_result["discord_id"], plexora_poll_result["discord_username"], plexora_poll_result["discord_displayname"], plexora_poll_result["polling_response"])
+
 	discord_invite = CONFIG_GET(string/discordurl)
 
 /datum/discord_verification/ui_state(mob/user)
@@ -1383,6 +1389,7 @@ SUBSYSTEM_DEF(plexora)
 	var/list/data = list()
 	data["verification_code"] = verification_code
 	data["discord_invite"] = discord_invite
+	data["discord_details"] = user.client.discord_details
 	return data
 
 /datum/discord_verification/ui_interact(mob/user, datum/tgui/ui)
@@ -1398,3 +1405,18 @@ SUBSYSTEM_DEF(plexora)
 		"dverify_image3.png" = 'icons/ui_icons/tgui/dverify_image3.png',
 		"dverify_image4.png" = 'icons/ui_icons/tgui/dverify_image4.png',
 	)
+
+/client
+	var/datum/discord_details/discord_details
+
+/datum/discord_details
+	var/id
+	var/username
+	var/displayname
+	var/status = PLEXORA_CKEYPOLL_NOTLINKED
+
+/datum/discord_details/New(id, username, displayname, status = PLEXORA_CKEYPOLL_NOTLINKED)
+	src.id = id
+	src.username = username
+	src.displayname = displayname
+	src.status = status

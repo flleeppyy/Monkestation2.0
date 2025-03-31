@@ -553,19 +553,30 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	var/show_form = TRUE
 	if (SSplexora.enabled && CONFIG_GET(flag/require_discord_verification))
 		var/list/plexora_poll_result = SSplexora.poll_ckey_for_verification(ckey)
+		src.discord_details = new /datum/discord_details(plexora_poll_result["discord_id"], plexora_poll_result["discord_username"], plexora_poll_result["discord_displayname"], plexora_poll_result["polling_response"])
 		switch(plexora_poll_result["polling_response"])
 			if (PLEXORA_DOWN)
 				message_admins("PLEXORA IS DOWN! PLEASE PING @FLLEEPPYY ON DISCORD! Players will freely flow in without verification if Plexora is down.")
 				// Just let people through.
 			if (PLEXORA_CKEYPOLL_FAILED)
-				polling_tripped = TRUE
-				// It'll be fine... TODO: add counter for this ckey's failure, then just kick them? maybe.
-				stack_trace("Ckey polling failed for [ckey]. [json_encode(plexora_poll_result)]")
-				message_admins("Ckey polling failed for [key_name_admin(ckey)]. Kicking them from the server. Check runtimes")
-				var/log = "Ckey polling failed for [ckey]. Kicking them from the server. Check runtimes"
-				log_admin_private(log)
-				log_access(log)
-				qdel(src)
+				if (SSplexora.failed_ckeys_count[ckey])
+					SSplexora.failed_ckeys_count[ckey]++
+				else
+					SSplexora.failed_ckeys_count[ckey] = 1
+					stack_trace("Ckey polling failed for [ckey]. [json_encode(plexora_poll_result)]")
+				if (SSplexora.failed_ckeys_count[ckey] > 5)
+					var/log = message_admins("Ckey polling failed for [key_name_admin(ckey)]. We've kicked them a total of five times, but Plexora is still failing. Please message @flleeppyy on Discord. This client will be allowed in without verification")
+					log_admin_private(log)
+					log_access(log)
+				else
+					stack_trace("Ckey polling failed for [ckey]. [json_encode(plexora_poll_result)]")
+					message_admins("Ckey polling failed for [key_name_admin(ckey)]. Kicking them from the server. Check runtimes")
+					var/log = "Ckey polling failed for [ckey]. Kicking them from the server. Check runtimes"
+					log_admin_private(log)
+					log_access(log)
+					to_chat_immediate(src, span_red("Ckey polling failed. We will retry 5 times total. If this issue persists, ping @flleeppyy on Discord"))
+					qdel(src)
+					return
 			if (PLEXORA_CKEYPOLL_NOTLINKED, PLEXORA_CKEYPOLL_RECORDNOTVALID)
 				polling_tripped = TRUE
 				to_chat_immediate(src, span_red(span_big(span_notice("Welcome to Monkestation! Your client is [span_bold("NOT verified")]! Please go to the OOC tab and click 'Verify Discord Account' to begin the verification process."))))
