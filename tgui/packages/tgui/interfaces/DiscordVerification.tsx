@@ -26,14 +26,14 @@ interface DiscordVerificationData {
 
 export const DiscordVerification = (props, context) => {
   const { act, data } = useBackend<DiscordVerificationData>();
-  const { verification_code, discord_invite, discord_details } = data;
+  const { verification_code, discord_invite } = data;
 
   const getNoticeBox = () => {
-    if (!discord_details?.status) {
+    if (!data?.discord_details?.status) {
       return null;
     }
 
-    switch (discord_details?.status as CkeyPollEnum) {
+    switch (data?.discord_details?.status as CkeyPollEnum) {
       case CkeyPollEnum.PLEXORA_DOWN:
         return (
           <NoticeBox danger>
@@ -43,8 +43,8 @@ export const DiscordVerification = (props, context) => {
       case CkeyPollEnum.PLEXORA_CKEYPOLL_FAILED:
         return (
           <NoticeBox danger>
-            Plexora failed to get info. Discord ID: {discord_details.discord_id}
-            .
+            Plexora failed to get info. Discord ID:
+            {data?.discord_details.discord_id}.
           </NoticeBox>
         );
       case CkeyPollEnum.PLEXORA_CKEYPOLL_NOTLINKED:
@@ -58,49 +58,50 @@ export const DiscordVerification = (props, context) => {
       case CkeyPollEnum.PLEXORA_CKEYPOLL_LINKED:
         return (
           <NoticeBox success>
-            Your ckey is successfully linked to Discord:{' '}
-            {discord_details.discord_username} (
-            {discord_details.discord_displayname}) -{' '}
-            {discord_details.discord_id}
+            Your ckey is successfully linked to Discord:
+            {data?.discord_details.discord_username} (
+            {data?.discord_details.discord_displayname}) -
+            {data?.discord_details.discord_id}
           </NoticeBox>
         );
       case CkeyPollEnum.PLEXORA_CKEYPOLL_LINKED_ABSENT:
         if (
-          discord_details.discord_username &&
-          discord_details.discord_displayname
+          data?.discord_details.discord_username &&
+          data?.discord_details.discord_displayname
         ) {
           return (
             <NoticeBox warning>
-              Your linked Discord account is no longer present:{' '}
-              {discord_details.discord_username} (
-              {discord_details.discord_displayname}) -{' '}
-              {discord_details.discord_id}
+              Your linked Discord account is no longer present:
+              {data?.discord_details.discord_username} (
+              {data?.discord_details.discord_displayname}) -
+              {data?.discord_details.discord_id}
             </NoticeBox>
           );
         } else {
           return (
             <NoticeBox warning>
-              Your linked Discord account is no longer present. Discord ID:{' '}
-              {discord_details.discord_id}
+              Your linked Discord account is no longer present. Discord ID:
+              {data?.discord_details.discord_id}
             </NoticeBox>
           );
         }
       case CkeyPollEnum.PLEXORA_CKEYPOLL_LINKED_BANNED:
+        // Shouldn't show but whatever
         return (
           <NoticeBox danger>
-            Your linked Discord account is banned:{' '}
-            {discord_details.discord_username} (
-            {discord_details.discord_displayname}) -{' '}
-            {discord_details.discord_id}
+            Your linked Discord account is banned:
+            {data?.discord_details.discord_username} (
+            {data?.discord_details.discord_displayname}) -
+            {data?.discord_details.discord_id}
           </NoticeBox>
         );
       case CkeyPollEnum.PLEXORA_CKEYPOLL_LINKED_DELETED:
         return (
           <NoticeBox danger>
-            Your linked Discord account has been deleted:{' '}
-            {discord_details.discord_username} (
-            {discord_details.discord_displayname}) -{' '}
-            {discord_details.discord_id}
+            Your linked Discord account shows as deleted:
+            {data?.discord_details.discord_username} (
+            {data?.discord_details.discord_displayname}) -
+            {data?.discord_details.discord_id}
           </NoticeBox>
         );
       default:
@@ -111,6 +112,7 @@ export const DiscordVerification = (props, context) => {
   return (
     <Window title="Discord Verification" width={700} height={800}>
       <Window.Content scrollable>
+        {getNoticeBox()}
         <Section title="Your Verification Code">
           <Box>
             <Button
