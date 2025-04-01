@@ -397,7 +397,10 @@ SUBSYSTEM_DEF(plexora)
 /datum/controller/subsystem/plexora/proc/poll_ckey_for_verification(ckey)
 	if (!enabled || (ckey in allowed_ckeys))
 		return list(
-			"polling_response" = PLEXORA_CKEYPOLL_LINKED
+			"polling_response" = PLEXORA_CKEYPOLL_LINKED,
+			"discord_id" = "1234567890987654321",
+			"discord_username" = !enabled ? "PLEXORA_NOT_ENABLED" : "ckey_whitelisted",
+			"discord_displayname" = !enabled ? "Plexora Not Enabled" : "Ckey Whitelisted",
 		)
 
 	var/datum/http_request/request = new(
@@ -1372,7 +1375,12 @@ SUBSYSTEM_DEF(plexora)
 
 	if (!user.discord_details)
 		var/list/plexora_poll_result = SSplexora.poll_ckey_for_verification(user.ckey)
-		user.discord_details = new /datum/discord_details(plexora_poll_result["discord_id"], plexora_poll_result["discord_username"], plexora_poll_result["discord_displayname"], plexora_poll_result["polling_response"])
+		user.discord_details = new /datum/discord_details(
+			plexora_poll_result["discord_id"],
+			plexora_poll_result["discord_username"],
+			plexora_poll_result["discord_displayname"],
+			plexora_poll_result["polling_response"]
+		)
 
 	discord_invite = CONFIG_GET(string/discordurl)
 
@@ -1388,11 +1396,10 @@ SUBSYSTEM_DEF(plexora)
 	)
 
 /datum/discord_verification/ui_data(mob/user)
-	var/list/data = list()
-	data["verification_code"] = verification_code
-	data["discord_invite"] = discord_invite
-	data["discord_details"] = user.client.discord_details
-	return data
+	. = list()
+	.["verification_code"] = verification_code
+	.["discord_invite"] = discord_invite
+	.["discord_details"] = user.client.discord_details.convert_to_list()
 
 /datum/discord_verification/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -1422,3 +1429,10 @@ SUBSYSTEM_DEF(plexora)
 	src.username = username
 	src.displayname = displayname
 	src.status = status
+
+/datum/discord_details/proc/convert_to_list()
+	. = list()
+	.["id"] = id
+	.["username"] = username
+	.["displayname"] = displayname
+	.["status"] = status

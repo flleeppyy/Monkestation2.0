@@ -3,10 +3,7 @@
 /datum/hud/new_player/New(mob/owner)
 	..()
 
-	if(!owner || !owner.client)
-		return
-
-	if (owner.client.not_discord_verified)
+	if(!owner || !owner.client || owner.client.not_discord_verified)
 		return
 
 	var/list/buttons = subtypesof(/atom/movable/screen/lobby)
@@ -479,7 +476,7 @@
 	switch(port)
 		if(HRP_PORT) //HRP
 			screen_loc = "TOP:-32,CENTER:+215"
-		if(MRP_PORT) //MRP
+		if(MRP1_PORT) //MRP
 			screen_loc = "TOP:-65,CENTER:+215"
 		if(MRP2_PORT) //MRP2
 			screen_loc = "TOP:-98,CENTER:+215"
@@ -540,7 +537,7 @@
 	screen_loc = "TOP:-77,CENTER:+173"
 	enabled = TRUE
 	server_name = "Medium-Rare Roleplay (MRP)"
-	server_port = MRP_PORT
+	server_port = MRP1_PORT
 
 //MRP 2 MONKE (MEDIUM WELL)
 /atom/movable/screen/lobby/button/server/mrp2

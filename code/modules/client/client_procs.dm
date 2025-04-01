@@ -553,7 +553,12 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	var/show_form = TRUE
 	if (SSplexora.enabled && CONFIG_GET(flag/require_discord_verification))
 		var/list/plexora_poll_result = SSplexora.poll_ckey_for_verification(ckey)
-		src.discord_details = new /datum/discord_details(plexora_poll_result["discord_id"], plexora_poll_result["discord_username"], plexora_poll_result["discord_displayname"], plexora_poll_result["polling_response"])
+		src.discord_details = new /datum/discord_details(
+			plexora_poll_result["discord_id"],
+			plexora_poll_result["discord_username"],
+			plexora_poll_result["discord_displayname"],
+			plexora_poll_result["polling_response"]
+		)
 		switch(plexora_poll_result["polling_response"])
 			if (PLEXORA_DOWN)
 				message_admins("PLEXORA IS DOWN! PLEASE PING @FLLEEPPYY ON DISCORD! Players will freely flow in without verification if Plexora is down.")
@@ -587,8 +592,8 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 				to_chat_immediate(src, span_danger("If your previous Discord account has been deleted, or lost, please open a ticket in the Discord."))
 			if (PLEXORA_CKEYPOLL_LINKED_BANNED)
 				polling_tripped = TRUE
-				message_admins(span_warning("</B>[key_name_admin(src)] is banned from the Discord! Kicking client. Discord ID: [plexora_poll_result["discord_id"]] Discord Username: [plexora_poll_result["discord_username"]]"))
-				var/log = "Failed Login: [ckey] is banned from the Discord! Kicking client. Discord ID: [plexora_poll_result["discord_id"]] Discord Username: [plexora_poll_result["discord_username"]]"
+				message_admins(span_warning("</B>[key_name_admin(src)] is banned from the Discord! Kicking client. Discord ID: [plexora_poll_result["discord_id"]] Discord Username: [plexora_poll_result["username"]]"))
+				var/log = "Failed Login: [ckey] is banned from the Discord! Kicking client. Discord ID: [plexora_poll_result["discord_id"]] Discord Username: [plexora_poll_result["username"]]"
 				log_access(log)
 				log_suspicious_login(log)
 				kick_client(src, "You are banned from the Discord.", TRUE)

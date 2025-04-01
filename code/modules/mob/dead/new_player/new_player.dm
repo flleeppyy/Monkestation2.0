@@ -47,10 +47,7 @@
 	if (usr != src)
 		return
 
-	if (!client)
-		return
-
-	if (client.not_discord_verified)
+	if (!client || client.not_discord_verified)
 		return
 
 	if (href_list["viewpoll"])
