@@ -396,7 +396,9 @@ SUBSYSTEM_DEF(plexora)
  */
 /datum/controller/subsystem/plexora/proc/poll_ckey_for_verification(ckey)
 	if (!enabled || (ckey in allowed_ckeys))
-		return PLEXORA_CKEYPOLL_LINKED
+		return list(
+			"polling_response" = PLEXORA_CKEYPOLL_LINKED
+		)
 
 	var/datum/http_request/request = new(
 		RUSTG_HTTP_METHOD_POST,
@@ -1353,7 +1355,7 @@ SUBSYSTEM_DEF(plexora)
 		to_chat(src, span_warning("Wait for the Discord subsystem to finish initialising"))
 		return
 
-	var/datum/discord_verification/tgui = new(usr)
+	var/datum/discord_verification/tgui = new(src)
 	tgui.ui_interact(usr)
 
 /datum/discord_verification

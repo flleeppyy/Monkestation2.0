@@ -29,8 +29,12 @@ export const DiscordVerification = (props, context) => {
   const { verification_code, discord_invite } = data;
 
   const getNoticeBox = () => {
-    if (!data?.discord_details?.status) {
-      return null;
+    if (typeof data?.discord_details?.status !== 'number') {
+      return (
+        <NoticeBox danger>
+          Plexora is either down, or the window wasn't given status information.
+        </NoticeBox>
+      );
     }
 
     switch (data?.discord_details?.status as CkeyPollEnum) {
