@@ -18,9 +18,9 @@ interface DiscordVerificationData {
   discord_invite: string;
   discord_details: {
     status: CkeyPollEnum;
-    discord_id?: string;
-    discord_username?: string;
-    discord_displayname?: string;
+    id?: string;
+    username?: string;
+    displayname?: string;
   };
 }
 
@@ -40,12 +40,12 @@ export const DiscordVerification = (props, context) => {
     const formatDiscordDetails = (
       details: DiscordVerificationData['discord_details'],
     ) => {
-      if (details?.discord_username && details?.discord_displayname) {
-        return `${details.discord_username} (${details.discord_displayname}) - ID: ${details.discord_id}`;
-      } else if (details?.discord_username) {
-        return `${details.discord_username} (${details.discord_displayname}) - ID: ${details.discord_id}`;
+      if (details?.username && details?.displayname) {
+        return `${details.username} (${details.displayname}) - ID: ${details.id}`;
+      } else if (details?.username) {
+        return `${details.username} (${details.displayname}) - ID: ${details.id}`;
       } else {
-        return `Discord ID: ${details.discord_id}`;
+        return `Discord ID: ${details.id}`;
       }
     };
 
