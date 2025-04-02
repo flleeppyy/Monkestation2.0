@@ -133,7 +133,7 @@
 	return list()
 
 /world/TgsEndProcess()
-	SSplexora.Shutdown(PLEXORA_SHUTDOWN_KILLDD, usr.ckey)
+	SSplexora.Shutdown(PLEXORA_SHUTDOWN_KILLDD, usr ? key_name(usr) : null)
 	var/datum/tgs_api/api = TGS_READ_GLOBAL(tgs)
 	if(api)
 		api.EndProcess()
