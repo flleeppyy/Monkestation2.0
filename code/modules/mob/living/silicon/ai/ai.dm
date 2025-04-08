@@ -161,20 +161,19 @@
 
 	create_modularInterface()
 
+	// /mob/living/silicon/ai/apply_prefs_job() uses these to set these procs at mapload
+	// this is used when a person is being inserted into an AI core during a round
 	if(client)
 		INVOKE_ASYNC(src, PROC_REF(apply_pref_name), /datum/preference/name/ai, client)
+		INVOKE_ASYNC(src, PROC_REF(apply_pref_hologram_display), client)
 
 	INVOKE_ASYNC(src, PROC_REF(set_core_display_icon))
-
-
-	hologram_appearance = mutable_appearance('icons/mob/silicon/ai.dmi',"default")
 
 	spark_system = new /datum/effect_system/spark_spread()
 	spark_system.set_up(5, 0, src)
 	spark_system.attach(src)
 
 	add_verb(src, /mob/living/silicon/ai/proc/show_laws_verb)
-
 
 	aiMulti = new(src)
 	aicamera = new/obj/item/camera/siliconcam/ai_camera(src)
@@ -270,6 +269,33 @@
 	else
 		var/preferred_icon = input ? input : C.prefs.read_preference(/datum/preference/choiced/ai_core_display)
 		icon_state = resolve_ai_icon(preferred_icon)
+
+/// Apply an AI's hologram preference
+/mob/living/silicon/ai/proc/apply_pref_hologram_display(client/player_client)
+	if(player_client.prefs?.read_preference(/datum/preference/choiced/ai_hologram_display))
+		var/list/hologram_choice = player_client.prefs.read_preference(/datum/preference/choiced/ai_hologram_display)
+		if(hologram_choice == "Random")
+			hologram_choice = pick(GLOB.ai_hologram_icons)
+
+		hologram_appearance = mutable_appearance(GLOB.ai_hologram_icons[hologram_choice], GLOB.ai_hologram_icon_state[hologram_choice])
+
+	hologram_appearance ||= mutable_appearance(GLOB.ai_hologram_icons[AI_HOLOGRAM_DEFAULT], GLOB.ai_hologram_icon_state[AI_HOLOGRAM_DEFAULT])
+
+/// Apply an AI's emote display preference
+/mob/living/silicon/ai/proc/apply_pref_emote_display(client/player_client)
+	if(player_client.prefs?.read_preference(/datum/preference/choiced/ai_emote_display))
+		var/emote_choice = player_client.prefs.read_preference(/datum/preference/choiced/ai_emote_display)
+
+		if(emote_choice == "Random")
+			emote_choice = pick(GLOB.ai_status_display_emotes)
+
+		apply_emote_display(emote_choice)
+
+/// Apply an emote to all AI status displays on the station
+/mob/living/silicon/ai/proc/apply_emote_display(emote)
+	for(var/obj/machinery/status_display/ai/ai_display as anything in GLOB.ai_status_displays)
+		ai_display.emotion = emote
+		ai_display.update()
 
 /mob/living/silicon/ai/verb/pick_icon()
 	set category = "AI Commands"
@@ -439,6 +465,8 @@
 	return TRUE
 
 /mob/living/silicon/ai/proc/make_mmi_drop_and_transfer(obj/item/mmi/the_mmi, the_core)
+	// monkestation edit start
+	/* original
 	var/mmi_type
 	if(posibrain_inside)
 		mmi_type = new/obj/item/mmi/posibrain(src, /* autoping = */ FALSE)
@@ -455,10 +483,22 @@
 	the_mmi.brainmob.name = src.real_name
 	the_mmi.brainmob.real_name = src.real_name
 	the_mmi.brainmob.container = the_mmi
+	*/
+	if (!the_mmi)
+		the_mmi = make_mmi(posibrain_inside)
+	if (hack_software)
+		new/obj/item/malf_upgrade(get_turf(src))
+	// monkestation edit end
 
 	var/has_suicided_trait = HAS_TRAIT(src, TRAIT_SUICIDED)
 	the_mmi.brainmob.set_suicide(has_suicided_trait)
+	// monkestation edit start
+	/* original
 	the_mmi.brain.suicided = has_suicided_trait
+	*/
+	if (the_mmi.brain)
+		the_mmi.brain.suicided = has_suicided_trait
+	// monkestation edit end
 	if(the_core)
 		var/obj/structure/ai_core/core = the_core
 		core.core_mmi = the_mmi
