@@ -140,6 +140,7 @@ SUBSYSTEM_DEF(plexora)
 	if (server_restart_sent)
 		return
 
+	server_restart_sent = TRUE
 	http_basicasync("serverupdates", list(
 		"type" = "servershutdown",
 		"timestamp" = rustg_unix_timestamp(),
@@ -151,7 +152,6 @@ SUBSYSTEM_DEF(plexora)
 		"requestedby" = usr?.ckey,
 		"requestedby_stealthed" = usr?.client?.holder?.fakekey,
 	))
-	server_restart_sent = TRUE
 
 /datum/controller/subsystem/plexora/proc/serverstarted()
 	http_basicasync("serverupdates", list(

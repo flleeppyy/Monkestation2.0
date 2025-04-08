@@ -17,8 +17,8 @@
 	if(!chosen_client)
 		if(findtext(whom, "Discord"))
 			to_chat(src,
-			type = MESSAGE_TYPE_MODCHAT,
-			html = span_warning("Unfortunately, replying to Discord mentor replys are disabled because the mentor ticket system lacks functionality that Plexora needs.")
+				type = MESSAGE_TYPE_MODCHAT,
+				html = span_warning("Unfortunately, replying to Discord mentor replys are disabled because the mentor ticket system lacks functionality that Plexora needs.")
 			)
 			return
 		mentorhelp(msg)
