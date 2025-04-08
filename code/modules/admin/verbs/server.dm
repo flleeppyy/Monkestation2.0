@@ -61,14 +61,14 @@
 				SSplexora.restart_type = PLEXORA_SHUTDOWN_NORMAL // monkestation edit: Plexora
 				SSticker.Reboot(init_by, "admin reboot - by [usr.key] [usr.client.holder.fakekey ? "(stealth)" : ""]", delay * 10)
 			if("Hard Restart (No Delay, No Feedback Reason)")
-				to_chat(world, "World reboot - [init_by]")
 				SSplexora.restart_type = PLEXORA_SHUTDOWN_HARD // monkestation edit: Plexora
 				SSplexora.restart_requester = usr // monkestation edit: Plexora
+				to_chat(world, "World reboot - [init_by]")
 				world.Reboot()
 			if("Hardest Restart (No actions, just reboot)")
-				to_chat(world, "Hard world reboot - [init_by]")
 				SSplexora.restart_type = PLEXORA_SHUTDOWN_HARDEST // monkestation edit: Plexora
 				SSplexora.restart_requester = usr // monkestation edit: Plexora
+				to_chat(world, "Hard world reboot - [init_by]")
 				world.Reboot(fast_track = TRUE)
 			if("Server Restart (Kill and restart DD)")
 				SSplexora.restart_type = PLEXORA_SHUTDOWN_KILLDD // monkestation edit: Plexora
