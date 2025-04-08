@@ -48,7 +48,7 @@
 					if(alert(usr, "Are you sure you want to restart the server?","This server is live", "Restart", "Cancel") != "Restart")
 						return FALSE
 				SSplexora.restart_requester = usr // monkestation edit: Plexora
-				SSplexora.restart_type = PLEXORA_SHUTDOWN_NORMAL
+				SSplexora.restart_type = PLEXORA_SHUTDOWN_NORMAL // monkestation edit: Plexora
 				SSticker.Reboot(init_by, "admin reboot - by [usr.key] [usr.client.holder.fakekey ? "(stealth)" : ""]", 10)
 			if("Regular Restart (with delay)")
 				var/delay = input("What delay should the restart have (in seconds)?", "Restart Delay", 5) as num|null
