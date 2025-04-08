@@ -337,7 +337,6 @@ GLOBAL_PROTECT(tracy_init_reason)
 			log_admin("[key_name(usr)] Has requested an immediate world restart via client side debugging tools")
 			message_admins("[key_name_admin(usr)] Has requested an immediate world restart via client side debugging tools")
 		to_chat(world, span_boldannounce("Rebooting World immediately due to host request."))
-		SSplexora.Shutdown(TRUE, usr ? key_name(usr) : null) // Monkestation edit: plexora
 	else
 		to_chat(world, span_boldannounce("Rebooting world..."))
 		Master.Shutdown() //run SS shutdowns
@@ -371,6 +370,7 @@ GLOBAL_PROTECT(tracy_init_reason)
 			TgsEndProcess()
 			return ..()
 
+	SSplexora._Shutdown() // Monkestation edit: plexora
 	log_world("World rebooted at [time_stamp()]")
 
 	shutdown_logging() // Past this point, no logging procs can be used, at risk of data loss.
