@@ -47,7 +47,7 @@
 				if(!(isnull(usr.client.address) || (usr.client.address in localhost_addresses)))
 					if(alert(usr, "Are you sure you want to restart the server?","This server is live", "Restart", "Cancel") != "Restart")
 						return FALSE
-				SSplexora.restart_requester = usr
+				SSplexora.restart_requester = usr // monkestation edit: Plexora
 				SSplexora.restart_type = PLEXORA_SHUTDOWN_NORMAL
 				SSticker.Reboot(init_by, "admin reboot - by [usr.key] [usr.client.holder.fakekey ? "(stealth)" : ""]", 10)
 			if("Regular Restart (with delay)")
@@ -80,7 +80,7 @@
 ADMIN_VERB(cancel_reboot, R_SERVER, "Cancel Reboot", "Cancels a pending world reboot.", ADMIN_CATEGORY_SERVER)
 	if(!SSticker.cancel_reboot(user))
 		return
-	SSplexora.restart_requester = null
+	SSplexora.restart_requester = null // monkestation edit: Plexora
 	log_admin("[key_name(user)] cancelled the pending world reboot.")
 	message_admins("[key_name_admin(user)] cancelled the pending world reboot.")
 */
