@@ -53,7 +53,7 @@ export const DiscordVerification = (props, context) => {
       case CkeyPollEnum.PLEXORA_DOWN:
         return (
           <NoticeBox danger>
-            Plexora is currently down, can&apos;t fetch verification data.
+            {`Plexora is currently down, can'tt fetch verification data.`}
           </NoticeBox>
         );
       case CkeyPollEnum.PLEXORA_CKEYPOLL_FAILED:
@@ -148,7 +148,7 @@ export const DiscordVerification = (props, context) => {
         <Section title="Verification Steps">
           <LabeledList>
             <LabeledList.Item label="Step 1">
-              Click &quot;Copy to Clipboard&quot; or manually copy the code
+              {`Click "Copy to Clipboard" or manually copy the code`}
               above.
             </LabeledList.Item>
             <LabeledList.Item label="Step 2">
@@ -178,8 +178,9 @@ export const DiscordVerification = (props, context) => {
             </LabeledList.Item>
             <LabeledList.Divider />
             <LabeledList.Item label="Step 6">
-              Select <b>MRP1 or MRP2</b> from the server dropdown. (It
-              doesn&quot;t matter)
+              {`Select `}
+              <b>MRP1 or MRP2</b>
+              {` from the server dropdown. (It doesn't matter)`}
               <Box mt={1}>
                 <img
                   src={resolveAsset('dverify_image3.png')}
