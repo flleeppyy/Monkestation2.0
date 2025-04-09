@@ -20,6 +20,13 @@ SUBSYSTEM_DEF(overwatch)
 	Toggle()
 	return SS_INIT_SUCCESS
 
+/datum/controller/subsystem/overwatch/Recover()
+	max_error_count = SSoverwatch.max_error_count
+	is_active = SSoverwatch.is_active
+	error_counter = SSoverwatch.error_counter
+	tgui_panel_asn_data = deep_copy_list(SSoverwatch.tgui_panel_asn_data)
+	tgui_panel_wl_data = deep_copy_list(SSoverwatch.tgui_panel_wl_data)
+
 /datum/controller/subsystem/overwatch/stat_entry(msg)
 	return "[is_active ? "ACTIVE" : "OFFLINE"]"
 

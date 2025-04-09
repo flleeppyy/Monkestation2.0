@@ -44,6 +44,9 @@ SUBSYSTEM_DEF(plexora)
 	var/tripped_bad_version = FALSE
 	var/list/default_headers
 
+	var/restart_type = PLEXORA_SHUTDOWN_NORMAL
+	var/mob/restart_requester
+
 	// People who have tried to verify this round already
 	var/list/reverify_cache
 
@@ -156,7 +159,13 @@ SUBSYSTEM_DEF(plexora)
 		default_headers
 	).begin_async()
 
-/datum/controller/subsystem/plexora/Shutdown(hard = FALSE, requestedby)
+/datum/controller/subsystem/plexora/proc/_Shutdown()
+	var/static/server_restart_sent = FALSE
+
+	if (server_restart_sent)
+		return
+
+	server_restart_sent = TRUE
 	http_basicasync("serverupdates", list(
 		"type" = "servershutdown",
 		"timestamp" = rustg_unix_timestamp(),
@@ -164,8 +173,9 @@ SUBSYSTEM_DEF(plexora)
 		"round_timer" = ROUND_TIME(),
 		"map" = SSmapping.config?.map_name,
 		"playercount" = length(GLOB.clients),
-		"hard" = hard,
-		"requestedby" = requestedby,
+		"restart_type" = restart_type,
+		"requestedby" = usr?.ckey,
+		"requestedby_stealthed" = usr?.client?.holder?.fakekey,
 	))
 
 /datum/controller/subsystem/plexora/proc/serverstarted()
@@ -770,7 +780,7 @@ SUBSYSTEM_DEF(plexora)
 	var/ckey = input["ckey"]
 
 	if (!ckey)
-		return list("error" = "missingckey")
+		return list("error" = PLEXORA_ERROR_MISSING_CKEY)
 
 	var/list/returning = list(
 		"ckey" = ckey
@@ -807,12 +817,12 @@ SUBSYSTEM_DEF(plexora)
 	var/omit_logs = input["omit_logs"]
 
 	if (!ckey)
-		return list("error" = "missingckey")
+		return list("error" = PLEXORA_ERROR_MISSING_CKEY)
 
 	var/datum/player_details/details = GLOB.player_details[ckey]
 
 	if (QDELETED(details))
-		return list("error" = "detailsnotexist")
+		return list("error" = PLEXORA_ERROR_DETAILSNOTEXIST)
 
 	var/client/client = disambiguate_client(ckey)
 
@@ -851,13 +861,15 @@ SUBSYSTEM_DEF(plexora)
 			"admin_signature" = ckeyadatum.admin_signature,
 		)
 
-	returning["mob"] = list(
-		"name" = clientmob.name,
-		"real_name" = clientmob.real_name,
-		"type" = clientmob.type,
-		"gender" = clientmob.gender,
-		"stat" = clientmob.stat,
-	)
+	if (!QDELETED(clientmob))
+		returning["mob"] = list(
+			"name" = clientmob.name,
+			"real_name" = clientmob.real_name,
+			"type" = clientmob.type,
+			"gender" = clientmob.gender,
+			"stat" = clientmob.stat,
+		)
+
 	if (!QDELETED(client) && isliving(clientmob))
 		var/mob/living/livingmob = clientmob
 		returning["health"] = livingmob.health
@@ -881,7 +893,7 @@ SUBSYSTEM_DEF(plexora)
 	var/client/client = disambiguate_client(ckey)
 
 	if (QDELETED(client))
-		return list("error" = "clientnotexist")
+		return list("error" = PLEXORA_ERROR_CLIENTNOTEXIST)
 
 	var/returning = list(
 		"icon_b64" = icon2base64(getFlatIcon(client.mob, no_anim = TRUE))
@@ -1021,12 +1033,12 @@ SUBSYSTEM_DEF(plexora)
 	var/client/client = disambiguate_client(ckey(target_ckey))
 
 	if (QDELETED(client))
-		return list("error" = "clientnotexist")
+		return list("error" = PLEXORA_ERROR_CLIENTNOTEXIST)
 
 	var/mob/client_mob = client.mob
 
 	if (QDELETED(client_mob))
-		return list("error" = "clientnomob")
+		return list("error" = PLEXORA_ERROR_CLIENTNOMOB)
 
 	return list(
 		"success" = client_mob.emote(emote, message = emote_args, intentional = FALSE)
@@ -1043,12 +1055,12 @@ SUBSYSTEM_DEF(plexora)
 	var/client/client = disambiguate_client(ckey(target_ckey))
 
 	if (QDELETED(client))
-		return list("error" = "clientnotexist")
+		return list("error" = PLEXORA_ERROR_CLIENTNOTEXIST)
 
 	var/mob/client_mob = client.mob
 
 	if (QDELETED(client_mob))
-		return list("error" = "clientnomob")
+		return list("error" = PLEXORA_ERROR_CLIENTNOMOB)
 
 	client_mob.say(message, forced = TRUE)
 
@@ -1062,7 +1074,7 @@ SUBSYSTEM_DEF(plexora)
 	//var/executor = input["executor"]
 
 	if (!CONFIG_GET(string/twitch_key))
-		return list("error" = "twitchkeynotconfigured")
+		return list("error" = PLEXORA_ERROR_NOTWITCHKEY)
 
 	// cant be bothered, lets just call the topic.
 	var/outgoing = list("TWITCH-API", CONFIG_GET(string/twitch_key), event,)
@@ -1078,12 +1090,12 @@ SUBSYSTEM_DEF(plexora)
 	var/smited_by = input["smited_by_ckey"]
 
 	if (!GLOB.smites[selected_smite])
-		return "error=invalidsmite"
+		return list("error" = PLEXORA_ERROR_INVALIDSMITE)
 
 	var/client/client = disambiguate_client(target_ckey)
 
 	if (QDELETED(client))
-		return list("error" = "clientnotexist")
+		return list("error" = PLEXORA_ERROR_CLIENTNOTEXIST)
 
 	// DIVINE SMITING!
 	var/smite_path = GLOB.smites[selected_smite]
@@ -1109,12 +1121,12 @@ SUBSYSTEM_DEF(plexora)
 	var/client/client = disambiguate_client(ckey)
 
 	if (QDELETED(client))
-		return list("error" = "clientnotexist")
+		return list("error" = PLEXORA_ERROR_CLIENTNOTEXIST)
 
 	var/mob/client_mob = client.mob
 
 	if (QDELETED(client_mob))
-		return list("error" = "clientnomob")
+		return list("error" = PLEXORA_ERROR_CLIENTNOMOB)
 
 	// Mock admin
 	var/datum/client_interface/mockadmin = new(
@@ -1144,7 +1156,7 @@ SUBSYSTEM_DEF(plexora)
 	usr = mockadmin
 
 	var/datum/admin_help/ticket = GLOB.ahelp_tickets.TicketByID(ticketid)
-	if (QDELETED(ticket)) return list("error" = "couldntfetchticket")
+	if (QDELETED(ticket)) return list("error" = PLEXORA_ERROR_TICKETNOTEXIST)
 
 	if (action != "reopen" && ticket.state != AHELP_ACTIVE)
 		return
@@ -1186,12 +1198,12 @@ SUBSYSTEM_DEF(plexora)
 	var/client/recipient = disambiguate_client(requested_ckey)
 
 	if (QDELETED(recipient))
-		return list("error" = "clientnotexist")
+		return list("error" = PLEXORA_ERROR_CLIENTNOTEXIST)
 
 	var/datum/admin_help/ticket = ticketid ? GLOB.ahelp_tickets.TicketByID(ticketid) : GLOB.ahelp_tickets.CKey2ActiveTicket(requested_ckey)
 
 	if (QDELETED(ticket))
-		return list("error" = "couldntfetchticket")
+		return list("error" = PLEXORA_ERROR_TICKETNOTEXIST)
 
 	var/plx_tagged = "[sender]"
 
@@ -1202,7 +1214,7 @@ SUBSYSTEM_DEF(plexora)
 	message = emoji_parse(message)
 
 	if (!message)
-		return list("error" = "sanitizationfailed")
+		return list("error" = PLEXORA_ERROR_SANITIZATION_FAILED)
 
 	// I have no idea what this does honestly.
 
@@ -1254,7 +1266,7 @@ SUBSYSTEM_DEF(plexora)
 	var/client/recipient = disambiguate_client(ckey(target_ckey))
 
 	if (QDELETED(recipient))
-		return list("error" = "clientnotexist")
+		return list("error" = PLEXORA_ERROR_CLIENTNOTEXIST)
 
 	// var/datum/request/request = GLOB.mentor_requests.requests_by_id[num2text(ticketid)]
 
