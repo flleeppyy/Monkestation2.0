@@ -32,7 +32,7 @@ export const DiscordVerification = (props, context) => {
     if (typeof data?.discord_details?.status !== 'number') {
       return (
         <NoticeBox danger>
-          Plexora is either down, or the window wasn't given status information.
+          {`Plexora is either down, or the window wasn't given status information.`}
         </NoticeBox>
       );
     }
