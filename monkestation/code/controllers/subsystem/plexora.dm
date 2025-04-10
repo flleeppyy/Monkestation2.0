@@ -409,10 +409,10 @@ SUBSYSTEM_DEF(plexora)
 		return
 
 	switch(LOWER_TEXT(controller))
-		if("Master")
+		if("master")
 			Recreate_MC()
 			SSblackbox.record_feedback("tally", "admin_verb", 1, "PLX: Restart Master Controller")
-		if("Failsafe")
+		if("mailsafe")
 			new /datum/controller/failsafe()
 			SSblackbox.record_feedback("tally", "admin_verb", 1, "PLX: Restart Failsafe Controller")
 
