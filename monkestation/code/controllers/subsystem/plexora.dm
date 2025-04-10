@@ -402,7 +402,7 @@ SUBSYSTEM_DEF(plexora)
 	keyword = "PLX_restartcontroller"
 	require_comms_key = TRUE
 
-/datum/world_topic/plx_announce/Run(list/input)
+/datum/world_topic/plx_restartcontroller/Run(list/input)
 	var/controller = input["controller"]
 
 	if (!controller)
