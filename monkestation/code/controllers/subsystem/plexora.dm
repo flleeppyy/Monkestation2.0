@@ -398,13 +398,23 @@ SUBSYSTEM_DEF(plexora)
 
 	send_formatted_announcement(message, "From [from]")
 
-// // not ready yet
-// /datum/world_topic/plx_commandreport
-// 	keyword = "PLX_commandreport"
-// 	require_comms_key = TRUE
+/datum/world_topic/plx_restartcontroller
+	keyword = "PLX_restartcontroller"
+	require_comms_key = TRUE
 
-// /datum/world_topic/plx_commandreport/Run(list/input)
-// 	priority_announce(text = input["text"], title = input["title"], encode_title = FALSE, encode_text = FALSE, color_override)
+/datum/world_topic/plx_announce/Run(list/input)
+	var/controller = input["controller"]
+
+	if (!controller)
+		return
+
+	switch(LOWER_TEXT(controller))
+		if("Master")
+			Recreate_MC()
+			SSblackbox.record_feedback("tally", "admin_verb", 1, "PLX: Restart Master Controller")
+		if("Failsafe")
+			new /datum/controller/failsafe()
+			SSblackbox.record_feedback("tally", "admin_verb", 1, "PLX: Restart Failsafe Controller")
 
 /datum/world_topic/plx_globalnarrate
 	keyword = "PLX_globalnarrate"
