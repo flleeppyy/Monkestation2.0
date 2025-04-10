@@ -404,6 +404,8 @@ SUBSYSTEM_DEF(plexora)
 
 /datum/world_topic/plx_restartcontroller/Run(list/input)
 	var/controller = input["controller"]
+	var/username = input["username"]
+	var/userid = input["userid"]
 
 	if (!controller)
 		return
@@ -415,6 +417,8 @@ SUBSYSTEM_DEF(plexora)
 		if("mailsafe")
 			new /datum/controller/failsafe()
 			SSblackbox.record_feedback("tally", "admin_verb", 1, "PLX: Restart Failsafe Controller")
+	message_admins("PLEXORA: @[username] ([userid]) has restarted the [controller] controller. from the Discord.")
+
 
 /datum/world_topic/plx_globalnarrate
 	keyword = "PLX_globalnarrate"
