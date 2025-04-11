@@ -417,7 +417,7 @@ SUBSYSTEM_DEF(plexora)
 		if("failsafe")
 			new /datum/controller/failsafe()
 			SSblackbox.record_feedback("tally", "admin_verb", 1, "PLX: Restart Failsafe Controller")
-	message_admins("PLEXORA: @[username] ([userid]) has restarted the [controller] controller. from the Discord.")
+	message_admins("PLEXORA: @[username] ([userid]) has restarted the [controller] controller from the Discord.")
 
 
 /datum/world_topic/plx_globalnarrate
