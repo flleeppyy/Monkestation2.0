@@ -358,5 +358,41 @@ monkestation end */
 	trim_state = "trim_stationengineer"
 	department_color = COLOR_ASSISTANT_GRAY
 
+/datum/station_trait/weed_day
+	name = "Weed Day"
+	report_message = "It's Weed Day! Everyone is in a good mood, and all crewmembers are given a pack of boofies."
+	trait_type = STATION_TRAIT_POSITIVE
+	weight = 1
+	force = TRUE
+	show_in_report = TRUE
+
+/datum/station_trait/weed_day/New()
+	. = ..()
+	RegisterSignal(SSdcs, COMSIG_GLOB_JOB_AFTER_SPAWN, PROC_REF(on_job_after_spawn))
+
+/datum/station_trait/weed_day/proc/on_job_after_spawn(datum/source, datum/job/job, mob/living/spawned_mob)
+	SIGNAL_HANDLER
+
+	var/obj/item/storage/fancy/cigarettes/weedpack
+
+	if (prob(70))
+		weedpack = new /obj/item/storage/fancy/cigarettes/cigpack_mindbreaker(spawned_mob)
+	else
+		weedpack = new /obj/item/storage/fancy/cigarettes/cigpack_cannabis(spawned_mob)
+
+	if (!spawned_mob.equip_to_slot_if_possible(weedpack, ITEM_SLOT_HANDS, disable_warning = TRUE))
+		if (!spawned_mob.equip_to_slot_if_possible(weedpack, ITEM_SLOT_POCKETS, disable_warning = TRUE))
+			spawned_mob.equip_to_slot_or_del(weedpack, ITEM_SLOT_BACKPACK)
+
+	// Some already have a lighter from their cig trait
+	if (!(locate(/obj/item/lighter) in spawned_mob.contents))
+		var/obj/item/lighter/lighter = new /obj/item/lighter(spawned_mob)
+		if (!spawned_mob.equip_to_slot_if_possible(lighter, ITEM_SLOT_HANDS, disable_warning = TRUE))
+			if (!spawned_mob.equip_to_slot_if_possible(lighter, ITEM_SLOT_POCKETS, disable_warning = TRUE))
+				spawned_mob.equip_to_slot_or_del(lighter, ITEM_SLOT_BACKPACK)
+
+	if(prob(15))
+		spawned_mob.adjust_drugginess(rand(5 SECONDS, 15 SECONDS))
+
 #undef PARTY_COOLDOWN_LENGTH_MIN
 #undef PARTY_COOLDOWN_LENGTH_MAX
