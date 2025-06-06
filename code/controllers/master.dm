@@ -299,7 +299,8 @@ GLOBAL_REAL(Master, /datum/controller/master)
 		SS_INIT_NO_NEED,
 	)
 
-	if (subsystem.flags & SS_NO_INIT || subsystem.initialized) //Don't init SSs with the corresponding flag or if they already are initialized
+	if ((subsystem.flags & SS_NO_INIT) || subsystem.initialized) //Don't init SSs with the corresponding flag or if they already are initialized
+		subsystem.initialized = TRUE // set initialized to TRUE, because the value of initialized may still be checked on SS_NO_INIT subsystems as an "is this ready" check
 		return
 
 	current_initializing_subsystem = subsystem
@@ -615,6 +616,17 @@ GLOBAL_REAL(Master, /datum/controller/master)
 			SS.postponed_fires--
 			SS.update_nextfire()
 			continue
+		if(SS_flags & SS_HIBERNATE)
+			var/list/check_vars = SS.hibernate_checks
+			var/enter_queue
+			for(var/i in 1 to length(check_vars))
+				if(LAZYLEN(SS.vars[check_vars[i]]))
+					enter_queue = TRUE
+					break
+			if(!enter_queue)
+				SS.hibernating = TRUE
+				SS.update_nextfire()
+				continue
 		SS.enqueue()
 	. = 1
 

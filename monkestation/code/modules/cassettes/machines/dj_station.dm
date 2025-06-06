@@ -29,6 +29,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/cassette/dj_station)
 	register_context()
 	if(QDELETED(GLOB.dj_booth))
 		GLOB.dj_booth = src
+	ADD_TRAIT(src, TRAIT_ALT_CLICK_BLOCKER, INNATE_TRAIT)
 
 /obj/machinery/cassette/dj_station/Destroy()
 	if(GLOB.dj_booth == src)
