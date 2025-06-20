@@ -1070,6 +1070,8 @@ SUBSYSTEM_DEF(gamemode)
 					message_admins("[key_name_admin(usr)] has chosen [new_storyteller_name] as the new Storyteller.")
 					var/new_storyteller_type = name_list[new_storyteller_name]
 					set_storyteller(new_storyteller_type)
+					if (SSticker.HasRoundStarted())
+						current_storyteller.round_started = TRUE
 				if("halt_storyteller")
 					halted_storyteller = !halted_storyteller
 					message_admins("[key_name_admin(usr)] has [halted_storyteller ? "HALTED" : "un-halted"] the Storyteller.")
