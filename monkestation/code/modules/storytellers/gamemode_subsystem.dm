@@ -135,7 +135,7 @@ SUBSYSTEM_DEF(gamemode)
 	/// Whether the storyteller has been halted
 	var/halted_storyteller = FALSE
 
-	// Used for ssticker to determine if an admin chosed a storyteller, so it doesnt pick one randomly
+	// Used to determine if an admin chosed a storyteller, so it doesnt pick one randomly
 	var/admin_picked_storyteller = FALSE
 
 	/// Ready players for roundstart events.
