@@ -104,7 +104,7 @@
 		if(SSlag_switch.measures[DISABLE_DEAD_KEYLOOP] && !client?.holder)
 			to_chat(src, span_deadsay(span_big("Observer freelook is disabled.\nPlease use Orbit, Teleport, and Jump to look around.")))
 			ghostize(TRUE)
-	if (SSgamemode.current_storyteller.type == /datum/storyteller/starved)
+	if (SSgamemode.current_storyteller && SSgamemode.current_storyteller.type == /datum/storyteller/starved)
 		if (ckey && (ckey in GLOB.joined_player_list))
 			// give the storyteller a buff because a crewmember died
 			SSgamemode.current_storyteller.add_points(
