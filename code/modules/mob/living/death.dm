@@ -108,7 +108,7 @@
 		if (ckey && (ckey in GLOB.joined_player_list))
 			// give the storyteller a buff because a crewmember died
 			SSgamemode.current_storyteller.add_points(
-				SSgamemode.current_storyteller.points_per_death * ((40 / GLOB.joined_player_list.len) * 1.5)
+				SSgamemode.current_storyteller.points_per_death * ((40 / length(GLOB.joined_player_list)) * 1.5)
 			)
 	set_disgust(0)
 	SetSleeping(0, 0)
