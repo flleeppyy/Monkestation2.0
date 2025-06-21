@@ -1,7 +1,7 @@
 // Check /mob/living/proc/death :)
 /datum/storyteller/starved
 	name = "The Starved"
-	desc = "The Starved will create events based on crew death. THe more crew that die, the more powerful the events become."
+	desc = "The Starved will create events based on crew death. The more crew that die, the more powerful the events become."
 	// Purposefully have shit multipliers because
 	point_gains_multipliers = list(
 		EVENT_TRACK_MUNDANE = 0.5,
