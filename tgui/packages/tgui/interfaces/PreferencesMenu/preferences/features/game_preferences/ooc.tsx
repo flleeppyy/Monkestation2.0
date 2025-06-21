@@ -11,6 +11,6 @@ export const oocpronouns: Feature<string> = {
   name: 'OOC pronouns',
   category: 'CHAT',
   description:
-    'Pronouns to show in OOC when someone hovers over your username. Separated by forward slashes. Most common pronouns are accepted. Example: "she/it/fae/"',
+    'Pronouns to show in OOC when someone hovers over your username. Separated by forward slashes. Most common pronouns are accepted. Example: "she/it/fae"',
   component: FeatureShortTextInput,
 };
