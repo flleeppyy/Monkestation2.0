@@ -17,7 +17,7 @@ GLOBAL_LIST_INIT(pronouns_valid, list(
 
 // at least one is required
 GLOBAL_LIST_INIT(pronouns_required, list(
-	"he", "she", "they", "it", "fae"
+	"he", "her", "she", "they", "them", "it", "fae", "its"
 ))
 
 /// The color admins will speak in for OOC.
