@@ -106,7 +106,7 @@ GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 		if(holder)
 			if(!holder.fakekey || receiver.holder)
 				var/keyfield_pre = "[keyname][holder.fakekey ? "/([holder.fakekey])" : ""]"
-				var/keyfield = conditional_tooltip_alt(keyfield_pre, "Pronouns: [pronouns]", length(pronouns))
+				var/keyfield = conditional_tooltip_alt(keyfield_pre, pronouns, length(pronouns))
 				if(check_rights_for(src, R_ADMIN))
 					var/ooc_color = prefs.read_preference(/datum/preference/color/ooc_color)
 					to_chat(receiver, span_adminooc("[CONFIG_GET(flag/allow_admin_ooccolor) && ooc_color ? "<font color=[ooc_color]>" :"" ][span_prefix("OOC:")] <EM>[keyfield]:</EM> <span class='message linkify'>[msg]</span>"), avoid_highlighting = avoid_highlight)
@@ -114,14 +114,14 @@ GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 					to_chat(receiver, span_adminobserverooc(span_prefix("OOC:</span> <EM>[keyfield]:</EM> <span class='message linkify'>[msg]")), avoid_highlighting = avoid_highlight)
 			else
 				var/keyfield_pre = holder.fakekey ? holder.fakekey : key
-				var/keyfield = conditional_tooltip_alt(keyfield_pre, "Pronouns: [pronouns]", length(pronouns))
+				var/keyfield = conditional_tooltip_alt(keyfield_pre, pronouns, length(pronouns))
 				if(GLOB.OOC_COLOR)
 					to_chat(receiver, span_oocplain("<font color='[GLOB.OOC_COLOR]'><b>[span_prefix("OOC:")] <EM>[keyfield]:</EM> <span class='message linkify'>[msg]</span></b></font>"), avoid_highlighting = avoid_highlight)
 				else
 					to_chat(receiver, span_ooc(span_prefix("OOC:</span> <EM>[keyfield]:</EM> <span class='message linkify'>[msg]")), avoid_highlighting = avoid_highlight)
 
 		else if(!(key in receiver.prefs.ignoring))
-			var/keyfield = conditional_tooltip_alt(keyname, "Pronouns: [pronouns]", length(pronouns))
+			var/keyfield = conditional_tooltip_alt(keyname, pronouns, length(pronouns))
 			if(GLOB.OOC_COLOR)
 				to_chat(receiver, span_oocplain("<font color='[GLOB.OOC_COLOR]'><b>[span_prefix("OOC:")] <EM>[keyfield]:</EM> <span class='message linkify'>[msg]</span></b></font>"), avoid_highlighting = avoid_highlight)
 			else
