@@ -80,7 +80,7 @@ GLOBAL_LIST_INIT(pronouns_required, list(
 		if (pronoun in pronouns)
 			return TRUE
 
-	to_chat(usr, span_warning("You must include at least one of the following pronouns (): [GLOB.pronouns_required.Join(", ")]"))
+	to_chat(usr, span_warning("You must include at least one of the following pronouns: [GLOB.pronouns_required.Join(", ")]"))
 	// Someone may yell at me i dont know
 	return FALSE
 
