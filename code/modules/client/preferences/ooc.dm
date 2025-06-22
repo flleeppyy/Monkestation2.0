@@ -1,25 +1,23 @@
+#define MAX_PRONOUNS 4
+#define MIN_PRONOUNS 2
 // This list is non-exhaustive
 GLOBAL_LIST_INIT(pronouns_valid, list(
 	"he", "him", "his",
 	"she","her","hers",
 	"hyr", "hyrs",
 	"they", "them", "their","theirs",
-	"it", "it", "its",
+	"it", "its",
 	"xey", "xe", "xem", "xyr", "xyrs",
 	"ze", "zir", "zirs",
 	"ey", "em", "eir", "eirs",
 	"fae", "faer", "faers",
 	"ve", "ver", "vis", "vers",
-	"ne", "nem", "nir", "nirs",
-	"mrr", "mrrp", "mrrs", "mrrs",
-	"fox", "foxs", "foxes",
-	"bun", "buns",
-	"cat", "puppy"
+	"ne", "nem", "nir", "nirs"
 ))
 
-// list of pronouns where one of them must be used in a pronouns field, so someone cant just do "fox/cat/bun"
+// at least one is required
 GLOBAL_LIST_INIT(pronouns_required, list(
-	"he", "she", "they", "it", "xey", "ze", "ey", "fae", "ve", "ne",
+	"he", "she", "they", "it", "fae"
 ))
 
 /// The color admins will speak in for OOC.
@@ -46,14 +44,30 @@ GLOBAL_LIST_INIT(pronouns_required, list(
 	return ""
 
 /datum/preference/text/ooc_pronouns/is_valid(value)
+	value = lowertext(value)
+
 	if (!value || trim(value) == "")
 		return TRUE
 
+	// staff/donators/mentors can choose whatever pronouns they want given, you know, we trust them to use them like a normal person
+	if (is_admin(usr) || usr.client.is_mentor() || get_patreon_rank(usr.ckey) != NO_RANK)
+		return TRUE
+
 	var/pronouns = splittext(value, "/")
-	if (length(pronouns) > 8)
-		to_chat(usr, "You can only set up to 8 different pronouns.")
+	if (length(pronouns) > MAX_PRONOUNS)
+		to_chat(usr, "You can only set up to [MAX_PRONOUNS] different pronouns.")
 		return FALSE
+
+
 	for (var/pronoun in pronouns)
+		// pronouns can end in "self" or "selfs" so allow those
+		// if has "self" or "selfs" at the end, remove it
+		if (endswith(pronoun, "selfs"))
+			pronoun = copytext(pronoun, 1, length(pronoun) - 5)
+		else if (endswith(pronoun, "self"))
+			pronoun = copytext(pronoun, 1, length(pronoun) - 4)
+		pronoun = trim(pronoun)
+
 		if (!(pronoun in GLOB.pronouns_valid))
 			to_chat(usr, span_warning("Invalid pronoun: [pronoun]. Valid pronouns are: [GLOB.pronouns_valid.Join(", ")]"))
 			return FALSE
@@ -66,6 +80,9 @@ GLOBAL_LIST_INIT(pronouns_required, list(
 		if (pronoun in pronouns)
 			return TRUE
 
-	to_chat(usr, span_warning("You must include at least one of the following pronouns: [GLOB.pronouns_required.Join(", ")]"))
+	to_chat(usr, span_warning("You must include at least one of the following pronouns (): [GLOB.pronouns_required.Join(", ")]"))
 	// Someone may yell at me i dont know
 	return FALSE
+
+#undef MAX_PRONOUNS
+#undef MIN_PRONOUNS
