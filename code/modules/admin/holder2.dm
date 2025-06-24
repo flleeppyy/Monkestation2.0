@@ -73,7 +73,7 @@ GLOBAL_PROTECT(href_token)
 		GLOB.protected_admins[target] = src
 	try_give_profiling()
 	try_give_devtools()
-	if (force_active || (rank_flags() & R_AUTOADMIN) && usr.client.prefs?.read_preference(/datum/preference/toggle/autoadmin))
+	if (force_active || (rank_flags() & R_AUTOADMIN) && usr.client?.prefs?.read_preference(/datum/preference/toggle/autoadmin))
 		activate()
 	else
 		deactivate()
