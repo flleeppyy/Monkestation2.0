@@ -9,7 +9,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/cassette/dj_station)
 	name = "Cassette Player"
 	desc = "Plays Space Music Board approved cassettes for anyone in the station to listen to."
 
-	icon = 'monkestation/code/modules/cassettes/icons/radio_station.dmi'
+	icon = 'icons/obj/cassettes/radio_station.dmi'
 	icon_state = "cassette_player"
 
 	use_power = NO_POWER_USE

@@ -3,7 +3,7 @@
 	name = "Space Board of Music Postbox"
 	desc = "Has a slit specifically to fit cassettes into it."
 
-	icon = 'monkestation/code/modules/cassettes/icons/radio_station.dmi'
+	icon = 'icons/obj/cassettes/radio_station.dmi'
 	icon_state = "postbox"
 
 	max_integrity = 100000 //lol

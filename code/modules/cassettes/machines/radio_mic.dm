@@ -2,7 +2,7 @@
 	name = "Radio Microphone"
 	desc = "Used to talk over the radio"
 
-	icon = 'monkestation/code/modules/cassettes/icons/radio_station.dmi'
+	icon = 'icons/obj/cassettes/radio_station.dmi'
 	icon_state = "unce_machine"
 
 	radio_host = TRUE

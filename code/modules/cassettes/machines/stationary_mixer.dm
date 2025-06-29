@@ -2,7 +2,7 @@
 /obj/machinery/cassette/adv_cassette_deck
 	name = "Advanced Cassette Deck"
 	desc = "A more advanced less portable Cassette Deck. Useful for recording songs from our generation, or customizing the style of your cassettes."
-	icon ='monkestation/code/modules/cassettes/icons/adv_cassette_deck.dmi'
+	icon ='icons/obj/cassettes/adv_cassette_deck.dmi'
 	icon_state = "cassette_deck"
 	density = TRUE
 	pass_flags = PASSTABLE

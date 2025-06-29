@@ -5,7 +5,7 @@
 /obj/structure/cassette_rack
 	name = "cassette pouch"
 	desc = "Safely holds cassettes for storage."
-	icon = 'monkestation/code/modules/cassettes/icons/radio_station.dmi'
+	icon = 'icons/obj/cassettes/radio_station.dmi'
 	icon_state = "cassette_pouch"
 	anchored = FALSE
 	density = FALSE

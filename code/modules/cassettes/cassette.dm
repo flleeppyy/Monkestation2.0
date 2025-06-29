@@ -2,7 +2,7 @@
 /obj/item/cassette_tape
 	name = "Debug Cassette Tape"
 	desc = "You shouldn't be seeing this!"
-	icon = 'monkestation/code/modules/cassettes/icons/walkman.dmi'
+	icon = 'icons/obj/cassettes/walkman.dmi'
 	icon_state = "cassette_flip"
 	w_class = WEIGHT_CLASS_SMALL
 	item_flags = NOBLUDGEON
