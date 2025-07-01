@@ -18,7 +18,7 @@ In any query remember to add a prefix to the table names if you use one.
 -----------------------------------------------------
 Version 5.28 1 July 2025, by Flleeppyy
 Add `mentor` and `mentor_ranks` table for db loading (forgot to do in a prior PR)
-Also adds drop queries for triggers and procedures
+Also adds drop queries for triggers and procedures, as well as a missing `twitch_user` thing from `player`
 
 ```sql
 CREATE TABLE `mentor` (
@@ -34,7 +34,10 @@ CREATE TABLE `mentor_ranks` (
 	`can_edit_flags` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`rank`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE `player` ADD COLUMN `twitch_user` VARCHAR(32) NOT NULL DEFAULT '';
 ```
+
 
 -----------------------------------------------------
 Version 5.27 16 March 2025, by Flleeppyy
