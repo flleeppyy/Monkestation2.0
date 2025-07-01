@@ -328,6 +328,23 @@ CREATE TABLE `mentor` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `mentor_ranks`
+--
+
+DROP TABLE IF EXISTS `mentor_ranks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `mentor_ranks` (
+  `rank` VARCHAR(32) NOT NULL,
+  `flags` SMALLINT(5) UNSIGNED NOT NULL,
+	`exclude_flags` SMALLINT(5) UNSIGNED NOT NULL,
+	`can_edit_flags` SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (`rank`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+--
 -- Table structure for table `role_time`
 --
 

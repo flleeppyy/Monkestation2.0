@@ -17,7 +17,7 @@ In any query remember to add a prefix to the table names if you use one.
 
 -----------------------------------------------------
 Version 5.28 1 July 2025, by Flleeppyy
-Add `mentor` table for db loading (forgot to do in a prior PR)
+Add `mentor` and `mentor_ranks` table for db loading (forgot to do in a prior PR)
 Also adds drop queries for triggers and procedures
 
 ```sql
@@ -25,6 +25,14 @@ CREATE TABLE `mentor` (
   `ckey` varchar(32) NOT NULL,
   `rank` varchar(32) NOT NULL,
   PRIMARY KEY (`ckey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `mentor_ranks` (
+  `rank` VARCHAR(32) NOT NULL,
+  `flags` SMALLINT(5) UNSIGNED NOT NULL,
+	`exclude_flags` SMALLINT(5) UNSIGNED NOT NULL,
+	`can_edit_flags` SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (`rank`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 ```
 
