@@ -301,7 +301,7 @@
 	QDEL_NULL(spark_system)
 	QDEL_NULL(smoke_system)
 	QDEL_NULL(ui_view)
-	QDEL_NULL(trackers)
+	QDEL_LIST(trackers)
 	QDEL_NULL(chassis_camera)
 
 	GLOB.mechas_list -= src //global mech list
@@ -748,3 +748,9 @@
 	for(var/occupant in occupants)
 		remove_action_type_from_mob(/datum/action/vehicle/sealed/mecha/mech_toggle_lights, occupant)
 	return COMPONENT_BLOCK_LIGHT_EATER
+
+/obj/vehicle/sealed/mecha/on_saboteur(datum/source, disrupt_duration)
+	. = ..()
+	if(mecha_flags &= HAS_LIGHTS && light_on)
+		set_light_on(FALSE)
+		return COMSIG_SABOTEUR_SUCCESS

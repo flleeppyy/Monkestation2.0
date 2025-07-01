@@ -1,7 +1,0 @@
-author: "Siro, Lucy"
-delete-after: True
-changes:
-  - rscadd: "Blight Protection status effect applied after being cured of Blight."
-  - qol: "Blight cure now checks for active sleeping instead of just laying down. Gives chance for essence absorption."
-  - bugfix: "Blight now applies its debuffs again."
-  - code_imp: "Blight debuff effects converted from a disease to a refreshing status effect."

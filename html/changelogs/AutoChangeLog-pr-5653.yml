@@ -1,6 +1,0 @@
-author: "SirNightKnight"
-delete-after: True
-changes:
-  - rscadd: "Added  the Corporate Sponsorship for Evil bundle to the uplink. 20 TC purchase for traitors as a pass to murderbone"
-  - rscdel: "Reverted the License to Murderbone to License to Plasmaflood"
-  - bugfix: "adjusted the fake mustache sprite to look better"
