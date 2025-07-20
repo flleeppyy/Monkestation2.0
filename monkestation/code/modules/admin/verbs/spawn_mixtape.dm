@@ -1,27 +1,17 @@
-/client/proc/spawn_mixtape()
-	set category = "Admin.Game"
-	set name = "Spawn Mixtape"
-	set desc = "Select an approved mixtape to spawn at your location."
-
-	if(!check_rights(R_ADMIN))
-		return
-	new /datum/mixtape_spawner(src)
+#warn TODO: spawn mixtape
+/*
+ADMIN_VERB(spawn_mixtape, R_FUN, FALSE, "Spawn Mixtape", "Select an approved mixtape to spawn at your location.", ADMIN_CATEGORY_GAME)
+	var/datum/mixtape_spawner/tgui = new(user)//create the datum
+	tgui.ui_interact(user.mob)//datum has a tgui component, here we open the window
 
 /datum/mixtape_spawner
-	/// The client of whoever is using this datum.
-	var/client/holder
+	var/client/holder //client of whoever is using this datum
 
 /datum/mixtape_spawner/New(user)//user can either be a client or a mob due to byondcode(tm)
-	. = ..()
-	holder = get_player_client(user)
-	ui_interact(holder.mob)
-
-/datum/mixtape_spawner/Destroy(force)
-	holder = null
-	return ..()
+	holder = user //AVD user is a client so this would be setting a client.
 
 /datum/mixtape_spawner/ui_state(mob/user)
-	return GLOB.admin_state
+	return ADMIN_STATE(R_ADMIN)
 
 /datum/mixtape_spawner/ui_close()
 	qdel(src)
@@ -30,38 +20,33 @@
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
 		ui = new(user, src, "MixtapeSpawner")
-		ui.set_autoupdate(FALSE)
 		ui.open()
 
-/datum/mixtape_spawner/ui_static_data(mob/user)
-	var/list/approved_cassettes = list()
-	for(var/datum/cassette/cassette as anything in SScassettes.cassettes)
-		if(cassette.status != CASSETTE_STATUS_APPROVED)
-			continue
-		approved_cassettes += list(list(
-			"name" = cassette.name,
-			"desc" = cassette.desc,
-			"cassette_design_front" = cassette.front.design,
-			"creator_ckey" = ckey(cassette.author.ckey),
-			"creator_name" = cassette.author.name,
-			"song_names" = cassette.list_song_names(),
-			"id" = cassette.id,
+/datum/mixtape_spawner/ui_data(mob/user)
+	var/list/data = list()
+	if(!length(SScassette_storage.cassette_datums))
+		return
+	for(var/datum/cassette_data/cassette in SScassette_storage.cassette_datums)
+		data["approved_cassettes"] += list(list(
+			"name" = cassette.cassette_name,
+			"desc" = cassette.cassette_desc,
+			"cassette_design_front" = cassette.cassette_design_front,
+			"creator_ckey" = cassette.cassette_author_ckey,
+			"creator_name" = cassette.cassette_author,
+			"song_names" = cassette.song_names,
+			"id" = cassette.cassette_id
 		))
-	return list("approved_cassettes" = approved_cassettes)
+	return data
 
-/datum/mixtape_spawner/ui_act(action, list/params, datum/tgui/ui)
+/datum/mixtape_spawner/ui_act(action, params)
 	. = ..()
 	if(.)
 		return
-	var/mob/user = ui.user
 	switch(action)
 		if("spawn")
-			var/id = params["id"]
-			if(!id)
-				return
-			var/atom/spawn_loc = user.drop_location()
-			new /obj/item/cassette_tape(spawn_loc, id)
-			SSblackbox.record_feedback("tally", "admin_verb", 1, "Spawn Mixtape")
-			message_admins("[key_name_admin(user)] spawned mixtape [id] at [ADMIN_COORDJMP(spawn_loc)].")
-			log_admin("[key_name(user)] spawned mixtape [id] at [loc_name(spawn_loc)].")
-			return TRUE
+			if (params["id"])
+				new/obj/item/device/cassette_tape(usr.loc, params["id"])
+				SSblackbox.record_feedback("tally", "admin_verb", 1, "Spawn Mixtape")
+				log_admin("[key_name(usr)] created mixtape [params["id"]] at [usr.loc].")
+
+*/
