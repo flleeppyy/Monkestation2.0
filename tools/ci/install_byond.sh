@@ -14,6 +14,7 @@ else
   rm -rf "$HOME/BYOND"
   mkdir -p "$HOME/BYOND"
   cd "$HOME/BYOND"
+	sudo apt update
 	sudo apt-get install --no-install-recommends -y libcurl4:i386
   curl -H "User-Agent: Monkestation2.0/1.0 CI Script" "http://www.byond.com/download/build/${BYOND_MAJOR}/${BYOND_MAJOR}.${BYOND_MINOR}_byond_linux.zip" -o byond.zip
   unzip byond.zip
