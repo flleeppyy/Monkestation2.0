@@ -1,19 +1,6 @@
 // This might be compatible with sentry, I'm not sure, my trial period expired so I can't test lol
 // Configuration options are in entries/general.dm
 
-GLOBAL_LIST_EMPTY(glitchtip_requests)
-
-// TODO: Remove with introduction of Rust-g 3.12.0, and use `rustg_generate_uuid_v4`
-// OR
-// TODO: Remove with introduction of Aneri, and use `aneri_uuid`
-/proc/generate_simple_uuid()
-	var/uuid = ""
-	for(var/i = 1 to 32)
-		uuid += pick("0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f")
-		if(i == 8 || i == 12 || i == 16 || i == 20)
-			uuid += "-"
-	return uuid
-
 /proc/send_to_glitchtip(exception/E, list/extra_data = null)
 	if(!CONFIG_GET(flag/glitchtip_enabled) || !CONFIG_GET(string/glitchtip_dsn))
 		return
@@ -35,7 +22,7 @@ GLOBAL_LIST_EMPTY(glitchtip_requests)
 	var/project_id = copytext(dsn_clean, slash_pos + 1)
 
 	var/list/event_data = list()
-	event_data["event_id"] = generate_simple_uuid()
+	event_data["event_id"] = rustg_generate_uuid_v4()
 	event_data["timestamp"] = time_stamp_metric()
 	event_data["level"] = "error"
 	event_data["platform"] = world.system_type
@@ -65,7 +52,7 @@ GLOBAL_LIST_EMPTY(glitchtip_requests)
 
 	// Walk the call stack using callee objects
 	var/frame_count = 0
-	var/max_frames = 500 // Prevent infinite loops or excessive data
+	var/max_frames = 150 // Prevent infinite loops or excessive data
 	for(var/callee/p = caller; p && frame_count < max_frames; p = p.caller)
 		frame_count++
 		var/proc_name = "unknown"
@@ -78,6 +65,9 @@ GLOBAL_LIST_EMPTY(glitchtip_requests)
 			var/slash_pos_inner = findtext(proc_name, "/", -1)
 			if(slash_pos_inner && slash_pos_inner < length(proc_name))
 				proc_name = copytext(proc_name, slash_pos_inner + 1)
+
+		if(findtext(file_name, "master.dm") && (proc_name == "Loop" || proc_name == "StartProcessing"))
+			break
 
 		// Get file and line information if available
 		if(p.file)
@@ -187,6 +177,7 @@ GLOBAL_LIST_EMPTY(glitchtip_requests)
 		if(length(frame_vars))
 			frame["vars"] = frame_vars
 
+
 		frames += list(frame)
 
 	exception_data["stacktrace"] = list("frames" = frames)
@@ -232,11 +223,6 @@ GLOBAL_LIST_EMPTY(glitchtip_requests)
 	send_glitchtip_request(event_data, host, project_id, key)
 
 /proc/send_glitchtip_request(list/event_data, host, project_id, key)
-	for(var/datum/http_request/request as anything in GLOB.glitchtip_requests)
-		if(request.is_complete())
-			GLOB.glitchtip_requests -= request
-			qdel(request)
-
 	var/glitchtip_url = "https://[host]/api/[project_id]/store/"
 	var/json_payload = json_encode(event_data)
 
@@ -249,5 +235,4 @@ GLOBAL_LIST_EMPTY(glitchtip_requests)
 		"Content-Type" = "application/json",
 		"User-Agent" = get_useragent("Glitchtip-Implementation")
 	))
-	request.begin_async()
-	GLOB.glitchtip_requests += request
+	request.fire_and_forget()
