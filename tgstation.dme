@@ -3629,8 +3629,6 @@
 #include "code\modules\cassettes\random_cassette_selection.dm"
 #include "code\modules\cassettes\cassette_db\cassette_datum.dm"
 #include "code\modules\cassettes\cassette_db\cassette_manager.dm"
-#include "code\modules\cassettes\dj\dj_music_field.dm"
-#include "code\modules\cassettes\dj\intercom.dm"
 #include "code\modules\cassettes\dj\mob_can_hear.dm"
 #include "code\modules\cassettes\machines\cassette_rack.dm"
 #include "code\modules\cassettes\machines\dj_station.dm"
