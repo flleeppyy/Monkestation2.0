@@ -8001,7 +8001,7 @@
 	},
 /obj/machinery/power/apc/auto_name/directional/west,
 /obj/structure/cable,
-/obj/item/storage/backpack/duffelbag/deforest_surgical/stocked,
+/obj/item/storage/backpack/deforest_surgical/stocked,
 /turf/open/floor/iron/white/textured,
 /area/station/security/medical)
 "csQ" = (
@@ -10410,7 +10410,7 @@
 /turf/open/floor/iron,
 /area/station/service/hydroponics)
 "ddm" = (
-/obj/machinery/computer/scan_consolenew{
+/obj/machinery/computer/dna_console{
 	dir = 4
 	},
 /obj/effect/turf_decal/tile/green/anticorner{
@@ -25960,6 +25960,7 @@
 /obj/machinery/atmospherics/pipe/smart/simple/dark/visible,
 /obj/machinery/door/firedoor,
 /obj/structure/cable,
+/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
 /turf/open/floor/iron/dark/smooth_large,
 /area/station/science/ordnance/storage)
 "hIe" = (
@@ -48673,7 +48674,6 @@
 /obj/machinery/airalarm/directional/north,
 /mob/living/basic/parrot/poly,
 /obj/machinery/camera/autoname/directional/east,
-/obj/item/construction/rcd/ce,
 /turf/open/floor/wood,
 /area/station/command/heads_quarters/ce)
 "ojM" = (
@@ -77794,7 +77794,7 @@
 	},
 /obj/effect/turf_decal/tile/green/anticorner,
 /obj/effect/turf_decal/bot,
-/obj/machinery/computer/scan_consolenew{
+/obj/machinery/computer/dna_console{
 	dir = 8
 	},
 /turf/open/floor/iron/white,
