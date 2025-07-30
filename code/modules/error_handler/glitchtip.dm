@@ -52,7 +52,7 @@
 
 	// Walk the call stack using callee objects
 	var/frame_count = 0
-	var/max_frames = 150 // Prevent infinite loops or excessive data
+	var/max_frames = 35 // Prevent infinite loops or excessive data. Realistically, this should not exceed 30~
 	for(var/callee/p = caller; p && frame_count < max_frames; p = p.caller)
 		frame_count++
 		var/proc_name = "unknown"
