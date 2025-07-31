@@ -190,7 +190,7 @@
 		user_data["character_name"] = usr.name
 		user_data["character_realname"] = usr.real_name
 		user_data["character_mobtype"] = usr.type
-		user_data["character_job"] = usr?.job
+		user_data["character_job"] = usr.job
 		if(usr.client)
 			user_data["byond_version"] = usr.client.byond_version
 			user_data["byond_build"] = usr.client.byond_build
