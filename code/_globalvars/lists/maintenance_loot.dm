@@ -51,8 +51,7 @@ GLOBAL_LIST_INIT(trash_loot, list(//junk: useless, very easy to get, or ghetto c
 		/obj/item/reagent_containers/cup/glass/drinkingglass = 1,
 
 		/obj/item/airlock_painter = 1,
-		/obj/item/airlock_painter/decal = 1,
-		/obj/item/airlock_painter/decal/tile = 1,
+		/obj/item/airlock_painter/decal = 2,
 		/obj/item/clothing/mask/breath = 1,
 		/obj/item/rack_parts = 1,
 		/obj/item/shard = 1,
@@ -212,9 +211,9 @@ GLOBAL_LIST_INIT(uncommon_loot, list(//uncommon: useful items
 		//Sorry Lucy, I stole your gifts. ~MCP.
 		/obj/item/dice/d20/fate/stealth/cursed = 1, //Only rolls 1
 		/obj/item/implanter/dust = 3,
-		/obj/machinery/vending/sovietsoda = 3,
-		/obj/machinery/vending/donksnack = 3,
-		/obj/machinery/vending/hotdog = 4,
+		/obj/item/vending_refill/sovietsoda = 3,
+		/obj/item/vending_refill/donksnackvendor = 3,
+		/obj/item/vending_refill/hotdog = 4,
 		/obj/item/clothing/mask/facehugger/toy = 2, //Heheh ~MCP :3
 		/obj/effect/spawner/random/livingplush = 4,
 		) = 8,

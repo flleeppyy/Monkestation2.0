@@ -877,6 +877,8 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 // Debug traits
 /// This object has light debugging tools attached to it
 /* #define TRAIT_LIGHTING_DEBUGGED "lighting_debugged" */
+/// This object has sound debugging tools attached to it
+#define TRAIT_SOUND_DEBUGGED "sound_debugged"
 
 /// Gives you the Shifty Eyes quirk, rarely making people who examine you think you examined them back even when you didn't
 #define TRAIT_SHIFTY_EYES "shifty_eyes"
@@ -973,6 +975,9 @@ Remember to update _globalvars/traits.dm if you're adding/removing/renaming trai
 
 ///Trait given to a mob with a ckey currently in a temporary body, allowing people to know someone will re-enter the round later.
 #define TRAIT_MIND_TEMPORARILY_GONE "temporarily_gone"
+
+/// Trait given to mechs that can have orebox functionality on movement
+#define TRAIT_OREBOX_FUNCTIONAL "orebox_functional"
 
 /// Similar trait given to temporary bodies inhabited by players
 #define TRAIT_TEMPORARY_BODY "temporary_body"

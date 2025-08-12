@@ -1,0 +1,7 @@
+author: "Wernerses"
+delete-after: True
+changes:
+  - map: "Added the missing disk compartamentalizer to Icebox Botany"
+  - map: "Added heated nesting boxes to some maps that did not have it before"
+  - map: "Replaced all ranching railings with reinforced thin glass walls and windoors for easy access for simians"
+  - map: "Chicken nest boxes are now all close to windoors for easy access to eggs"
