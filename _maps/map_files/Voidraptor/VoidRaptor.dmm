@@ -39958,7 +39958,7 @@
 /obj/effect/turf_decal/siding/thinplating/dark{
 	dir = 10
 	},
-/obj/machinery/cassette/dj_station{
+/obj/machinery/dj_station{
 	pixel_y = 7
 	},
 /obj/structure/table/wood,

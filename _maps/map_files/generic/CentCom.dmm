@@ -20522,7 +20522,7 @@
 /area/centcom/central_command_areas/adminroom)
 "cJa" = (
 /obj/structure/table/reinforced/plastitaniumglass,
-/obj/machinery/cassette/dj_station,
+/obj/machinery/dj_station,
 /turf/open/floor/carpet/donk,
 /area/centcom/central_command_areas/adminroom)
 "cKo" = (

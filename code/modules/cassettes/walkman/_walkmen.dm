@@ -105,7 +105,7 @@ GLOBAL_LIST_INIT(youtube_exempt, list(
 		listener.tgui_panel?.stop_music()
 		GLOB.youtube_exempt["walkman"] -= listener
 		if(GLOB.dj_booth && GLOB.dj_broadcast)
-			var/obj/machinery/cassette/dj_station/dj = GLOB.dj_booth
+			var/obj/machinery/dj_station/dj = GLOB.dj_booth
 			if(iscarbon(current_listener))
 				dj.check_solo_broadcast(current_listener)
 		return
