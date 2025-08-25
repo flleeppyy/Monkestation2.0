@@ -47,6 +47,15 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		GLOB.dj_booth = null
 	return ..()
 
+/obj/machinery/dj_station/add_context(atom/source, list/context, obj/item/held_item, mob/user)
+	if(istype(held_item, /obj/item/cassette_tape))
+		context[SCREENTIP_CONTEXT_LMB] = inserted_tape ? "Swap Tape" : "Insert Tape"
+	else if(!held_item)
+		context[SCREENTIP_CONTEXT_LMB] = "Open UI"
+
+	if(inserted_tape)
+		context[SCREENTIP_CONTEXT_CTRL_LMB] = "Eject Tape"
+
 /obj/machinery/dj_station/ui_data(mob/user)
 	. = list(
 		"broadcasting" = broadcasting,
