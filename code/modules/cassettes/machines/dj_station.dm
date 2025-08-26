@@ -56,6 +56,32 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	if(inserted_tape)
 		context[SCREENTIP_CONTEXT_CTRL_LMB] = "Eject Tape"
 
+/obj/machinery/dj_station/attackby(obj/item/weapon, mob/user, params)
+	if(istype(weapon, /obj/item/cassette_tape))
+		var/obj/item/cassette_tape/old_tape = inserted_tape
+		if(old_tape)
+			old_tape.forceMove(drop_location())
+			inserted_tape = null
+		if(user.transferItemToLoc(weapon, src))
+			balloon_alert(user, "inserted tape")
+			inserted_tape = weapon
+			if(old_tape)
+				user.put_in_hands(old_tape)
+		return
+	return ..()
+
+/obj/machinery/dj_station/CtrlClick(mob/user)
+	. = ..()
+	if(!.)
+		return
+	if(inserted_tape)
+		inserted_tape.forceMove(drop_location())
+		inserted_tape = null
+		balloon_alert(user, "tape ejected")
+	else
+		balloon_alert(user, "no tape inserted!")
+	return TRUE
+
 /obj/machinery/dj_station/ui_data(mob/user)
 	. = list(
 		"broadcasting" = broadcasting,
