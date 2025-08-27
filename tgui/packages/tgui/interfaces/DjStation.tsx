@@ -163,9 +163,10 @@ const AvailableTracks = ({ songs }: { songs: Song[] }) => {
 };
 
 export const DjStation = () => {
-  const { data } = useBackend<Data>();
+  const { act, data } = useBackend<Data>();
+  const { current_song, side } = data;
 
-  const { cassette, current_song, side } = data;
+  const cassette = data?.cassette;
 
   const songs = cassette?.songs ?? [];
 
@@ -176,7 +177,14 @@ export const DjStation = () => {
           <Stack.Item grow={1}>
             <Stack vertical fill>
               {/* Tape Info Section */}
-              <Section title="Tape Info">
+              <Section
+                title="Tape Info"
+                buttons={
+                  <Button fluid icon="eject" onClick={() => act('eject')}>
+                    Eject
+                  </Button>
+                }
+              >
                 <LabeledList>
                   <LabeledList.Item label="Tape Author">
                     {cassette?.author || 'Unknown'}
@@ -185,8 +193,7 @@ export const DjStation = () => {
                     {cassette?.desc || 'No description'}
                   </LabeledList.Item>
                   <LabeledList.Item label="Total Tracks">
-                    {songs.length} (Side A: {Math.ceil(songs.length / 2)}) (Side
-                    B: {Math.floor(songs.length / 2)})
+                    {songs.length}
                   </LabeledList.Item>
                   <LabeledList.Item label="Total Duration">
                     {songs.length

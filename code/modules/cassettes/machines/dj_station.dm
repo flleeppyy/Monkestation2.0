@@ -70,16 +70,20 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		return
 	return ..()
 
+/obj/machinery/dj_station/eject_tape(mob/user)
+	if(inserted_tape)
+		inserted_tape.forceMove(drop_location())
+		inserted_tape = null
+		if (user)
+			balloon_alert(user, "tape ejected")
+	else if (user)
+		balloon_alert(user, "no tape inserted!")
+
 /obj/machinery/dj_station/CtrlClick(mob/user)
 	. = ..()
 	if(!.)
 		return
-	if(inserted_tape)
-		inserted_tape.forceMove(drop_location())
-		inserted_tape = null
-		balloon_alert(user, "tape ejected")
-	else
-		balloon_alert(user, "no tape inserted!")
+	eject_tape()
 	return TRUE
 
 /obj/machinery/dj_station/ui_interact(mob/user, datum/tgui/ui)
@@ -112,6 +116,15 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				"name" = song.name,
 				"url" = song.url,
 			))
+
+/obj/machinery/dj_station/ui_act(action, list/params)
+	. = ..()
+	if (.)
+		return .
+
+	switch(action)
+		if("eject")
+			eject_tape(usr)
 
 // It cannot be stopped.
 /obj/machinery/dj_station/take_damage(damage_amount, damage_type, damage_flag, sound_effect, attack_dir, armour_penetration)
