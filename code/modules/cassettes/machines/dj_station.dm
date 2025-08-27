@@ -82,6 +82,12 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		balloon_alert(user, "no tape inserted!")
 	return TRUE
 
+/obj/machinery/dj_station/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "DjStation")
+		ui.open()
+
 /obj/machinery/dj_station/ui_data(mob/user)
 	. = list(
 		"broadcasting" = broadcasting,
@@ -124,13 +130,3 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	hitting_projectile.debilitating = FALSE
 	hitting_projectile.reflect(src)
 	return BULLET_ACT_FORCE_PIERCE
-
-/*
-/obj/machinery/dj_station/add_context(atom/source, list/context, obj/item/held_item, mob/user)
-	. = ..()
-	if(inserted_tape)
-		context[SCREENTIP_CONTEXT_CTRL_LMB] = "Eject Tape"
-		if(!broadcasting)
-			context[SCREENTIP_CONTEXT_LMB] = "Play Tape"
-	return CONTEXTUAL_SCREENTIP_SET
-*/
