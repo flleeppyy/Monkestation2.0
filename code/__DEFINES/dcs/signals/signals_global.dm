@@ -97,3 +97,7 @@
 #define COMSIG_GLOB_ADD_MUSIC_LISTENER "!add_music_listener"
 /// Sent whenever a mob becomes no longer capable of hearing DJ music: (mob/listener)
 #define COMSIG_GLOB_REMOVE_MUSIC_LISTENER "!remove_music_listener"
+//monkestation edit end
+
+/// Global signal sent when darkspawns ascend: (No arguments)
+#define COMSIG_DARKSPAWN_ASCENSION "!darkspawn_ascension"
