@@ -15,28 +15,61 @@ import { Window } from '../layouts';
 import { getThumbnailUrl } from '../../common/other';
 import { Component } from 'inferno';
 
+export enum CassetteDesign {
+  Flip = 'cassette_flip',
+  Blue = 'cassette_blue',
+  Gray = 'cassette_gray',
+  Green = 'cassette_green',
+  Orange = 'cassette_orange',
+  PinkStripe = 'cassette_pink_stripe',
+  Purple = 'cassette_purple',
+  Rainbow = 'cassette_rainbow',
+  RedBlack = 'cassette_red_black',
+  RedStripe = 'cassette_red_stripe',
+  Camo = 'cassette_camo',
+  RisingSun = 'cassette_rising_sun',
+  OrangeBlue = 'cassette_orange_blue',
+  Ocean = 'cassette_ocean',
+  Aesthetic = 'cassette_aesthetic',
+  Solaris = 'cassette_solaris',
+  Ice = 'cassette_ice',
+  Lz = 'cassette_lz',
+  Dam = 'cassette_dam',
+  Worstmap = 'cassette_worstmap',
+  Wy = 'cassette_wy',
+  Ftl = 'cassette_ftl',
+  Eighties = 'cassette_eighties',
+  Synth = 'cassette_synth',
+  WhiteStripe = 'cassette_white_stripe',
+  Friday = 'cassette_friday',
+}
+
 type Song = {
   name: string;
   url: string;
   length: number; // in seconds
 };
+
 type Cassette = {
   name: string;
   desc: string;
   author: string;
+  design: CassetteDesign;
   songs: Song[];
 };
+
 enum CassetteSide {
   A = 0,
   B,
 }
+
 type Data = {
   broadcasting: boolean;
   song_cooldown: number;
-  progress: number; // 0–1 for UI bar
+  progress: number;
   cassette: Cassette;
   side: CassetteSide;
-  current_song: Song;
+  current_song: number;
 };
 
 class Controls extends Component<{ data: Data }> {
@@ -49,32 +82,49 @@ class Controls extends Component<{ data: Data }> {
   }
 
   componentDidMount() {
-    console.table('meow');
     this.fetchThumbnail();
   }
 
-  componentDidUpdate(prevProps) {
-    console.table('component did update');
-    if (this.props.data?.current_song?.url !== prevProps?.current_song?.url) {
+  componentDidUpdate(prevProps: { data: Data }) {
+    const { current_song, cassette } = this.props.data;
+    const { current_song: prev_current_song, cassette: prev_cassette } =
+      prevProps.data;
+
+    if (
+      getSong(current_song, cassette)?.url !==
+      getSong(prev_current_song, prev_cassette)?.url
+    ) {
       this.fetchThumbnail();
     }
   }
 
+  private fetchToken = 0;
+
   async fetchThumbnail() {
-    console.table('fetch thumbnail');
-    const { current_song } = this.props?.data || {};
-    if (!current_song) return;
-    if (current_song?.url) {
-      const thumb = await getThumbnailUrl(current_song?.url);
+    const token = ++this.fetchToken;
+    const { current_song: current_songId } = this.props.data;
+    if (current_songId == null) return;
+    const current_song = getSong(current_songId, this.props.data.cassette);
+    if (!current_song?.url) return;
+    const thumb = await getThumbnailUrl(current_song.url);
+    if (token === this.fetchToken) {
       this.setState({ thumbnailUrl: thumb });
     }
   }
 
   render() {
     const { act } = useBackend();
-    const { progress, broadcasting, current_song, song_cooldown } =
-      this.props.data;
+    const {
+      progress,
+      broadcasting,
+      current_song: current_songId,
+      song_cooldown,
+    } = this.props.data;
+    const cassette = this.props.data?.cassette;
+
     const { thumbnailUrl } = this.state;
+
+    const current_song = getSong(current_songId, cassette);
 
     return (
       <Stack fill vertical>
@@ -82,7 +132,9 @@ class Controls extends Component<{ data: Data }> {
           <LabeledList>
             <LabeledList.Item label="Title">
               <Box>
-                {broadcasting && current_song ? current_song.name : 'Stopped'}
+                {broadcasting && current_song
+                  ? current_song?.name || 'Stopped'
+                  : 'Stopped'}
               </Box>
             </LabeledList.Item>
             <LabeledList.Item label="Controls">
@@ -134,15 +186,14 @@ class Controls extends Component<{ data: Data }> {
   }
 }
 
-const AvailableTracks = ({ songs }: { songs: Song[] }) => {
-  const { act, data } = useBackend<Data>();
-  const { progress } = data;
-
-  const cassette = data?.cassette;
-
-  const currentSong = cassette?.songs?.length
-    ? cassette.songs[Math.floor(progress * cassette.songs.length)]
-    : null;
+const AvailableTracks = ({
+  songs,
+  currentSong,
+}: {
+  songs: Song[];
+  currentSong: Song;
+}) => {
+  const { act } = useBackend<Data>();
 
   return (
     <Stack vertical fill>
@@ -164,11 +215,13 @@ const AvailableTracks = ({ songs }: { songs: Song[] }) => {
 
 export const DjStation = () => {
   const { act, data } = useBackend<Data>();
-  const { current_song, side } = data;
+  const { side } = data;
 
   const cassette = data?.cassette;
 
   const songs = cassette?.songs ?? [];
+
+  const currentSong = getSong(data.current_song, cassette);
 
   return (
     <Window title="DJ Station" width={1000} height={650} resizable>
@@ -176,7 +229,6 @@ export const DjStation = () => {
         <Stack horizontal fill>
           <Stack.Item grow={1}>
             <Stack vertical fill>
-              {/* Tape Info Section */}
               <Section
                 title="Tape Info"
                 buttons={
@@ -207,9 +259,7 @@ export const DjStation = () => {
               </Section>
               <Section fill scrollable title={`Side ${side ? 'A' : 'B'}`}>
                 {songs.length ? (
-                  <AvailableTracks
-                    songs={songs.filter((_, i) => i % 2 === 0)}
-                  />
+                  <AvailableTracks songs={songs} currentSong={currentSong} />
                 ) : (
                   <Box color="bad">
                     {cassette ? 'No songs on this side.' : 'No tape inserted'}
@@ -228,3 +278,8 @@ export const DjStation = () => {
     </Window>
   );
 };
+
+function getSong(index: number, cassette: Cassette): Song;
+function getSong(index: number, cassette?: Cassette): Song | null {
+  return cassette ? cassette.songs[index] : null;
+}
