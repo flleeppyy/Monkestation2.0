@@ -105,6 +105,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		.["playing"] = list(
 			"name" = playing.name,
 			"url" = playing.url,
+			"length" = playing.length,
 		)
 
 /obj/machinery/dj_station/ui_static_data(mob/user)
