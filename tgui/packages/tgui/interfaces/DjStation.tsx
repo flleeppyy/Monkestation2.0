@@ -14,6 +14,7 @@ import { formatTime } from '../format';
 import { Window } from '../layouts';
 import { getThumbnailUrl } from '../../common/other';
 import { Component } from 'inferno';
+import { BooleanLike } from 'common/react';
 
 export enum CassetteDesign {
   Flip = 'cassette_flip',
@@ -64,7 +65,7 @@ enum CassetteSide {
 }
 
 type Data = {
-  broadcasting: boolean;
+  broadcasting: BooleanLike;
   song_cooldown: number;
   progress: number;
   cassette: Cassette;
