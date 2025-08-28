@@ -158,13 +158,13 @@
 /datum/cassette_side/proc/import_from_db(list/data)
 	design = data["design"]
 	for(var/list/song as anything in data["songs"])
-		songs += new /datum/cassette_song(song["name"], song["url"])
+		songs += new /datum/cassette_song(song["name"], song["url"], song["length"])
 
 /// Exports data from this cassette side in the JSON format used by the database.
 /datum/cassette_side/proc/export_for_db()
 	. = list("design" = design, "songs" = list())
 	for(var/datum/cassette_song/song as anything in songs)
-		.["songs"] += list(list("name" = song.name, "url" = song.url))
+		.["songs"] += list(list("name" = song.name, "url" = song.url, "length" = song.length))
 
 /datum/cassette_side/Destroy(force)
 	QDEL_LIST(songs)
@@ -175,8 +175,11 @@
 	var/name
 	/// The URL of the song.
 	var/url
+	/// The length of the song (in seconds)
+	var/length
 
-/datum/cassette_song/New(name, url)
+/datum/cassette_song/New(name, url, length)
 	. = ..()
 	src.name = name
 	src.url = url
+	src.length = isnum(length) ? max(length, 0) : 0

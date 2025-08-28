@@ -96,7 +96,9 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	. = list(
 		"broadcasting" = broadcasting,
 		"song_cooldown" = COOLDOWN_TIMELEFT(src, next_song_timer),
-		"progress" = song_start_time ? (REALTIMEOFDAY - song_start_time) : 0
+		"progress" = song_start_time ? (REALTIMEOFDAY - song_start_time) : 0,
+		"current_song" = 0, // todo
+		"side" = !!inserted_tape?.flipped,
 	)
 	if(playing)
 		.["playing"] = list(
@@ -105,26 +107,44 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		)
 	var/datum/cassette/cassette = inserted_tape?.cassette_data
 	if(cassette)
+		var/datum/cassette_side/side = cassette.get_side()
 		.["cassette"] = list(
 			"name" = cassette.name,
 			"desc" = cassette.desc,
 			"author" = cassette.author?.name,
+			"design" = side?.design || /datum/cassette_side::design,
 			"songs" = list(),
 		)
-		for(var/datum/cassette_song/song as anything in cassette.get_side()?.songs)
+		for(var/datum/cassette_song/song as anything in side?.songs)
 			.["cassette"]["songs"] += list(list(
 				"name" = song.name,
 				"url" = song.url,
+				"length" = song.length,
 			))
 
-/obj/machinery/dj_station/ui_act(action, list/params)
+/obj/machinery/dj_station/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if (.)
 		return .
 
+	var/mob/user = ui.user
+	testing("dj station [action]([json_encode(params)])")
 	switch(action)
 		if("eject")
-			eject_tape(usr)
+			eject_tape(user)
+			return TRUE
+		if("play")
+			// TODO: play current song
+			return TRUE
+		if("stop")
+			// TODO: stop current song
+			return TRUE
+		if("set_track")
+			. = TRUE
+			var/index = params["index"]
+			if(!isnum(index))
+				CRASH("tried to pass non-number index ([index]) to set_track??? this is prolly a bug.")
+			// TODO: set current track
 
 // It cannot be stopped.
 /obj/machinery/dj_station/take_damage(damage_amount, damage_type, damage_flag, sound_effect, attack_dir, armour_penetration)
