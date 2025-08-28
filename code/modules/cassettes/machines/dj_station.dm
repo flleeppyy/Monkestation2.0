@@ -67,6 +67,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 			inserted_tape = weapon
 			if(old_tape)
 				user.put_in_hands(old_tape)
+		update_static_data_for_all_viewers()
 		return
 	return ..()
 
@@ -74,8 +75,9 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	if(inserted_tape)
 		inserted_tape.forceMove(drop_location())
 		inserted_tape = null
-		if (user)
+		if(user)
 			balloon_alert(user, "tape ejected")
+		update_static_data_for_all_viewers()
 	else if (user)
 		balloon_alert(user, "no tape inserted!")
 
@@ -98,13 +100,15 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		"song_cooldown" = COOLDOWN_TIMELEFT(src, next_song_timer),
 		"progress" = song_start_time ? (REALTIMEOFDAY - song_start_time) : 0,
 		"current_song" = 0, // todo
-		"side" = !!inserted_tape?.flipped,
 	)
 	if(playing)
 		.["playing"] = list(
 			"name" = playing.name,
 			"url" = playing.url,
 		)
+
+/obj/machinery/dj_station/ui_static_data(mob/user)
+	. = list("side" = !!inserted_tape?.flipped)
 	var/datum/cassette/cassette = inserted_tape?.cassette_data
 	if(cassette)
 		var/datum/cassette_side/side = cassette.get_side()
