@@ -16,10 +16,11 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	processing_flags = NONE
 
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
-	move_resist = MOVE_FORCE_OVERPOWERING
+	interaction_flags_machine = INTERACT_MACHINE_SET_MACHINE
 
 	anchored = TRUE
 	density = TRUE
+	move_resist = MOVE_FORCE_OVERPOWERING
 
 	var/broadcasting = FALSE
 	/// The currently inserted cassette, if any.
@@ -82,11 +83,9 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		balloon_alert(user, "no tape inserted!")
 
 /obj/machinery/dj_station/CtrlClick(mob/user)
-	. = ..()
-	if(!.)
-		return
-	eject_tape()
-	return TRUE
+	if(can_interact(user))
+		eject_tape(user)
+	return ..()
 
 /obj/machinery/dj_station/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
