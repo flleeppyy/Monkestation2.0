@@ -80,7 +80,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 			user.put_in_hands(inserted_tape)
 		inserted_tape = null
 		update_static_data_for_all_viewers()
-	else if (user)
+	else if(user)
 		balloon_alert(user, "no tape inserted!")
 
 /obj/machinery/dj_station/CtrlClick(mob/user)
