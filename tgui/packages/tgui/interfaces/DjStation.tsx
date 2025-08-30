@@ -141,12 +141,14 @@ class Controls extends Component<{ data: Data }> {
             <LabeledList.Item label="Controls">
               <Button
                 icon="play"
-                disabled={broadcasting}
+                disabled={broadcasting || !!song_cooldown}
                 onClick={() => act('play')}
                 tooltip={
-                  song_cooldown
-                    ? `The DJ station needs time to cool down after playing the last song. Time left: ${formatTime(song_cooldown, 'short')}`
-                    : null
+                  broadcasting
+                    ? null
+                    : song_cooldown
+                      ? `The DJ station needs time to cool down after playing the last song. Time left: ${formatTime(song_cooldown, 'short')}`
+                      : null
                 }
               >
                 Play
@@ -177,7 +179,7 @@ class Controls extends Component<{ data: Data }> {
               <Image
                 src={thumbnailUrl}
                 alt="Track thumbnail"
-                style={{ maxWidth: '100%', borderRadius: '8px' }}
+                style={{ maxWidth: '50%' }}
               />
             </Box>
           )}
@@ -216,10 +218,7 @@ const AvailableTracks = ({
 
 export const DjStation = () => {
   const { act, data } = useBackend<Data>();
-  const { side } = data;
-
-  const cassette = data?.cassette;
-
+  const { side, cassette } = data;
   const songs = cassette?.songs ?? [];
 
   const currentSong = getSong(data.current_song, cassette);
@@ -258,8 +257,12 @@ export const DjStation = () => {
                   </LabeledList.Item>
                 </LabeledList>
               </Section>
-              <Section fill scrollable title={`Side ${side ? 'A' : 'B'}`}>
-                {songs.length ? (
+              <Section
+                fill
+                scrollable
+                title={`Track list - Side ${side ? (side ? 'A' : 'B') : '?'}`}
+              >
+                {songs && songs.length ? (
                   <AvailableTracks songs={songs} currentSong={currentSong} />
                 ) : (
                   <Box color="bad">

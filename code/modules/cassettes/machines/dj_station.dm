@@ -61,10 +61,16 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	if(!istype(weapon, /obj/item/cassette_tape))
 		return ..()
 	var/obj/item/cassette_tape/old_tape = inserted_tape
+	// TODO, if there is a tape, play a different noise of us taking out the cassette.
 	if(old_tape)
 		old_tape.forceMove(drop_location())
 		inserted_tape = null
-	if(user.transferItemToLoc(weapon, src))
+		#warn TODO: Cassette take-out noise
+
+		if (!do_after(user, 0.3 SECONDS))
+			return
+	#warn TODO: Cassette insert noise
+	if(do_after(user, 0.5 SECONDS) && user.transferItemToLoc(weapon, src))
 		balloon_alert(user, "inserted tape")
 		inserted_tape = weapon
 		if(old_tape)
@@ -73,12 +79,14 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 
 /obj/machinery/dj_station/proc/eject_tape(mob/user)
 	if(inserted_tape)
-		inserted_tape.forceMove(drop_location())
-		if(user)
-			balloon_alert(user, "tape ejected")
-			user.put_in_hands(inserted_tape)
-		inserted_tape = null
-		update_static_data_for_all_viewers()
+		#warn TODO: Cassette eject noise
+		if (do_after(user, 0.5 SECONDS))
+			inserted_tape.forceMove(drop_location())
+			if(user)
+				balloon_alert(user, "tape ejected")
+				user.put_in_hands(inserted_tape)
+			inserted_tape = null
+			update_static_data_for_all_viewers()
 	else if(user)
 		balloon_alert(user, "no tape inserted!")
 
@@ -98,14 +106,9 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		"broadcasting" = broadcasting,
 		"song_cooldown" = COOLDOWN_TIMELEFT(src, next_song_timer),
 		"progress" = song_start_time ? (REALTIMEOFDAY - song_start_time) : 0,
-		"current_song" = 0, // todo
+		"current_song" = inserted_tape ? get_list_index_of : null, // todo
 	)
-	if(playing)
-		.["playing"] = list(
-			"name" = playing.name,
-			"url" = playing.url,
-			"length" = playing.length,
-		)
+
 
 /obj/machinery/dj_station/ui_static_data(mob/user)
 	. = list("side" = !!inserted_tape?.flipped)
@@ -125,6 +128,8 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				"url" = song.url,
 				"length" = song.length,
 			))
+	else
+		.["cassette"] = null
 
 /obj/machinery/dj_station/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
@@ -138,13 +143,16 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 			eject_tape(user)
 			return TRUE
 		if("play")
+			#warn TODO: Cassette start button noise
 			// TODO: play current song
 			return TRUE
 		if("stop")
+			#warn TODO: Cassette stop button noise
 			// TODO: stop current song
 			return TRUE
 		if("set_track")
 			. = TRUE
+			#warn TODO: Cassette button noise
 			var/index = params["index"]
 			if(!isnum(index))
 				CRASH("tried to pass non-number index ([index]) to set_track??? this is prolly a bug.")
