@@ -639,7 +639,7 @@ GLOBAL_DATUM_INIT(cached_mixer_channels, /alist, alist())
 					'sound/machines/djstation/machine_stop3.ogg',
 				)
 			if(SFX_DJSTATION_TRACKSWITCH)
-				soundin = list(
+				soundin = pick(
 					'sound/machines/djstation/machine_track_switch1.ogg',
 					'sound/machines/djstation/machine_track_switch2.ogg',
 					'sound/machines/djstation/machine_track_switch3.ogg',

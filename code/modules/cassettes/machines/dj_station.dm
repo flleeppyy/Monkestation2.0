@@ -1,4 +1,4 @@
-#define PLAY_SOUND(the) playsound(src, ##the, 60, FALSE)
+#define PLAY_SOUND(the) playsound(src, ##the, 90, FALSE)
 
 GLOBAL_VAR(dj_broadcast)
 GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
