@@ -75,9 +75,10 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 /obj/machinery/dj_station/proc/eject_tape(mob/user)
 	if(inserted_tape)
 		inserted_tape.forceMove(drop_location())
-		inserted_tape = null
 		if(user)
 			balloon_alert(user, "tape ejected")
+			user.put_in_hands(inserted_tape)
+		inserted_tape = null
 		update_static_data_for_all_viewers()
 	else if (user)
 		balloon_alert(user, "no tape inserted!")
