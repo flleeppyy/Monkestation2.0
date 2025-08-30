@@ -94,7 +94,7 @@
 			update_appearance(UPDATE_DESC)
 
 /obj/item/cassette_tape/blank
-	id = "blank"
+//	id = "blank"
 
 /obj/item/cassette_tape/friday
 	id = "friday"
