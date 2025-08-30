@@ -590,5 +590,94 @@ GLOBAL_DATUM_INIT(cached_mixer_channels, /alist, alist())
 						'monkestation/sound/voice/feline/mggaow.ogg',
 						'monkestation/sound/voice/feline/funnymeow.ogg',
 					)
+			if(SFX_DJSTATION_OPENTAKEOUT)
+				soundin = pick(
+					'sound/machines/djstation/machine_open_takeout1.ogg',
+					'sound/machines/djstation/machine_open_takeout2.ogg',
+					'sound/machines/djstation/machine_open_takeout3.ogg',
+					'sound/machines/djstation/machine_open_takeout4.ogg',
+					'sound/machines/djstation/machine_open_takeout5.ogg',
+					'sound/machines/djstation/machine_open_takeout6.ogg',
+				)
+			if(SFX_DJSTATION_PUTINANDCLOSE)
+				soundin = pick(
+					'sound/machines/djstation/machine_put_in_and_close1.ogg',
+					'sound/machines/djstation/machine_put_in_and_close2.ogg',
+					'sound/machines/djstation/machine_put_in_and_close3.ogg',
+					'sound/machines/djstation/machine_put_in_and_close4.ogg',
+					'sound/machines/djstation/machine_put_in_and_close5.ogg',
+					'sound/machines/djstation/machine_put_in_and_close6.ogg',
+				)
+			if(SFX_DJSTATION_OPENPUTINANDCLOSE)
+				soundin = pick(
+					'sound/machines/djstation/machine_open_put_in_andclose1.ogg',
+					'sound/machines/djstation/machine_open_put_in_andclose2.ogg',
+					'sound/machines/djstation/machine_open_put_in_andclose3.ogg',
+					'sound/machines/djstation/machine_open_put_in_andclose4.ogg',
+					'sound/machines/djstation/machine_open_put_in_andclose5.ogg',
+				)
+			if(SFX_DJSTATION_OPENTAKEOUTANDCLOSE)
+				soundin = pick(
+					'sound/machines/djstation/machine_open_takeout_andclose1.ogg',
+					'sound/machines/djstation/machine_open_takeout_andclose2.ogg',
+					'sound/machines/djstation/machine_open_takeout_andclose3.ogg',
+					'sound/machines/djstation/machine_open_takeout_andclose4.ogg',
+				)
+			if(SFX_DJSTATION_PLAY)
+				soundin = pick(
+					'sound/machines/djstation/machine_play1.ogg',
+					'sound/machines/djstation/machine_play2.ogg',
+					'sound/machines/djstation/machine_play3.ogg',
+					'sound/machines/djstation/machine_play4.ogg',
+					'sound/machines/djstation/machine_play5.ogg',
+					'sound/machines/djstation/machine_play6.ogg',
+				)
+			if(SFX_DJSTATION_STOP)
+				soundin = pick(
+					'sound/machines/djstation/machine_stop1.ogg',
+					'sound/machines/djstation/machine_stop2.ogg',
+					'sound/machines/djstation/machine_stop3.ogg',
+				)
+			if(SFX_DJSTATION_TRACKSWITCH)
+				soundin = list(
+					'sound/machines/djstation/machine_track_switch1.ogg',
+					'sound/machines/djstation/machine_track_switch2.ogg',
+					'sound/machines/djstation/machine_track_switch3.ogg',
+					'sound/machines/djstation/machine_track_switch4.ogg',
+					'sound/machines/djstation/machine_track_switch5.ogg',
+				)
+			// cassette noises
+			if(SFX_CASSETTE_PUT_IN)
+				soundin = pick(
+					'sound/machines/djstation/tape_put_in1.ogg',
+					'sound/machines/djstation/tape_put_in2.ogg',
+					'sound/machines/djstation/tape_put_in3.ogg',
+					'sound/machines/djstation/tape_put_in4.ogg',
+					'sound/machines/djstation/tape_put_in5.ogg',
+					'sound/machines/djstation/tape_put_in6.ogg',
+					)
+			if(SFX_CASSETTE_TAKE_OUT)
+				soundin = pick(
+					'sound/machines/djstation/tape_take_out1.ogg',
+					'sound/machines/djstation/tape_take_out2.ogg',
+					'sound/machines/djstation/tape_take_out3.ogg',
+					'sound/machines/djstation/tape_take_out4.ogg',
+					'sound/machines/djstation/tape_take_out5.ogg',
+					'sound/machines/djstation/tape_take_out6.ogg',
+				)
+			if(SFX_CASSETTE_DUMP)
+				soundin = pick(
+					'sound/machines/djstation/tape_dump1.ogg',
+					'sound/machines/djstation/tape_dump2.ogg',
+					'sound/machines/djstation/tape_dump3.ogg',
+					'sound/machines/djstation/tape_dump4.ogg',
+					'sound/machines/djstation/tape_dump5.ogg',
+					'sound/machines/djstation/tape_dump6.ogg',
+					'sound/machines/djstation/tape_dump7.ogg',
+					'sound/machines/djstation/tape_dump8.ogg',
+					'sound/machines/djstation/tape_dump9.ogg',
+					'sound/machines/djstation/tape_dump10.ogg',
+				)
+
 			// monkestation end
 	return soundin

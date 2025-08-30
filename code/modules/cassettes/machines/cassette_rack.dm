@@ -38,6 +38,16 @@
 	INVOKE_ASYNC(src, PROC_REF(open_storage), user)
 	return COMPONENT_CANCEL_ATTACK_CHAIN
 
+/datum/storage/item_insertion_feedback(mob/user, obj/item/thing, override = FALSE, sound = SFX_RUSTLE, sound_vary = TRUE)
+	. = ..(user, thing, override, SFX_CASSETTE_PUT_IN, FALSE)
+
+/datum/storage/attempt_remove(obj/item/thing, atom/newLoc, silent = FALSE, visual_updates = TRUE, sound = SFX_RUSTLE, sound_vary = TRUE)
+	. = ..(thing, newLoc, silent, visual_updates, SFX_CASSETTE_TAKE_OUT, FALSE)
+
+/datum/storage/dump_content_at(atom/dest_object, mob/user, sound = SFX_RUSTLE, sound_vary = TRUE)
+	. = ..(dest_object, user, SFX_CASSETTE_DUMP, FALSE)
+
+
 /obj/structure/cassette_rack/prefilled
 	var/spawn_random = DEFAULT_CASSETTES_TO_SPAWN
 	var/spawn_blanks = DEFAULT_BLANKS_TO_SPAWN

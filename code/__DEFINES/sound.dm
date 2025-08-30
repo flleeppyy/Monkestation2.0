@@ -225,75 +225,14 @@ GLOBAL_LIST_INIT(announcer_keys, list(
 #define SFX_ROCK_TAP "rock_tap"
 #define SFX_MUFFLED_SPEECH "muffspeech"
 
-#define DJSTATION_SOUND_OPENTAKEOUT "djstation_opentakeout"
-#define DJSTATION_SOUND_PUTINANDCLOSE "djstation_putinandclose"
-#define DJSTATION_SOUND_OPENPUTINANDCLOSE "djstation_openputinandclose"
-#define DJSTATION_SOUND_OPENTAKEOUTANDCLOSE "djstation_opentakeoutandclose"
-#define DJSTATION_SOUND_PLAY "djstation_play"
-#define DJSTATION_SOUND_STOP "djstation_stop"
-#define DJSTATION_SOUND_TRACKSWITCH "djstation_trackswitch"
+#define SFX_DJSTATION_OPENTAKEOUT "djstation_opentakeout"
+#define SFX_DJSTATION_PUTINANDCLOSE "djstation_putinandclose"
+#define SFX_DJSTATION_OPENPUTINANDCLOSE "djstation_openputinandclose"
+#define SFX_DJSTATION_OPENTAKEOUTANDCLOSE "djstation_opentakeoutandclose"
+#define SFX_DJSTATION_PLAY "djstation_play"
+#define SFX_DJSTATION_STOP "djstation_stop"
+#define SFX_DJSTATION_TRACKSWITCH "djstation_trackswitch"
 
-#define CASSETTE_SOUND_PUT_IN "cassette_tape_put_in"
-#define CASSETTE_SOUND_TAKE_OUT "cassette_tape_take_out"
-
-GLOBAL_LIST_INIT(djstation_sounds, list(
-	DJSTATION_SOUND_OPENTAKEOUT = list(
-		'sound/machines/djstation/machine_open_takeout1.ogg',
-		'sound/machines/djstation/machine_open_takeout2.ogg',
-		'sound/machines/djstation/machine_open_takeout3.ogg',
-		'sound/machines/djstation/machine_open_takeout4.ogg',
-		'sound/machines/djstation/machine_open_takeout5.ogg',
-		'sound/machines/djstation/machine_open_takeout6.ogg'),
-	DJSTATION_SOUND_PUTINANDCLOSE = list(
-		'sound/machines/djstation/machine_put_in_and_close1.ogg',
-		'sound/machines/djstation/machine_put_in_and_close2.ogg',
-		'sound/machines/djstation/machine_put_in_and_close3.ogg',
-		'sound/machines/djstation/machine_put_in_and_close4.ogg',
-		'sound/machines/djstation/machine_put_in_and_close5.ogg',
-		'sound/machines/djstation/machine_put_in_and_close6.ogg'),
-	DJSTATION_SOUND_OPENPUTINANDCLOSE = list(
-		'sound/machines/djstation/machine_open_put_in_andclose1.ogg',
-		'sound/machines/djstation/machine_open_put_in_andclose2.ogg',
-		'sound/machines/djstation/machine_open_put_in_andclose3.ogg',
-		'sound/machines/djstation/machine_open_put_in_andclose4.ogg',
-		'sound/machines/djstation/machine_open_put_in_andclose5.ogg'),
-	DJSTATION_SOUND_OPENTAKEOUTANDCLOSE = list(
-		'sound/machines/djstation/machine_open_takeout_andclose1.ogg',
-		'sound/machines/djstation/machine_open_takeout_andclose2.ogg',
-		'sound/machines/djstation/machine_open_takeout_andclose3.ogg',
-		'sound/machines/djstation/machine_open_takeout_andclose4.ogg'),
-	DJSTATION_SOUND_PLAY = list(
-		'sound/machines/djstation/machine_play1.ogg',
-		'sound/machines/djstation/machine_play2.ogg',
-		'sound/machines/djstation/machine_play3.ogg',
-		'sound/machines/djstation/machine_play4.ogg',
-		'sound/machines/djstation/machine_play5.ogg',
-		'sound/machines/djstation/machine_play6.ogg'),
-	DJSTATION_SOUND_STOP = list(
-		'sound/machines/djstation/machine_stop1.ogg',
-		'sound/machines/djstation/machine_stop2.ogg',
-		'sound/machines/djstation/machine_stop3.ogg'),
-	DJSTATION_SOUND_TRACKSWITCH = list(
-		'sound/machines/djstation/machine_track_switch1.ogg',
-		'sound/machines/djstation/machine_track_switch2.ogg',
-		'sound/machines/djstation/machine_track_switch3.ogg',
-		'sound/machines/djstation/machine_track_switch4.ogg',
-		'sound/machines/djstation/machine_track_switch5.ogg')
-))
-
-GLOBAL_LIST_INIT(cassette_sounds, list(
-	CASSETTE_SOUND_PUT_IN = list(
-		'sound/machines/djstation/tape_put_in1.ogg',
-		'sound/machines/djstation/tape_put_in2.ogg',
-		'sound/machines/djstation/tape_put_in3.ogg',
-		'sound/machines/djstation/tape_put_in4.ogg',
-		'sound/machines/djstation/tape_put_in5.ogg',
-		'sound/machines/djstation/tape_put_in6.ogg'),
-	CASSETTE_SOUND_TAKE_OUT = list(
-		'sound/machines/djstation/tape_take_out1.ogg',
-		'sound/machines/djstation/tape_take_out2.ogg',
-		'sound/machines/djstation/tape_take_out3.ogg',
-		'sound/machines/djstation/tape_take_out4.ogg',
-		'sound/machines/djstation/tape_take_out5.ogg',
-		'sound/machines/djstation/tape_take_out6.ogg')
-))
+#define SFX_CASSETTE_PUT_IN "cassette_tape_put_in"
+#define SFX_CASSETTE_TAKE_OUT "cassette_tape_take_out"
+#define SFX_CASSETTE_DUMP "cassette_tape_dump"

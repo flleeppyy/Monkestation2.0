@@ -1,3 +1,5 @@
+#define PLAY_SOUND(the) playsound(src, ##the, 60, FALSE)
+
 GLOBAL_VAR(dj_broadcast)
 GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 
@@ -63,22 +65,21 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 /obj/machinery/dj_station/attackby(obj/item/weapon, mob/user, params)
 	if(!istype(weapon, /obj/item/cassette_tape))
 		return ..()
-	var/list/machine_sounds = GLOB.djstation_sounds
 	var/obj/item/cassette_tape/old_tape = inserted_tape
 	// TODO, if there is a tape, play a different noise of us taking out the cassette.
 	if(old_tape)
 		old_tape.forceMove(drop_location())
 		inserted_tape = null
-		playsound(src, pick(machine_sounds[DJSTATION_SOUND_OPENTAKEOUT]))
+		PLAY_SOUND(SFX_DJSTATION_OPENTAKEOUT)
 		if (!do_after(user, 1.2 SECONDS))
 			return
 
 	if (old_tape)
-		playsound(src, pick(machine_sounds[DJSTATION_SOUND_PUTINANDCLOSE]))
+		PLAY_SOUND(SFX_DJSTATION_PUTINANDCLOSE)
 		if (!do_after(user, 1.3 SECONDS))
 			return
 	else
-		playsound(src, pick(machine_sounds[DJSTATION_SOUND_OPENPUTINANDCLOSE]))
+		PLAY_SOUND(SFX_DJSTATION_OPENPUTINANDCLOSE)
 		if (!do_after(user, 2.2 SECONDS))
 			return
 	if(user.transferItemToLoc(weapon, src))
@@ -90,7 +91,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 
 /obj/machinery/dj_station/proc/eject_tape(mob/user)
 	if(inserted_tape)
-		playsound(src, pick(GLOB.djstation_sounds[DJSTATION_SOUND_OPENTAKEOUTANDCLOSE]))
+		PLAY_SOUND(SFX_DJSTATION_OPENTAKEOUTANDCLOSE)
 		if (!do_after(user, 1.5 SECONDS))
 			return
 		inserted_tape.forceMove(drop_location())
@@ -155,7 +156,6 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		return .
 
 	var/mob/user = ui.user
-	var/list/machine_sounds = GLOB.djstation_sounds
 	testing("dj station [action]([json_encode(params)])")
 	switch(action)
 		if("eject", "play", "stop")
@@ -168,20 +168,19 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 			eject_tape(user)
 			return TRUE
 		if("play")
-			playsound(src, pick(machine_sounds[DJSTATION_SOUND_PLAY]))
+			PLAY_SOUND(SFX_DJSTATION_PLAY)
 			// TODO: play current song
 			return TRUE
 		if("stop")
-			playsound(src, pick(machine_sounds[DJSTATION_SOUND_STOP]))
+			PLAY_SOUND(SFX_DJSTATION_STOP)
 			// TODO: stop current song
 			return TRUE
 		if("set_track")
 			. = TRUE
-			#warn TODO: Cassette button noise
 			var/index = params["index"]
 			if(!isnum(index))
 				CRASH("tried to pass non-number index ([index]) to set_track??? this is prolly a bug.")
-
+			index++
 			if (!inserted_tape)
 				balloon_alert("no cassette tape inserted!")
 				return
@@ -203,9 +202,9 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				return
 
 			if (playing)
-				playsound(src, pick(GLOB.djstation_sounds[DJSTATION_SOUND_STOP]))
+				PLAY_SOUND(SFX_DJSTATION_STOP)
 				sleep(0.2 SECONDS)
-			playsound(src, pick(GLOB.djstation_sounds[DJSTATION_SOUND_TRACKSWITCH]))
+			PLAY_SOUND(SFX_DJSTATION_TRACKSWITCH)
 			COOLDOWN_START(src, switching_tracks, 2.1 SECONDS)
 			sleep(2.1 SECONDS)
 			playing = found_track
@@ -229,3 +228,4 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	hitting_projectile.reflect(src)
 	return BULLET_ACT_FORCE_PIERCE
 
+#undef PLAY_SOUND
