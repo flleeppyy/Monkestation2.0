@@ -181,16 +181,23 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 			var/index = params["index"]
 			if(!isnum(index))
 				CRASH("tried to pass non-number index ([index]) to set_track??? this is prolly a bug.")
+
+			if (!inserted_tape)
+				balloon_alert("no cassette tape inserted!")
+				return
+			if (!inserted_tape.cassette_data)
+				balloon_alert("this cassette is blank!")
+				return
 			var/list/cassette_songs = inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs
 
-			var/song_count = length(inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs)
+			var/song_count = length(cassette_songs.songs)
 			if (!song_count)
 				balloon_alert("no tracks on this side!")
 				return
 			if (!inserted_tape)
 				balloon_alert("no tape inserted!")
 				return
-			var/datum/cassette_song/found_track = inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs[index]
+			var/datum/cassette_song/found_track = cassette_songs.songs[index]
 			if (!found_track)
 				balloon_alert("that track doesnt exist!")
 				return
