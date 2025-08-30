@@ -190,7 +190,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				return
 			var/list/cassette_songs = inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs
 
-			var/song_count = length(cassette_songs.songs)
+			var/song_count = length(cassette_songs)
 			if (!song_count)
 				balloon_alert("no tracks on this side!")
 				return
