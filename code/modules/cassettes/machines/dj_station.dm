@@ -197,7 +197,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 			if (!inserted_tape)
 				balloon_alert("no tape inserted!")
 				return
-			var/datum/cassette_song/found_track = cassette_songs.songs[index]
+			var/datum/cassette_song/found_track = cassette_songs[index]
 			if (!found_track)
 				balloon_alert("that track doesnt exist!")
 				return
