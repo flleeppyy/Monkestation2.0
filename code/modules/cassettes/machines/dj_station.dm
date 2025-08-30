@@ -29,7 +29,10 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	var/datum/cassette_song/playing
 	/// The REALTIMEOFDAY that the current song was started.
 	var/song_start_time
+
 	COOLDOWN_DECLARE(next_song_timer)
+	// Are we switching tracks right now? (AKA, we cant do anything else with the thing until it switches tracks.)
+	COOLDOWN_DECLARE(switching_tracks)
 
 /obj/machinery/dj_station/Initialize(mapload)
 	. = ..()
@@ -60,17 +63,25 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 /obj/machinery/dj_station/attackby(obj/item/weapon, mob/user, params)
 	if(!istype(weapon, /obj/item/cassette_tape))
 		return ..()
+	var/list/machine_sounds = GLOB.djstation_sounds
 	var/obj/item/cassette_tape/old_tape = inserted_tape
 	// TODO, if there is a tape, play a different noise of us taking out the cassette.
 	if(old_tape)
 		old_tape.forceMove(drop_location())
 		inserted_tape = null
-		#warn TODO: Cassette take-out noise
-
-		if (!do_after(user, 0.3 SECONDS))
+		playsound(src, pick(machine_sounds[DJSTATION_SOUND_OPENTAKEOUT]))
+		if (!do_after(user, 1.2 SECONDS))
 			return
-	#warn TODO: Cassette insert noise
-	if(do_after(user, 0.5 SECONDS) && user.transferItemToLoc(weapon, src))
+
+	if (old_tape)
+		playsound(src, pick(machine_sounds[DJSTATION_SOUND_PUTINANDCLOSE]))
+		if (!do_after(user, 1.3 SECONDS))
+			return
+	else
+		playsound(src, pick(machine_sounds[DJSTATION_SOUND_OPENPUTINANDCLOSE]))
+		if (!do_after(user, 2.2 SECONDS))
+			return
+	if(user.transferItemToLoc(weapon, src))
 		balloon_alert(user, "inserted tape")
 		inserted_tape = weapon
 		if(old_tape)
@@ -79,12 +90,13 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 
 /obj/machinery/dj_station/proc/eject_tape(mob/user)
 	if(inserted_tape)
-		#warn TODO: Cassette eject noise
-		if (do_after(user, 0.5 SECONDS))
-			inserted_tape.forceMove(drop_location())
-			if(user)
-				balloon_alert(user, "tape ejected")
-				user.put_in_hands(inserted_tape)
+		playsound(src, pick(GLOB.djstation_sounds[DJSTATION_SOUND_OPENTAKEOUTANDCLOSE]))
+		if (!do_after(user, 1.5 SECONDS))
+			return
+		inserted_tape.forceMove(drop_location())
+		if(user)
+			balloon_alert(user, "tape ejected")
+			user.put_in_hands(inserted_tape)
 			inserted_tape = null
 			update_static_data_for_all_viewers()
 	else if(user)
@@ -92,6 +104,9 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 
 /obj/machinery/dj_station/CtrlClick(mob/user)
 	if(can_interact(user))
+		if(!COOLDOWN_FINISHED(src, switching_tracks))
+			balloon_alert(user, "busy switching tracks!")
+			return
 		eject_tape(user)
 	return ..()
 
@@ -102,11 +117,14 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		ui.open()
 
 /obj/machinery/dj_station/ui_data(mob/user)
+	var/is_switching_tracks = !COOLDOWN_FINISHED(src, switching_tracks)
 	. = list(
 		"broadcasting" = broadcasting,
 		"song_cooldown" = COOLDOWN_TIMELEFT(src, next_song_timer),
 		"progress" = song_start_time ? (REALTIMEOFDAY - song_start_time) : 0,
-		"current_song" = inserted_tape ? get_list_index_of : null, // todo
+		"current_song" = is_switching_tracks ? null :
+			inserted_tape && inserted_tape.cassette_data ? inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs.Find(playing) - 1 : null,
+		"switching_tracks" = !COOLDOWN_FINISHED(src, switching_tracks)
 	)
 
 
@@ -137,17 +155,24 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		return .
 
 	var/mob/user = ui.user
+	var/list/machine_sounds = GLOB.djstation_sounds
 	testing("dj station [action]([json_encode(params)])")
+	switch(action)
+		if("eject", "play", "stop")
+			if(!COOLDOWN_FINISHED(src, switching_tracks))
+				balloon_alert(user, "busy switching tracks!")
+				return
+
 	switch(action)
 		if("eject")
 			eject_tape(user)
 			return TRUE
 		if("play")
-			#warn TODO: Cassette start button noise
+			playsound(src, pick(machine_sounds[DJSTATION_SOUND_PLAY]))
 			// TODO: play current song
 			return TRUE
 		if("stop")
-			#warn TODO: Cassette stop button noise
+			playsound(src, pick(machine_sounds[DJSTATION_SOUND_STOP]))
 			// TODO: stop current song
 			return TRUE
 		if("set_track")
@@ -156,7 +181,28 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 			var/index = params["index"]
 			if(!isnum(index))
 				CRASH("tried to pass non-number index ([index]) to set_track??? this is prolly a bug.")
-			// TODO: set current track
+			var/list/cassette_songs = inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs
+
+			var/song_count = length(inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs)
+			if (!song_count)
+				balloon_alert("no tracks on this side!")
+				return
+			if (!inserted_tape)
+				balloon_alert("no tape inserted!")
+				return
+			var/datum/cassette_song/found_track = inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs[index]
+			if (!found_track)
+				balloon_alert("that track doesnt exist!")
+				return
+
+			if (playing)
+				playsound(src, pick(GLOB.djstation_sounds[DJSTATION_SOUND_STOP]))
+				sleep(0.2 SECONDS)
+			playsound(src, pick(GLOB.djstation_sounds[DJSTATION_SOUND_TRACKSWITCH]))
+			COOLDOWN_START(src, switching_tracks, 2.1 SECONDS)
+			sleep(2.1 SECONDS)
+			playing = found_track
+
 
 // It cannot be stopped.
 /obj/machinery/dj_station/take_damage(damage_amount, damage_type, damage_flag, sound_effect, attack_dir, armour_penetration)
@@ -175,3 +221,4 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	hitting_projectile.debilitating = FALSE
 	hitting_projectile.reflect(src)
 	return BULLET_ACT_FORCE_PIERCE
+
