@@ -29,7 +29,6 @@ SUBSYSTEM_DEF(cassettes)
 /// If `db` is FALSE, the cassette will be loaded from a JSON in the `data/cassette_storage` folder.
 /// If `db` is null (the default), it will load from the database if the `CASSETTES_IN_DB` config option is set, otherwise it will load from the JSON files.
 /datum/controller/subsystem/cassettes/proc/load_cassette(id, db = null) as /datum/cassette
-	RETURN_TYPE(/datum/cassette)
 	if(!id)
 		return null
 	else if(istype(id, /datum/cassette)) // so i can be lazy
@@ -46,7 +45,6 @@ SUBSYSTEM_DEF(cassettes)
 /// Loads the cassette with the given ID from a JSON in the `data/cassette_storage` folder.
 /// This does not check the SScassettes.cassettes cache, and you should not use this - this is only used to initialize SScassettes.cassettes
 /datum/controller/subsystem/cassettes/proc/load_cassette_from_json_raw(id) as /datum/cassette
-	RETURN_TYPE(/datum/cassette)
 	var/cassette_file = CASSETTE_FILE(id)
 	if(!rustg_file_exists(cassette_file))
 		return null
@@ -61,7 +59,6 @@ SUBSYSTEM_DEF(cassettes)
 
 /// Loads the cassette with the given ID from the database.
 /datum/controller/subsystem/cassettes/proc/load_cassette_from_db_raw(id) as /datum/cassette
-	RETURN_TYPE(/datum/cassette)
 	if(!SSdbcore.Connect() || !id)
 		return
 	var/datum/db_query/query_cassette = SSdbcore.NewQuery("SELECT name, desc, status, author_name, author_ckey, front, back FROM [format_table_name("cassettes")] WHERE id = :id", list("id" = id))
