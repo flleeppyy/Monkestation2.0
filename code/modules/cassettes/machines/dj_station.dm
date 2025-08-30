@@ -72,7 +72,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		return
 	return ..()
 
-/obj/machinery/dj_station/eject_tape(mob/user)
+/obj/machinery/dj_station/proc/eject_tape(mob/user)
 	if(inserted_tape)
 		inserted_tape.forceMove(drop_location())
 		inserted_tape = null
