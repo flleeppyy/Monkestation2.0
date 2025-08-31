@@ -68,13 +68,14 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	var/obj/item/cassette_tape/old_tape = inserted_tape
 	// TODO, if there is a tape, play a different noise of us taking out the cassette.
 	if(old_tape)
+		PLAY_SOUND(SFX_DJSTATION_OPENTAKEOUT)
+		if (!do_after(user, 1.3 SECONDS))
+			return
 		old_tape.forceMove(drop_location())
 		inserted_tape = null
-		PLAY_SOUND(SFX_DJSTATION_OPENTAKEOUT)
-		if (!do_after(user, 1.2 SECONDS))
-			return
 
 	if (old_tape)
+		sleep(0.2 SECONDS)
 		PLAY_SOUND(SFX_DJSTATION_PUTINANDCLOSE)
 		if (!do_after(user, 1.3 SECONDS))
 			return
@@ -123,14 +124,15 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		"broadcasting" = broadcasting,
 		"song_cooldown" = COOLDOWN_TIMELEFT(src, next_song_timer),
 		"progress" = song_start_time ? (REALTIMEOFDAY - song_start_time) : 0,
+		"side" = inserted_tape?.flipped,
 		"current_song" = is_switching_tracks ? null :
 			inserted_tape && inserted_tape.cassette_data ? inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs.Find(playing) - 1 : null,
-		"switching_tracks" = !COOLDOWN_FINISHED(src, switching_tracks)
+		"switching_tracks" = !COOLDOWN_FINISHED(src, switching_tracks),
 	)
 
 
 /obj/machinery/dj_station/ui_static_data(mob/user)
-	. = list("side" = !!inserted_tape?.flipped)
+	. = list()
 	var/datum/cassette/cassette = inserted_tape?.cassette_data
 	if(cassette)
 		var/datum/cassette_side/side = cassette.get_side()

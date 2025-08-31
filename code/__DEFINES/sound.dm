@@ -236,3 +236,4 @@ GLOBAL_LIST_INIT(announcer_keys, list(
 #define SFX_CASSETTE_PUT_IN "cassette_tape_put_in"
 #define SFX_CASSETTE_TAKE_OUT "cassette_tape_take_out"
 #define SFX_CASSETTE_DUMP "cassette_tape_dump"
+#define SFX_CASSETTE_ASMR "cassette_tape_asmr"

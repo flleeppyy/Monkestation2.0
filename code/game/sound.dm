@@ -678,6 +678,27 @@ GLOBAL_DATUM_INIT(cached_mixer_channels, /alist, alist())
 					'sound/machines/djstation/tape_dump9.ogg',
 					'sound/machines/djstation/tape_dump10.ogg',
 				)
-
+			if(SFX_CASSETTE_ASMR)
+				soundin = pick(
+					'sound/machines/djstation/tape_asmr1.ogg',
+					'sound/machines/djstation/tape_asmr2.ogg',
+					'sound/machines/djstation/tape_asmr3.ogg',
+					'sound/machines/djstation/tape_asmr4.ogg',
+					'sound/machines/djstation/tape_asmr5.ogg',
+					'sound/machines/djstation/tape_asmr6.ogg',
+					'sound/machines/djstation/tape_asmr7.ogg',
+					'sound/machines/djstation/tape_asmr8.ogg',
+					'sound/machines/djstation/tape_asmr9.ogg',
+					'sound/machines/djstation/tape_asmr10.ogg',
+					'sound/machines/djstation/tape_asmr11.ogg',
+					'sound/machines/djstation/tape_asmr12.ogg',
+					'sound/machines/djstation/tape_asmr13.ogg',
+					'sound/machines/djstation/tape_asmr14.ogg',
+					'sound/machines/djstation/tape_asmr15.ogg',
+					'sound/machines/djstation/tape_asmr16.ogg',
+					'sound/machines/djstation/tape_asmr17.ogg',
+					'sound/machines/djstation/tape_asmr18.ogg',
+					'sound/machines/djstation/tape_asmr19.ogg',
+				)
 			// monkestation end
 	return soundin

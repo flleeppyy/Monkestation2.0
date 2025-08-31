@@ -796,6 +796,7 @@ GLOBAL_LIST_EMPTY(cached_storage_typecaches)
 		return
 
 	remove_all(dump_loc)
+	SEND_SIGNAL(src, COMSIG_STORAGE_DUMP_ONTO_POST_TRANSFER, dest_object, user)
 
 /// Signal handler for whenever something gets mouse-dropped onto us.
 /datum/storage/proc/on_mousedropped_onto(datum/source, obj/item/dropping, mob/user)

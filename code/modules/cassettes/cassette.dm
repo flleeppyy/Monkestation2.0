@@ -6,6 +6,14 @@
 	icon_state = "cassette_flip"
 	w_class = WEIGHT_CLASS_SMALL
 	item_flags = NOBLUDGEON
+	hitsound = SFX_CASSETTE_ASMR
+	drop_sound = SFX_CASSETTE_ASMR
+	pickup_sound = SFX_CASSETTE_ASMR
+	usesound = SFX_CASSETTE_ASMR
+	mob_throw_hit_sound = SFX_CASSETTE_DUMP
+	block_sound = SFX_CASSETTE_DUMP
+	equip_sound = SFX_CASSETTE_ASMR
+
 	/// If the cassette is flipped, for playing second list of songs.
 	var/flipped = FALSE
 	/// The data for this cassette.
@@ -35,6 +43,8 @@
 	. = ..()
 	flipped = !flipped
 	to_chat(user, span_notice("You flip [src]."))
+	playsound(src, SFX_CASSETTE_ASMR, 50, FALSE)
+
 	update_appearance(UPDATE_ICON_STATE)
 
 /obj/item/cassette_tape/update_desc(updates)

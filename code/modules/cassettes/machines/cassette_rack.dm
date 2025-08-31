@@ -30,6 +30,8 @@
 /datum/storage/cassette_rack/New()
 	. = ..()
 	set_holdable(/obj/item/cassette_tape)
+	RegisterSignal(src, COMSIG_STORAGE_DUMP_POST_TRANSFER, PROC_REF(post_dump))
+	RegisterSignal(src, COMSIG_STORAGE_DUMP_ONTO_POST_TRANSFER, PROC_REF(post_dumpall))
 
 // Allow opening on a normal left click
 /datum/storage/cassette_rack/on_attack(datum/source, mob/user)
@@ -44,9 +46,16 @@
 /datum/storage/cassette_rack/attempt_remove(obj/item/thing, atom/newLoc, silent = FALSE, visual_updates = TRUE, sound = SFX_RUSTLE, sound_vary = TRUE)
 	. = ..(thing, newLoc, FALSE, visual_updates, SFX_CASSETTE_TAKE_OUT, FALSE)
 
-/datum/storage/cassette_rack/dump_content_at(atom/dest_object, mob/user, sound = SFX_RUSTLE, sound_vary = TRUE)
-	. = ..(dest_object, user, SFX_CASSETTE_DUMP, FALSE)
+// /datum/storage/cassette_rack/dump_content_at(atom/dest_object, mob/user, sound = SFX_RUSTLE, sound_vary = TRUE)
+// 	. = ..(dest_object, user, SFX_CASSETTE_DUMP, FALSE)
 
+/datum/storage/cassette_rack/proc/post_dump(datum/storage/source, atom/dest_object, mob/user)
+	SIGNAL_HANDLER
+	playsound(parent, SFX_CASSETTE_DUMP, 50, FALSE, -4)
+
+/datum/storage/cassette_rack/proc/post_dumpall(datum/storage/source, atom/dest_object, mob/user)
+	SIGNAL_HANDLER
+	playsound(parent, SFX_CASSETTE_DUMP, 50, FALSE, -4)
 
 /obj/structure/cassette_rack/prefilled
 	var/spawn_random = DEFAULT_CASSETTES_TO_SPAWN
