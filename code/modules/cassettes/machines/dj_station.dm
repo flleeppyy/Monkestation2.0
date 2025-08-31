@@ -132,7 +132,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 
 
 /obj/machinery/dj_station/ui_static_data(mob/user)
-	. = list()
+	. = list("cassette" = null)
 	var/datum/cassette/cassette = inserted_tape?.cassette_data
 	if(cassette)
 		var/datum/cassette_side/side = cassette.get_side()
@@ -149,8 +149,6 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				"url" = song.url,
 				"length" = song.length,
 			))
-	else
-		.["cassette"] = null
 
 /obj/machinery/dj_station/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
