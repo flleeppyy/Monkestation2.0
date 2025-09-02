@@ -10,6 +10,7 @@
 
 /obj/item/reagent_containers/blood/Initialize(mapload, vol)
 	. = ..()
+	reagents.flags |= (DRAWABLE & DRAINABLE)
 	if(!isnull(blood_type))
 		var/datum/blood_type/blood = GLOB.blood_types[blood_type]
 		reagents.add_reagent(blood.reagent_type, 200, list("viruses" = null,"blood_DNA" = null,"blood_type" = blood_type, "resistances" = null, "trace_chem" = null))
