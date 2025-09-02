@@ -7,10 +7,10 @@
 	var/blood_type = null
 	var/labelled = FALSE
 	fill_icon_thresholds = list(10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
+	reagent_flags = DRAWABLE | DRAINABLE
 
 /obj/item/reagent_containers/blood/Initialize(mapload, vol)
 	. = ..()
-	reagents.flags |= (DRAWABLE & DRAINABLE)
 	if(!isnull(blood_type))
 		var/datum/blood_type/blood = GLOB.blood_types[blood_type]
 		reagents.add_reagent(blood.reagent_type, 200, list("viruses" = null,"blood_DNA" = null,"blood_type" = blood_type, "resistances" = null, "trace_chem" = null))
