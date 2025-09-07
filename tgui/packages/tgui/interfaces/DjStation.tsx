@@ -1,5 +1,4 @@
-import { round } from 'common/math';
-import { useBackend, useLocalState } from '../backend';
+import { useBackend } from '../backend';
 import {
   Box,
   Button,
@@ -7,7 +6,6 @@ import {
   LabeledList,
   ProgressBar,
   Section,
-  Slider,
   Stack,
 } from '../components';
 import { formatTime } from '../format';
@@ -106,7 +104,7 @@ class Controls extends Component<{ data: Data }> {
   async fetchThumbnail() {
     const token = ++this.fetchToken;
     const { current_song: current_songId } = this.props.data;
-    if (current_songId == null) return;
+    if (!current_songId) return;
     const current_song = getSong(current_songId, this.props.data.cassette);
     if (!current_song?.url) return;
     const thumb = await getThumbnailUrl(current_song.url);
@@ -196,7 +194,7 @@ const AvailableTracks = ({
   currentSong,
 }: {
   songs: Song[];
-  currentSong: Song;
+  currentSong: Song | null;
 }) => {
   const { act } = useBackend<Data>();
 
@@ -279,7 +277,7 @@ export const DjStation = () => {
             </Stack.Item>
             <Stack.Item grow={1}>
               <Section title="Currently Playing" fill>
-                <Controls data={data}></Controls>
+                <Controls data={data} />
               </Section>
             </Stack.Item>
           </Stack>
@@ -289,7 +287,6 @@ export const DjStation = () => {
   );
 };
 
-function getSong(index: number, cassette: Cassette): Song;
-function getSong(index: number, cassette?: Cassette): Song | null {
+const getSong = (index: number, cassette?: Cassette): Song | null => {
   return cassette ? cassette.songs[index] : null;
-}
+};

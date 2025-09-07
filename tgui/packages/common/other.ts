@@ -1,8 +1,8 @@
 import { BandcampImageSize } from './types';
 
-export async function getThumbnailUrl(
+export const getThumbnailUrl = async (
   inputUrl: string,
-): Promise<string | null> {
+): Promise<string | null> => {
   if (!inputUrl) return null;
   inputUrl = normalizeTrackUrl(inputUrl);
 
@@ -67,9 +67,9 @@ export async function getThumbnailUrl(
     localStorage.setItem(cacheKey, 'null');
     return null;
   }
-}
+};
 
-export async function getDocumentForURL(url: URL): Promise<Document | null> {
+export const getDocumentForURL = async (url: URL): Promise<Document | null> => {
   try {
     const response = await fetch(url);
     const htmlString = await response.text();
@@ -86,13 +86,13 @@ export async function getDocumentForURL(url: URL): Promise<Document | null> {
     console.error('Error during fetch or parsing:', error);
     return null;
   }
-}
+};
 
-function getBandcampThumbnailUrl(imgId: string, type: BandcampImageSize) {
+const getBandcampThumbnailUrl = (imgId: string, type: BandcampImageSize) => {
   return `https://f4.bcbits.com/img/${imgId}_${type}.jpg`;
-}
+};
 
-function normalizeTrackUrl(inputUrl) {
+const normalizeTrackUrl = (inputUrl) => {
   try {
     const url = new URL(inputUrl);
 
@@ -140,4 +140,4 @@ function normalizeTrackUrl(inputUrl) {
   } catch {
     return inputUrl;
   }
-}
+};
