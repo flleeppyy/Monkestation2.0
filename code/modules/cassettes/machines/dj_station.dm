@@ -1,6 +1,5 @@
 #define PLAY_CASSETTE_SOUND(sfx) playsound(src, ##sfx, vol = 90, vary = FALSE, mixer_channel = CHANNEL_MACHINERY)
 
-GLOBAL_VAR(dj_broadcast)
 GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 
 /obj/item/clothing/ears
@@ -69,7 +68,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	// TODO, if there is a tape, play a different noise of us taking out the cassette.
 	if(old_tape)
 		PLAY_CASSETTE_SOUND(SFX_DJSTATION_OPENTAKEOUT)
-		if (!do_after(user, 1.3 SECONDS))
+		if (!do_after(user, 1.3 SECONDS, src))
 			return
 		old_tape.forceMove(drop_location())
 		inserted_tape = null
@@ -77,11 +76,11 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	if (old_tape)
 		sleep(0.2 SECONDS)
 		PLAY_CASSETTE_SOUND(SFX_DJSTATION_PUTINANDCLOSE)
-		if (!do_after(user, 1.3 SECONDS))
+		if (!do_after(user, 1.3 SECONDS, src))
 			return
 	else
 		PLAY_CASSETTE_SOUND(SFX_DJSTATION_OPENPUTINANDCLOSE)
-		if (!do_after(user, 2.2 SECONDS))
+		if (!do_after(user, 2.2 SECONDS, src))
 			return
 	if(user.transferItemToLoc(weapon, src))
 		balloon_alert(user, "inserted tape")
@@ -93,7 +92,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 /obj/machinery/dj_station/proc/eject_tape(mob/user)
 	if(inserted_tape)
 		PLAY_CASSETTE_SOUND(SFX_DJSTATION_OPENTAKEOUTANDCLOSE)
-		if (!do_after(user, 1.5 SECONDS))
+		if (!do_after(user, 1.5 SECONDS, src))
 			return
 		inserted_tape.forceMove(drop_location())
 		if(user)
@@ -161,7 +160,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		if("eject", "play", "stop")
 			if(!COOLDOWN_FINISHED(src, switching_tracks))
 				balloon_alert(user, "busy switching tracks!")
-				return
+				return TRUE
 
 	switch(action)
 		if("eject")
