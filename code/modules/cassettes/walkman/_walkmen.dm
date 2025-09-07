@@ -45,7 +45,7 @@ GLOBAL_LIST_INIT(youtube_exempt, list(
 	COOLDOWN_DECLARE(next_song_use)
 
 /*
-/obj/item/device/walkman/Initialize()
+/obj/item/device/walkman/Initialize(mapload)
 	. = ..()
 	design = rand(1, 5)
 	update_icon()
