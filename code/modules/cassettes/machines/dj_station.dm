@@ -125,8 +125,8 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		"progress" = song_start_time ? (REALTIMEOFDAY - song_start_time) : 0,
 		"side" = inserted_tape?.flipped,
 		"current_song" = is_switching_tracks ? null :
-			inserted_tape && inserted_tape.cassette_data ? inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs.Find(playing) - 1 : null,
-		"switching_tracks" = !COOLDOWN_FINISHED(src, switching_tracks),
+			inserted_tape?.cassette_data ? inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs.Find(playing) - 1 : null,
+		"switching_tracks" = is_switching_tracks,
 	)
 
 
