@@ -24,6 +24,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	density = TRUE
 	move_resist = MOVE_FORCE_OVERPOWERING
 
+	var/is_ejecting = FALSE
 	var/broadcasting = FALSE
 	/// The currently inserted cassette, if any.
 	var/obj/item/cassette_tape/inserted_tape
@@ -65,11 +66,16 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 /obj/machinery/dj_station/attackby(obj/item/weapon, mob/user, params)
 	if(!istype(weapon, /obj/item/cassette_tape))
 		return ..()
+	if (is_ejecting)
+		balloon_alert(user, "already inserting/ejecting")
+		return
+	is_ejecting = TRUE
+
 	var/obj/item/cassette_tape/old_tape = inserted_tape
-	// TODO, if there is a tape, play a different noise of us taking out the cassette.
 	if(old_tape)
 		PLAY_SOUND(SFX_DJSTATION_OPENTAKEOUT)
 		if (!do_after(user, 1.3 SECONDS))
+			is_ejecting = FALSE
 			return
 		old_tape.forceMove(drop_location())
 		inserted_tape = null
@@ -78,24 +84,33 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		sleep(0.2 SECONDS)
 		PLAY_SOUND(SFX_DJSTATION_PUTINANDCLOSE)
 		if (!do_after(user, 1.3 SECONDS))
+			is_ejecting = FALSE
 			return
 	else
 		PLAY_SOUND(SFX_DJSTATION_OPENPUTINANDCLOSE)
 		if (!do_after(user, 2.2 SECONDS))
+			is_ejecting = FALSE
 			return
 	if(user.transferItemToLoc(weapon, src))
 		balloon_alert(user, "inserted tape")
 		inserted_tape = weapon
 		if(old_tape)
 			user.put_in_hands(old_tape)
+	is_ejecting = FALSE
 	update_static_data_for_all_viewers()
 
 /obj/machinery/dj_station/proc/eject_tape(mob/user)
+	if(is_ejecting)
+		balloon_alert(user, "already ejecting!")
+		return
 	if(inserted_tape)
+		is_ejecting = TRUE
 		PLAY_SOUND(SFX_DJSTATION_OPENTAKEOUTANDCLOSE)
 		if (!do_after(user, 1.5 SECONDS))
+			is_ejecting = FALSE
 			return
 		inserted_tape.forceMove(drop_location())
+		is_ejecting = FALSE
 		if(user)
 			balloon_alert(user, "tape ejected")
 			user.put_in_hands(inserted_tape)
@@ -106,6 +121,9 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 
 /obj/machinery/dj_station/CtrlClick(mob/user)
 	if(can_interact(user))
+		if(is_ejecting)
+			balloon_alert(user, "busy ejecting tape!")
+			return
 		if(!COOLDOWN_FINISHED(src, switching_tracks))
 			balloon_alert(user, "busy switching tracks!")
 			return
@@ -173,35 +191,50 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 			return TRUE
 		if("stop")
 			PLAY_SOUND(SFX_DJSTATION_STOP)
+			if (!playing)
+				balloon_alert(user, "not playing!")
+				return
 			// TODO: stop current song
 			return TRUE
 		if("set_track")
 			. = TRUE
+			if(!COOLDOWN_FINISHED(src, switching_tracks))
+				balloon_alert(user, "already switching tracks!")
+				return
 			var/index = params["index"]
 			if(!isnum(index))
 				CRASH("tried to pass non-number index ([index]) to set_track??? this is prolly a bug.")
 			index++
-			if (!inserted_tape)
+			if(!inserted_tape)
 				balloon_alert("no cassette tape inserted!")
 				return
-			if (!inserted_tape.cassette_data)
+
+			switch(inserted_tape.cassette_data.status)
+				if (CASSETTE_STATUS_UNAPPROVED)
+
+			// Are both sides blank
+			if(!inserted_tape.cassette_data || ( \
+					!length(inserted_tape.cassette_data.get_side(TRUE)?.songs) && \
+					!length(inserted_tape.cassette_data.get_side(FALSE)?.songs) \
+				) \
+			)
 				balloon_alert("this cassette is blank!")
 				return
 			var/list/cassette_songs = inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs
 
 			var/song_count = length(cassette_songs)
-			if (!song_count)
+			if(!song_count)
 				balloon_alert("no tracks on this side!")
 				return
-			if (!inserted_tape)
-				balloon_alert("no tape inserted!")
-				return
 			var/datum/cassette_song/found_track = cassette_songs[index]
-			if (!found_track)
+			if(!found_track)
 				balloon_alert("that track doesnt exist!")
 				return
-
-			if (playing)
+			if(playing && (cassette_songs.Find(playing) == index))
+				PLAY_SOUND(SFX_DJSTATION_STOP)
+				balloon_alert("already on that track!")
+				return
+			if(playing)
 				PLAY_SOUND(SFX_DJSTATION_STOP)
 				sleep(0.2 SECONDS)
 			PLAY_SOUND(SFX_DJSTATION_TRACKSWITCH)

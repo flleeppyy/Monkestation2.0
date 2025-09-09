@@ -265,7 +265,7 @@ export const DjStation = () => {
                 <Section
                   fill
                   scrollable
-                  title={`Track list - Side ${side ? (side ? 'A' : 'B') : '?'}`}
+                  title={`Track list - Side ${side != null ? (side ? 'A' : 'B') : '?'}`}
                 >
                   {songs && songs.length ? (
                     <AvailableTracks songs={songs} currentSong={currentSong} />
