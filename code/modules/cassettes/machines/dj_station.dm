@@ -1,6 +1,5 @@
-#define PLAY_SOUND(the) playsound(src, ##the, 90, FALSE)
+#define PLAY_CASSETTE_SOUND(sfx) playsound(src, ##sfx, vol = 90, vary = FALSE, mixer_channel = CHANNEL_MACHINERY)
 
-GLOBAL_VAR(dj_broadcast)
 GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 
 /obj/item/clothing/ears
@@ -73,8 +72,8 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 
 	var/obj/item/cassette_tape/old_tape = inserted_tape
 	if(old_tape)
-		PLAY_SOUND(SFX_DJSTATION_OPENTAKEOUT)
-		if (!do_after(user, 1.3 SECONDS))
+		PLAY_CASSETTE_SOUND(SFX_DJSTATION_OPENTAKEOUT)
+		if (!do_after(user, 1.3 SECONDS, src))
 			is_ejecting = FALSE
 			return
 		old_tape.forceMove(drop_location())
@@ -82,13 +81,13 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 
 	if (old_tape)
 		sleep(0.2 SECONDS)
-		PLAY_SOUND(SFX_DJSTATION_PUTINANDCLOSE)
-		if (!do_after(user, 1.3 SECONDS))
+		PLAY_CASSETTE_SOUND(SFX_DJSTATION_PUTINANDCLOSE)
+		if (!do_after(user, 1.3 SECONDS, src))
 			is_ejecting = FALSE
 			return
 	else
-		PLAY_SOUND(SFX_DJSTATION_OPENPUTINANDCLOSE)
-		if (!do_after(user, 2.2 SECONDS))
+		PLAY_CASSETTE_SOUND(SFX_DJSTATION_OPENPUTINANDCLOSE)
+		if (!do_after(user, 2.2 SECONDS, src))
 			is_ejecting = FALSE
 			return
 	if(user.transferItemToLoc(weapon, src))
@@ -105,8 +104,8 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		return
 	if(inserted_tape)
 		is_ejecting = TRUE
-		PLAY_SOUND(SFX_DJSTATION_OPENTAKEOUTANDCLOSE)
-		if (!do_after(user, 1.5 SECONDS))
+		PLAY_CASSETTE_SOUND(SFX_DJSTATION_OPENTAKEOUTANDCLOSE)
+		if (!do_after(user, 1.5 SECONDS, src))
 			is_ejecting = FALSE
 			return
 		inserted_tape.forceMove(drop_location())
@@ -143,9 +142,8 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		"song_cooldown" = COOLDOWN_TIMELEFT(src, next_song_timer),
 		"progress" = song_start_time ? (REALTIMEOFDAY - song_start_time) : 0,
 		"side" = inserted_tape?.flipped,
-		"current_song" = is_switching_tracks ? null :
-			inserted_tape && inserted_tape.cassette_data ? inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs.Find(playing) - 1 : null,
-		"switching_tracks" = !COOLDOWN_FINISHED(src, switching_tracks),
+		"current_song" = is_switching_tracks ? null : (inserted_tape?.cassette_data ? inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs.Find(playing) - 1 : null),
+		"switching_tracks" = is_switching_tracks,
 	)
 
 
@@ -179,21 +177,22 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		if("eject", "play", "stop")
 			if(!COOLDOWN_FINISHED(src, switching_tracks))
 				balloon_alert(user, "busy switching tracks!")
-				return
+				return TRUE
 
 	switch(action)
 		if("eject")
 			eject_tape(user)
 			return TRUE
 		if("play")
-			PLAY_SOUND(SFX_DJSTATION_PLAY)
+			PLAY_CASSETTE_SOUND(SFX_DJSTATION_PLAY)
 			// TODO: play current song
 			return TRUE
 		if("stop")
-			PLAY_SOUND(SFX_DJSTATION_STOP)
+			PLAY_CASSETTE_SOUND(SFX_DJSTATION_STOP)
 			if (!playing)
 				balloon_alert(user, "not playing!")
 				return
+			PLAY_CASSETTE_SOUND(SFX_DJSTATION_STOP)
 			// TODO: stop current song
 			return TRUE
 		if("set_track")
@@ -207,6 +206,8 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 			index++
 			if(!inserted_tape)
 				balloon_alert("no cassette tape inserted!")
+			if (!inserted_tape)
+				balloon_alert(user, "no cassette tape inserted!")
 				return
 
 			switch(inserted_tape.cassette_data.status)
@@ -219,25 +220,30 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				) \
 			)
 				balloon_alert("this cassette is blank!")
+			if (!inserted_tape.cassette_data)
+				balloon_alert(user, "this cassette is blank!")
 				return
 			var/list/cassette_songs = inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs
 
 			var/song_count = length(cassette_songs)
 			if(!song_count)
-				balloon_alert("no tracks on this side!")
+				balloon_alert(user, "no tracks on this side!")
+				return
+			if (!inserted_tape)
+				balloon_alert(user, "no tape inserted!")
 				return
 			var/datum/cassette_song/found_track = cassette_songs[index]
 			if(!found_track)
-				balloon_alert("that track doesnt exist!")
+				balloon_alert(user, "that track doesnt exist!")
 				return
 			if(playing && (cassette_songs.Find(playing) == index))
-				PLAY_SOUND(SFX_DJSTATION_STOP)
+				PLAY_CASSETTE_SOUND(SFX_DJSTATION_STOP)
 				balloon_alert("already on that track!")
 				return
 			if(playing)
-				PLAY_SOUND(SFX_DJSTATION_STOP)
+				PLAY_CASSETTE_SOUND(SFX_DJSTATION_STOP)
 				sleep(0.2 SECONDS)
-			PLAY_SOUND(SFX_DJSTATION_TRACKSWITCH)
+			PLAY_CASSETTE_SOUND(SFX_DJSTATION_TRACKSWITCH)
 			COOLDOWN_START(src, switching_tracks, 2.1 SECONDS)
 			sleep(2.1 SECONDS)
 			playing = found_track
@@ -261,4 +267,4 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	hitting_projectile.reflect(src)
 	return BULLET_ACT_FORCE_PIERCE
 
-#undef PLAY_SOUND
+#undef PLAY_CASSETTE_SOUND
