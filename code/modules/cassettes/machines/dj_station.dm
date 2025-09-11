@@ -214,7 +214,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				if (CASSETTE_STATUS_UNAPPROVED)
 
 			// Are both sides blank
-			if(!inserted_tape.cassette_data || ( \
+			if(!inserted_tape.cassette_data || (
 					!length(inserted_tape.cassette_data.get_side(TRUE)?.songs) && \
 					!length(inserted_tape.cassette_data.get_side(FALSE)?.songs) \
 				) \
