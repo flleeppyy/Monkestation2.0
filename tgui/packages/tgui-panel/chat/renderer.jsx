@@ -24,6 +24,7 @@ import { canPageAcceptType, createMessage, isSameMessage } from './model';
 import { highlightNode, linkifyNode } from './replaceInTextNode';
 import { Tooltip } from '../../tgui/components';
 import { selectSettings } from '../settings/selectors';
+import { globalStore } from 'tgui/backend';
 
 const logger = createLogger('chatRenderer');
 
