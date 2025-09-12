@@ -85,7 +85,7 @@ export const SettingsPanel = (props, context) => {
 };
 
 export const SettingsGeneral = (props, context) => {
-  const { theme, fontFamily, coloredNames, fontSize, lineHeight } = useSelector(
+  const { theme, fontFamily, coloredNames, fontSize, lineHeight, scrollTrackingTolerance } = useSelector(
     context,
     selectSettings,
   );
@@ -452,7 +452,7 @@ const TextHighlightSetting = (props, context) => {
 };
 
 const ExperimentalSettings = (props, context) => {
-  const { websocketEnabled, websocketServer } = useSelector(
+  const { websocketEnabled, websocketServer, scrollTrackingTolerance } = useSelector(
     context,
     selectSettings,
   );
@@ -530,6 +530,25 @@ const ExperimentalSettings = (props, context) => {
                 onClick={() => {
                   dispatch(disconnectWebsocket({}));
                 }}
+              />
+            </LabeledList.Item>
+            <Divider />
+            <LabeledList.Item label="ScrollTT" tooltip='Scroll Tracking Tolerance: The smallest possible scroll offset that is still trackable. Mess with this if your chat sucks at autoscrolling.'>
+              <Slider
+                width="100%"
+                step={1}
+                stepPixelSize={2}
+                minValue={12}
+                maxValue={64}
+                value={scrollTrackingTolerance}
+                format={(value) => toFixed(value)}
+                onDrag={(e, value) =>
+                  dispatch(
+                    updateSettings({
+                      scrollTrackingTolerance: value,
+                    }),
+                  )
+                }
               />
             </LabeledList.Item>
           </LabeledList>
