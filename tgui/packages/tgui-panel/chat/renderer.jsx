@@ -150,7 +150,8 @@ class ChatRenderer {
       const height = node.scrollHeight;
       const bottom = node.scrollTop + node.offsetHeight;
       const scrollTracking =
-        Math.abs(height - bottom) < selectSettings(globalStore.getState()).scrollTrackingTolerance ||
+        Math.abs(height - bottom) <
+          selectSettings(globalStore.getState()).scrollTrackingTolerance ||
         this.lastScrollHeight === 0;
       if (scrollTracking !== this.scrollTracking) {
         this.scrollTracking = scrollTracking;
