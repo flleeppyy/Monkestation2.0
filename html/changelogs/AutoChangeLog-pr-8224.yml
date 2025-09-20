@@ -1,0 +1,4 @@
+author: "EssentialTomato"
+delete-after: True
+changes:
+  - bugfix: "Minor airlock overlay fix for pneumatic seals and notes."

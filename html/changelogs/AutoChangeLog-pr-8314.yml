@@ -1,0 +1,8 @@
+author: "EssentialTomato"
+delete-after: True
+changes:
+  - bugfix: "Fixed bein unable to clean the microwave."
+  - bugfix: "Fixed the supermatter sliver dusting you while being placed into a proper container,"
+  - bugfix: "Fixed plumbing constructor not being able to deconstruct its buildings."
+  - bugfix: "Fixed neon lining not being placeable."
+  - bugfix: "Fixed plant analyzers not working from range."
