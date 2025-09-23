@@ -467,15 +467,6 @@
 	},
 /turf/open/floor/wood/large,
 /area/centcom/central_command_areas/admin_hangout)
-"abj" = (
-/obj/structure/table/reinforced,
-/obj/item/storage/box/zipties,
-/obj/item/crowbar/red,
-/obj/effect/turf_decal/stripes/line{
-	dir = 4
-	},
-/turf/open/floor/iron,
-/area/centcom/central_command_areas/armory)
 "abk" = (
 /obj/structure/sign/painting/library{
 	pixel_x = -32
@@ -16608,15 +16599,6 @@
 /obj/item/food/grown/tomato,
 /turf/open/floor/plastic,
 /area/centcom/syndicate_mothership/expansion_fridgerummage)
-"aSq" = (
-/obj/structure/table/reinforced,
-/obj/item/clipboard,
-/obj/item/folder/yellow,
-/obj/effect/turf_decal/stripes/line{
-	dir = 8
-	},
-/turf/open/floor/iron,
-/area/centcom/central_command_areas/armory)
 "aSr" = (
 /obj/effect/turf_decal/siding/thinplating_new/dark,
 /obj/machinery/camera/autoname/directional/south{
@@ -20146,6 +20128,13 @@
 	},
 /turf/open/floor/mineral/titanium/tiled/white,
 /area/centcom/central_command_areas/kitchen)
+"bWc" = (
+/obj/effect/turf_decal/stripes/line{
+	dir = 8
+	},
+/obj/vehicle/ridden/artillerylight,
+/turf/open/floor/iron,
+/area/centcom/central_command_areas/armory)
 "bWo" = (
 /obj/effect/turf_decal/tile/dark/opposingcorners,
 /obj/structure/railing/wood{
@@ -21740,6 +21729,18 @@
 	dir = 4
 	},
 /area/cruiser_dock)
+"ePg" = (
+/obj/structure/table/reinforced,
+/obj/item/storage/box/zipties,
+/obj/item/crowbar/red,
+/obj/effect/turf_decal/stripes/line{
+	dir = 4
+	},
+/obj/item/wrench{
+	pixel_x = 9
+	},
+/turf/open/floor/iron,
+/area/centcom/central_command_areas/armory)
 "ePC" = (
 /obj/machinery/light/directional/east,
 /turf/open/floor/mineral/titanium/tiled/white,
@@ -23222,14 +23223,6 @@
 	},
 /turf/open/floor/iron/dark/herringbone,
 /area/centcom/central_command_areas/medical)
-"hlM" = (
-/obj/structure/window/reinforced/spawner/directional/north,
-/obj/machinery/telecomms/relay/preset/ruskie{
-	banned_frequencies = list(1213,1215,1221,1219,1217);
-	id = "CentCom Offices Relay"
-	},
-/turf/open/floor/circuit/green/anim,
-/area/centcom/central_command_areas/adminroom)
 "hna" = (
 /obj/structure/closet/secure_closet{
 	name = "contraband locker";
@@ -23789,16 +23782,6 @@
 	},
 /turf/closed/indestructible/fakeglass,
 /area/centcom/central_command_areas/admin)
-"hVd" = (
-/obj/item/paper{
-	raw_text_inputs = "FUUUUUUUUUUU-"
-	},
-/obj/effect/temp_visual/cult/rune_spawn/rune4{
-	color = "#880808";
-	desc = "A strange symbol, it seems to be slightly glowing."
-	},
-/turf/open/misc/dirt,
-/area/centcom/central_command_areas/admin)
 "hVj" = (
 /turf/open/floor/iron/stairs/right,
 /area/cruiser_dock)
@@ -24320,31 +24303,6 @@
 /obj/machinery/light/cold/directional/east,
 /turf/open/floor/iron/smooth_large,
 /area/cruiser_dock)
-"iRw" = (
-/obj/effect/turf_decal/siding/wood,
-/obj/structure/table/wood,
-/obj/item/device/walkman{
-	pixel_y = 7;
-	pixel_x = -8
-	},
-/obj/item/device/walkman{
-	pixel_y = 7;
-	pixel_x = -8
-	},
-/obj/item/device/walkman{
-	pixel_y = 7;
-	pixel_x = -8
-	},
-/obj/item/device/walkman{
-	pixel_y = 7;
-	pixel_x = -8
-	},
-/obj/item/cassette_tape/blank{
-	pixel_x = 7;
-	pixel_y = 0
-	},
-/turf/open/floor/wood/parquet,
-/area/centcom/central_command_areas/arcade)
 "iRM" = (
 /obj/effect/turf_decal/siding/white{
 	dir = 8
@@ -26810,6 +26768,41 @@
 	},
 /turf/open/floor/glass/plasma,
 /area/centcom/central_command_areas/evacuation)
+"nwY" = (
+/obj/structure/closet/cabinet{
+	req_access = list("cent_general")
+	},
+/obj/item/ammo_box/a357,
+/obj/item/ammo_box/a357,
+/obj/effect/turf_decal/siding/wood{
+	dir = 10
+	},
+/obj/item/clothing/head/cowboy/brown,
+/obj/item/clothing/shoes/cowboyboots,
+/obj/item/storage/belt/holster/nukie{
+	icon_state = "holster";
+	inhand_icon_state = "holster";
+	worn_icon_state = "holster";
+	name = "tactical holster";
+	desc = "A deep shoulder holster capable of holding almost any form of firearm and its ammo. Its Syndicate markings have been painted over."
+	},
+/obj/item/melee/baton/security/loaded{
+	name = "compact heavy stun baton";
+	desc = "A heavier stun baton, equipped with a more powerful capacitor and a tungsten core for ideal home defence. Somethingsomething bluespace.";
+	force = 20;
+	stamina_damage = 200;
+	preload_cell_type = /obj/item/stock_parts/power_store/cell/bluespace;
+	cell_hit_cost = 1500
+	},
+/obj/item/clothing/suit/hooded/cloak/zuliecloak,
+/obj/item/clothing/under/rank/centcom/military,
+/obj/item/radio/headset/headset_cent/alt,
+/obj/item/clothing/glasses/sunglasses,
+/obj/item/storage/backpack/satchel/leather,
+/obj/item/storage/box/survival/ert,
+/obj/item/modular_computer/pda/heads/ntrep,
+/turf/open/floor/wood/large,
+/area/centcom/central_command_areas/adminroom)
 "nzM" = (
 /obj/structure/flora/bush/fullgrass/style_random,
 /obj/structure/flora/bush/flowers_yw/style_random,
@@ -27179,6 +27172,15 @@
 	},
 /turf/open/floor/iron/dark/textured_large,
 /area/cruiser_dock)
+"ofX" = (
+/obj/structure/window/reinforced/spawner/directional/north,
+/obj/machinery/telecomms/relay/preset/ruskie{
+	banned_frequencies = list(1213,1215,1221,1219,1217);
+	id = "CentCom Offices Relay";
+	on = "0"
+	},
+/turf/open/floor/circuit/green/anim,
+/area/centcom/central_command_areas/adminroom)
 "ogy" = (
 /obj/effect/turf_decal/syndicateemblem/bottom/left,
 /turf/open/floor/mineral/plastitanium/red,
@@ -29417,6 +29419,11 @@
 	},
 /turf/open/floor/iron/white/textured,
 /area/centcom/central_command_areas/admin)
+"rYk" = (
+/obj/structure/table/reinforced/plastitaniumglass,
+/obj/machinery/dj_station,
+/turf/open/floor/carpet/donk,
+/area/centcom/central_command_areas/adminroom)
 "rYm" = (
 /obj/structure/sign{
 	name = "wall";
@@ -29811,41 +29818,6 @@
 /obj/machinery/medical_kiosk,
 /turf/open/floor/iron/dark,
 /area/centcom/central_command_areas/medical)
-"sKp" = (
-/obj/structure/closet/cabinet{
-	req_access = list("cent_general")
-	},
-/obj/item/ammo_box/a357,
-/obj/item/ammo_box/a357,
-/obj/effect/turf_decal/siding/wood{
-	dir = 10
-	},
-/obj/item/clothing/head/cowboy/brown,
-/obj/item/clothing/shoes/cowboyboots,
-/obj/item/storage/belt/holster/nukie{
-	icon_state = "holster";
-	inhand_icon_state = "holster";
-	worn_icon_state = "holster";
-	name = "tactical holster";
-	desc = "A deep shoulder holster capable of holding almost any form of firearm and its ammo. Its Syndicate markings have been painted over."
-	},
-/obj/item/melee/baton/security/loaded{
-	name = "compact heavy stun baton";
-	desc = "A heavier stun baton, equipped with a more powerful capacitor and a tungsten core for ideal home defence. Somethingsomething bluespace.";
-	force = 20;
-	stamina_damage = 200;
-	preload_cell_type = /obj/item/stock_parts/cell/bluespace;
-	cell_hit_cost = 1500
-	},
-/obj/item/clothing/suit/hooded/cloak/zuliecloak,
-/obj/item/clothing/under/rank/centcom/military,
-/obj/item/radio/headset/headset_cent/alt,
-/obj/item/clothing/glasses/sunglasses,
-/obj/item/storage/backpack/satchel/leather,
-/obj/item/storage/box/survival/ert,
-/obj/item/modular_computer/pda/heads/ntrep,
-/turf/open/floor/wood/large,
-/area/centcom/central_command_areas/adminroom)
 "sKy" = (
 /obj/machinery/computer/arcade{
 	dir = 1
@@ -31312,6 +31284,31 @@
 /obj/structure/window/reinforced/spawner/directional/south,
 /turf/open/floor/plastic,
 /area/centcom/central_command_areas/admin)
+"vuA" = (
+/obj/effect/turf_decal/siding/wood,
+/obj/structure/table/wood,
+/obj/item/device/walkman{
+	pixel_y = 7;
+	pixel_x = -8
+	},
+/obj/item/device/walkman{
+	pixel_y = 7;
+	pixel_x = -8
+	},
+/obj/item/device/walkman{
+	pixel_y = 7;
+	pixel_x = -8
+	},
+/obj/item/device/walkman{
+	pixel_y = 7;
+	pixel_x = -8
+	},
+/obj/item/cassette_tape/blank{
+	pixel_x = 7;
+	pixel_y = 0
+	},
+/turf/open/floor/wood/parquet,
+/area/centcom/central_command_areas/arcade)
 "vuG" = (
 /obj/item/food/cake/birthday,
 /obj/effect/turf_decal/tile/hot_pink/full{
@@ -31615,6 +31612,16 @@
 	},
 /turf/open/floor/iron/dark/diagonal,
 /area/centcom/central_command_areas/adminroom)
+"vRs" = (
+/obj/item/paper{
+	raw_text_inputs = "FUUUUUUUUUUU-"
+	},
+/obj/effect/temp_visual/cult/rune_spawn/rune4{
+	color = "#880808";
+	desc = "A strange symbol, it seems to be slightly glowing."
+	},
+/turf/open/misc/dirt,
+/area/centcom/central_command_areas/admin)
 "vRz" = (
 /obj/effect/landmark/ctf,
 /turf/open/space/basic,
@@ -31923,11 +31930,6 @@
 	},
 /turf/open/floor/wood/large,
 /area/centcom/central_command_areas/admin)
-"wrS" = (
-/obj/structure/table/reinforced/plastitaniumglass,
-/obj/machinery/dj_station,
-/turf/open/floor/carpet/donk,
-/area/centcom/central_command_areas/adminroom)
 "wso" = (
 /obj/effect/turf_decal/weather,
 /turf/open/floor/sandy_dirt,
@@ -52671,7 +52673,7 @@ aaa
 aaa
 ryJ
 vsr
-sKp
+nwY
 kpH
 rwp
 kvu
@@ -53693,7 +53695,7 @@ aaa
 aaa
 aaa
 kpH
-wrS
+rYk
 mxh
 qUI
 lqN
@@ -54742,7 +54744,7 @@ tGU
 jqq
 iSA
 emD
-hlM
+ofX
 kpH
 aaa
 aaa
@@ -66335,7 +66337,7 @@ aYa
 aVE
 asE
 aRV
-aSq
+bWc
 agX
 asE
 ayS
@@ -66592,7 +66594,7 @@ aYa
 aXe
 asE
 abA
-abj
+ePg
 aPt
 asE
 aFB
@@ -69170,7 +69172,7 @@ aPq
 aPq
 aPq
 aPq
-iRw
+vuA
 aFR
 aaa
 aaa
@@ -75474,7 +75476,7 @@ aOn
 aeB
 aeB
 aeB
-hVd
+vRs
 ljM
 piU
 exa

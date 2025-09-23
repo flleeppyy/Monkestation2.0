@@ -237,11 +237,9 @@
 	if(!ionpulse_on)
 		return
 
-	if(cell.charge <= 10)
+	if(!cell.use(0.01 * STANDARD_CELL_CHARGE))
 		toggle_ionpulse()
 		return
-
-	cell.charge -= 10
 	return TRUE
 
 /mob/living/silicon/robot/proc/toggle_ionpulse()
@@ -263,7 +261,7 @@
 /mob/living/silicon/robot/get_status_tab_items()
 	. = ..()
 	if(cell)
-		. += "Charge Left: [cell.charge]/[cell.maxcharge]"
+		. += "Charge Left: [display_energy(cell.charge)]/[display_energy(cell.maxcharge)]"
 	else
 		. += "No Cell Inserted!"
 
@@ -1009,7 +1007,7 @@
 
 /mob/living/silicon/robot/set_stat(new_stat)
 	. = ..()
-	update_stat() // This is probably not needed, but hopefully should be a little sanity check for the spaghetti that borgs are built from
+	//update_stat() // This is probably not needed, but hopefully should be a little sanity check for the spaghetti that borgs are built from
 
 /mob/living/silicon/robot/proc/on_dampen()
 	SIGNAL_HANDLER
