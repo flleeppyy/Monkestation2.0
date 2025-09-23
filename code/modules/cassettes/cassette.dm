@@ -24,10 +24,14 @@
 	var/id
 
 /obj/item/cassette_tape/Initialize(mapload, spawned_id)
-	. = ..()
-	spawned_id ||= id
-	if(!isnull(spawned_id))
-		cassette_data = SScassettes.load_cassette(spawned_id)
+	..()
+	if(spawned_id)
+		id = spawned_id
+	return INITIALIZE_HINT_LATELOAD
+
+/obj/item/cassette_tape/LateInitialize()
+	if(id)
+		cassette_data = SScassettes.load_cassette(id)
 	else if(random)
 		var/list/random_cassette = SScassettes.unique_random_cassettes(amount = 1, status = CASSETTE_STATUS_APPROVED)
 		if(length(random_cassette))
