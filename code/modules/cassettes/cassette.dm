@@ -75,37 +75,40 @@
 	if(cassette_data.author.name)
 		. += span_info("Mixed by [span_name(cassette_data.author.name)]")
 
-/obj/item/cassette_tape/attackby(obj/item/item, mob/living/user)
-	if(!istype(item, /obj/item/pen))
-		return ..()
+/obj/item/cassette_tape/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
+	if(!istype(tool, /obj/item/pen))
+		return NONE
 	var/choice = tgui_input_list(user, "What would you like to change?", items = list("Cassette Name", "Cassette Description", "Cancel"))
 	switch(choice)
 		if("Cassette Name")
 			///the name we are giving the cassette
 			var/newcassettename = reject_bad_text(tgui_input_text(user, "Write a new Cassette name:", name, html_decode(name), max_length = MAX_NAME_LEN))
 			if(!user.can_perform_action(src, TRUE))
-				return
-			if(length(newcassettename) > MAX_NAME_LEN)
+				return ITEM_INTERACT_BLOCKING
+			if(length_char(newcassettename) > MAX_NAME_LEN)
 				to_chat(user, span_warning("That name is too long!"))
-				return
+				return ITEM_INTERACT_BLOCKING
 			if(!newcassettename)
 				to_chat(user, span_warning("That name is invalid."))
-				return
-			else
-				name = "[lowertext(newcassettename)]"
+				return ITEM_INTERACT_BLOCKING
+			name = "[lowertext(newcassettename)]"
+			return ITEM_INTERACT_SUCCESS
 		if("Cassette Description")
 			///the description we are giving the cassette
 			var/newdesc = tgui_input_text(user, "Write a new description:", name, html_decode(desc), max_length = 180)
 			if(!user.can_perform_action(src, TRUE))
-				return
-			if (length(newdesc) > 180)
+				return ITEM_INTERACT_BLOCKING
+			if (length_char(newdesc) > 180)
 				to_chat(user, span_warning("That description is too long!"))
-				return
+				return ITEM_INTERACT_BLOCKING
 			if(!newdesc)
 				to_chat(user, span_warning("That description is invalid."))
-				return
+				return ITEM_INTERACT_BLOCKING
 			cassette_data.desc = newdesc
 			update_appearance(UPDATE_DESC)
+			return ITEM_INTERACT_SUCCESS
+	return ITEM_INTERACT_BLOCKING
+
 
 /obj/item/cassette_tape/blank
 //	id = "blank"
