@@ -62,12 +62,12 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	if(inserted_tape)
 		context[SCREENTIP_CONTEXT_CTRL_LMB] = "Eject Tape"
 
-/obj/machinery/dj_station/attackby(obj/item/weapon, mob/user, params)
-	if(!istype(weapon, /obj/item/cassette_tape))
-		return ..()
+/obj/machinery/dj_station/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
+	if(!istype(tool, /obj/item/cassette_tape))
+		return NONE
 	if (is_ejecting)
 		balloon_alert(user, "already inserting/ejecting")
-		return
+		return ITEM_INTERACT_BLOCKING
 	is_ejecting = TRUE
 
 	var/obj/item/cassette_tape/old_tape = inserted_tape
@@ -75,7 +75,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		PLAY_CASSETTE_SOUND(SFX_DJSTATION_OPENTAKEOUT)
 		if (!do_after(user, 1.3 SECONDS, src))
 			is_ejecting = FALSE
-			return
+			return ITEM_INTERACT_BLOCKING
 		old_tape.forceMove(drop_location())
 		inserted_tape = null
 
@@ -84,19 +84,20 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		PLAY_CASSETTE_SOUND(SFX_DJSTATION_PUTINANDCLOSE)
 		if (!do_after(user, 1.3 SECONDS, src))
 			is_ejecting = FALSE
-			return
+			return ITEM_INTERACT_BLOCKING
 	else
 		PLAY_CASSETTE_SOUND(SFX_DJSTATION_OPENPUTINANDCLOSE)
 		if (!do_after(user, 2.2 SECONDS, src))
 			is_ejecting = FALSE
-			return
-	if(user.transferItemToLoc(weapon, src))
+			return ITEM_INTERACT_BLOCKING
+	if(user.transferItemToLoc(tool, src))
 		balloon_alert(user, "inserted tape")
-		inserted_tape = weapon
+		inserted_tape = tool
 		if(old_tape)
 			user.put_in_hands(old_tape)
 	is_ejecting = FALSE
 	update_static_data_for_all_viewers()
+	return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/dj_station/proc/eject_tape(mob/user)
 	if(is_ejecting)
