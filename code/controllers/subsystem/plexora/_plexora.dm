@@ -92,7 +92,8 @@ SUBSYSTEM_DEF(plexora)
 
 /datum/controller/subsystem/plexora/proc/is_plexora_alive()
 	. = FALSE
-	if(!enabled) return
+	if(!enabled)
+		return
 
 	var/datum/http_request/request = new(RUSTG_HTTP_METHOD_GET, "[base_url]/alive")
 	request.begin_async()
@@ -123,7 +124,9 @@ SUBSYSTEM_DEF(plexora)
 	status_request.fire_and_forget()
 
 /datum/controller/subsystem/plexora/proc/topic_listener_response(token, data)
-	if(!enabled) return
+	if(!enabled)
+		return
+
 	http_fireandforget("topic_emitter", list(
 		"token" = token,
 		"data" = data,
