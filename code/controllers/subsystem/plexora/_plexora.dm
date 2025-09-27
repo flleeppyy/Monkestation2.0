@@ -35,7 +35,7 @@ SUBSYSTEM_DEF(plexora)
 	var/mob/restart_requester
 
 	/// People who have tried to verify this round already
-	var/list/reverify_cache
+	var/list/reverify_cache = list()
 
 /datum/controller/subsystem/plexora/Initialize()
 	if(!CONFIG_GET(flag/plexora_enabled) && !load_old_plexora_config())
