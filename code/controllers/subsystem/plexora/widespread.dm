@@ -136,7 +136,9 @@
 // Maybe we should consider that, if theres no admin_ckey when creating a new ticket,
 // This isnt a bwoink. Other wise if it does exist, it is a bwoink.
 /datum/controller/subsystem/plexora/proc/aticket_new(datum/admin_help/ticket, msg_raw, is_bwoink, urgent, admin_ckey = null)
-	if(!enabled) return
+	if(!enabled)
+		return
+
 	http_fireandforget("atickets/new", list(
 		"id" = ticket.id,
 		"roundid" = GLOB.round_id,
@@ -155,7 +157,9 @@
 	))
 
 /datum/controller/subsystem/plexora/proc/aticket_closed(datum/admin_help/ticket, closed_by, close_type = AHELP_CLOSETYPE_CLOSE, close_reason = AHELP_CLOSEREASON_NONE)
-	if(!enabled) return
+	if(!enabled)
+		return
+
 	http_fireandforget("atickets/close", list(
 		"id" = ticket.id,
 		"roundid" = GLOB.round_id,
@@ -167,7 +171,9 @@
 	))
 
 /datum/controller/subsystem/plexora/proc/aticket_reopened(datum/admin_help/ticket, reopened_by)
-	if(!enabled) return
+	if(!enabled)
+		return
+
 	http_fireandforget("atickets/reopen", list(
 		"id" = ticket.id,
 		"roundid" = GLOB.round_id,
@@ -176,7 +182,9 @@
 	))
 
 /datum/controller/subsystem/plexora/proc/aticket_pm(datum/admin_help/ticket, message, admin_ckey = null)
-	if(!enabled) return
+	if(!enabled)
+		return
+
 	var/list/body = list();
 	body["id"] = ticket.id
 	body["roundid"] = GLOB.round_id
@@ -196,7 +204,9 @@
 	))
 
 /datum/controller/subsystem/plexora/proc/aticket_connection(datum/admin_help/ticket, is_disconnect = TRUE)
-	if(!enabled) return
+	if(!enabled)
+		return
+
 	http_fireandforget("atickets/connection_notice", list(
 		"id" = ticket.id,
 		"roundid" = GLOB.round_id,
