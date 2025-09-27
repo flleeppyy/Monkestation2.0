@@ -26,7 +26,8 @@ SUBSYSTEM_DEF(plexora)
 	flags = SS_NO_INIT | SS_NO_FIRE
 #endif
 
-	var/plexora_is_alive = null // this gets set to TRUE or FALSE during is_plexora_alive, it's just initially null to so logging works properly without spamming
+	/// This gets set to TRUE or FALSE during is_plexora_alive, it's just initially null to so logging works properly without spamming
+	var/plexora_is_alive = null
 	var/base_url = ""
 	var/enabled = TRUE
 	var/list/default_headers
@@ -141,24 +142,21 @@ SUBSYSTEM_DEF(plexora)
 	request.fire_and_forget()
 
 /datum/controller/subsystem/plexora/proc/http_basicasync(path, list/body, decode_json = TRUE, try_return_statuscode_on_error = FALSE)
-	if(!enabled) return
-
 	var/datum/http_request/request = new(
 		RUSTG_HTTP_METHOD_POST,
 		"[base_url]/[path]",
 		json_encode(body),
-		default_headers,
-		"tmp/response.json"
+		default_headers
 	)
 	request.begin_async()
 	UNTIL_OR_TIMEOUT(request.is_complete(), 10 SECONDS)
 	var/datum/http_response/response = request.into_response()
 	if (response.errored)
+		if (response.status_code && try_return_statuscode_on_error)
+			return response.status_code
 		// avoid spamming logs
 		if (isnull(plexora_is_alive) || plexora_is_alive)
 			plexora_is_alive = FALSE
-			if (response.status_code && try_return_statuscode_on_error)
-				return response.status_code
 			log_admin("Plexora down! HTTP requests will fail!")
 			CRASH("Failed HTTP request")
 	else if (decode_json)
