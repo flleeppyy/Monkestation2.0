@@ -52,7 +52,7 @@
 	if (isnum(result))
 		if (result == 404)
 			to_chat(src, "Plexora failed to find your Discord account. This actually shouldn't happen.")
-		else (result == 400)
+		else if (result == 400)
 			to_chat(src, "Plexora failed to give a proper response due to SSplexoras request. Make a ticket on the Discord")
 		else
 			to_chat(src, "Plexora gave an unexpected response ([result]). Uhm... Sorry, it shouldn't be this broken. Make a ticket on the Discord")
