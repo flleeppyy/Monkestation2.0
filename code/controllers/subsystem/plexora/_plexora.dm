@@ -166,5 +166,10 @@ SUBSYSTEM_DEF(plexora)
 	else
 		return response.body
 
+/datum/controller/subsystem/plexora/can_vv_get(var_name)
+	if(var_name == NAMEOF(src, default_headers) || var_name == NAMEOF(src, base_url))
+		return FALSE
+	return ..()
+
 #undef OLD_PLEXORA_CONFIG
 #undef AUTH_HEADER

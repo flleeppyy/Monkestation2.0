@@ -74,6 +74,7 @@
 	else
 		var/one_time_token = SSplexora.get_or_generate_one_time_token_for_ckey(user.ckey)
 		SSplexora.reverify_cache[user.ckey] = one_time_token
+		verification_code = one_time_token
 
 	if (!user.discord_details)
 		var/list/plexora_poll_result = SSplexora.poll_ckey_for_verification(user.ckey)
@@ -97,7 +98,7 @@
 		get_asset_datum(/datum/asset/simple/discord_verification),
 	)
 
-/datum/discord_verification/ui_data(mob/user)
+/datum/discord_verification/ui_static_data(mob/user)
 	. = list()
 	.["verification_code"] = verification_code
 	.["discord_invite"] = discord_invite
