@@ -14,20 +14,20 @@
 	if(!prefix)
 		to_chat(src, span_warning("This feature is disabled."))
 
-	if(!SSdiscord || !SSdiscord.reverify_cache)
+	if(!SSplexora || !SSplexora.reverify_cache)
 		to_chat(src, span_warning("Wait for the Discord subsystem to finish initialising"))
 		return
 	var/message = ""
 	// Simple sanity check to prevent a user doing this too often
-	var/cached_one_time_token = SSdiscord.reverify_cache[usr.ckey]
+	var/cached_one_time_token = SSplexora.reverify_cache[usr.ckey]
 	if(cached_one_time_token && cached_one_time_token != "")
 		message = "You already generated your one time token, it is [cached_one_time_token], if you need a new one, you will have to wait until the round ends, or switch to another server, try verifying yourself in discord by using the command <span class='warning'>\" /verifydiscord token:[cached_one_time_token] \"</span><br>If that doesn't work, type in /verifydiscord to show the command, then copy and paste the token." // monkestation edit: PLEXORA
 
 
 	else
 		// Will generate one if an expired one doesn't exist already, otherwise will grab existing token
-		var/one_time_token = SSdiscord.get_or_generate_one_time_token_for_ckey(ckey)
-		SSdiscord.reverify_cache[usr.ckey] = one_time_token
+		var/one_time_token = SSplexora.get_or_generate_one_time_token_for_ckey(ckey)
+		SSplexora.reverify_cache[usr.ckey] = one_time_token
 		message = "Your one time token is: [one_time_token], Assuming you have the required living minutes in game, you can now verify yourself in discord by using the command <span class='warning'>\" /verifydiscord token:[one_time_token] \"</span><br>If that doesn't work, type in /verifydiscord to show the command, then copy and paste the token." // monkestation edit: PLEXORA
 
 	//Now give them a browse window so they can't miss whatever we told them

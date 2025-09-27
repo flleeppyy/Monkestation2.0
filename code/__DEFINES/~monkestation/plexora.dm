@@ -19,3 +19,6 @@
 #define PLEXORA_ERROR_NOTWITCHKEY "plx_twitchkeynotconfigured"
 // Topic call passed invalid smite
 #define PLEXORA_ERROR_INVALIDSMITE "plx_invalidsmite"
+
+#define PLEXORA_NOTIFYSIGNUP_ENROLL "enroll"
+#define PLEXORA_NOTIFYSIGNUP_UNENROLL "unenroll"

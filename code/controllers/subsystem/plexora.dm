@@ -34,17 +34,16 @@ SUBSYSTEM_DEF(plexora)
 	flags = SS_NO_INIT | SS_NO_FIRE
 #endif
 
-	// MUST INCREMENT BY ONE FOR EVERY CHANGE MADE TO PLEXORA
-	var/version_increment_counter = 2
 	var/plexora_is_alive = null // this gets set to TRUE or FALSE during is_plexora_alive, it's just initially null to so logging works properly without spamming
-	var/vanderlin_available = FALSE
 	var/base_url = ""
 	var/enabled = TRUE
-	var/tripped_bad_version = FALSE
 	var/list/default_headers
 
 	var/restart_type = PLEXORA_SHUTDOWN_NORMAL
 	var/mob/restart_requester
+
+	/// People who have tried to verify this round already
+	var/list/reverify_cache
 
 /datum/controller/subsystem/plexora/Initialize()
 	if(!CONFIG_GET(flag/plexora_enabled) && !load_old_plexora_config())
@@ -82,7 +81,6 @@ SUBSYSTEM_DEF(plexora)
 	plexora_is_alive = SSplexora.plexora_is_alive
 	base_url = SSplexora.base_url
 	enabled = SSplexora.enabled
-	tripped_bad_version = SSplexora.tripped_bad_version
 	default_headers = SSplexora.default_headers
 	if(initialized && !enabled)
 		flags |= SS_NO_FIRE
@@ -114,12 +112,6 @@ SUBSYSTEM_DEF(plexora)
 			log_admin("Failed to check if Plexora is alive! She probably isn't. Check config on both sides")
 			CRASH("Failed to check if Plexora is alive! She probably isn't. Check config on both sides")
 	else
-		var/list/json_body = json_decode(response.body)
-		if (json_body["version_increment_counter"] != version_increment_counter)
-			if (!tripped_bad_version)
-				stack_trace("SSplexora's version does not match Plexora! SSplexora: [version_increment_counter] Plexora: [json_body["version_increment_counter"]]")
-				tripped_bad_version = TRUE
-
 		plexora_is_alive = TRUE
 		return TRUE
 
@@ -144,7 +136,7 @@ SUBSYSTEM_DEF(plexora)
 		return
 
 	server_restart_sent = TRUE
-	http_basicasync("serverupdates", list(
+	http_fireandforget("serverupdates", list(
 		"type" = "servershutdown",
 		"timestamp" = rustg_unix_timestamp(),
 		"roundid" = GLOB.round_id,
@@ -157,7 +149,7 @@ SUBSYSTEM_DEF(plexora)
 	))
 
 /datum/controller/subsystem/plexora/proc/serverstarted()
-	http_basicasync("serverupdates", list(
+	http_fireandforget("serverupdates", list(
 		"type" = "serverstart",
 		"timestamp" = rustg_unix_timestamp(),
 		"roundid" = GLOB.round_id,
@@ -166,7 +158,7 @@ SUBSYSTEM_DEF(plexora)
 	))
 
 /datum/controller/subsystem/plexora/proc/serverinitdone(time)
-	http_basicasync("serverupdates", list(
+	http_fireandforget("serverupdates", list(
 		"type" = "serverinitdone",
 		"timestamp" = rustg_unix_timestamp(),
 		"roundid" = GLOB.round_id,
@@ -176,7 +168,7 @@ SUBSYSTEM_DEF(plexora)
 	))
 
 /datum/controller/subsystem/plexora/proc/roundstarted()
-	http_basicasync("serverupdates", list(
+	http_fireandforget("serverupdates", list(
 		"type" = "roundstart",
 		"timestamp" = rustg_unix_timestamp(),
 		"roundid" = GLOB.round_id,
@@ -185,7 +177,7 @@ SUBSYSTEM_DEF(plexora)
 	))
 
 /datum/controller/subsystem/plexora/proc/roundended()
-	http_basicasync("serverupdates", list(
+	http_fireandforget("serverupdates", list(
 		"type" = "roundend",
 		"timestamp" = rustg_unix_timestamp(),
 		"roundid" = GLOB.round_id,
@@ -197,7 +189,7 @@ SUBSYSTEM_DEF(plexora)
 	))
 
 /datum/controller/subsystem/plexora/proc/interview(datum/interview/interview)
-	http_basicasync("interviewupdates", list(
+	http_fireandforget("interviewupdates", list(
 		"id" = interview.id,
 		"atomic_id" = interview.atomic_id,
 		"owner_ckey" = interview.owner_ckey,
@@ -229,7 +221,7 @@ SUBSYSTEM_DEF(plexora)
 
 
 /datum/controller/subsystem/plexora/proc/relay_mentor_say(client/user, message, prefix)
-	http_basicasync("relay_mentor_say", list(
+	http_fireandforget("relay_mentor_say", list(
 		"prefix" = prefix,
 		"key" = user.key,
 		"message" = message,
@@ -237,7 +229,7 @@ SUBSYSTEM_DEF(plexora)
 	))
 
 /datum/controller/subsystem/plexora/proc/relay_admin_say(client/user, message)
-	http_basicasync("relay_admin_say", list(
+	http_fireandforget("relay_admin_say", list(
 		"key" = user.key,
 		"message" = message,
 //		"icon_b64" = icon2base64(getFlatIcon(user.mob, SOUTH, no_anim = TRUE)),
@@ -246,7 +238,7 @@ SUBSYSTEM_DEF(plexora)
 // note: recover_all_SS_and_recreate_master to force mc shit
 
 /datum/controller/subsystem/plexora/proc/mc_alert(alert, level = 5)
-	http_basicasync("serverupdates", list(
+	http_fireandforget("serverupdates", list(
 		"type" = "mcalert",
 		"timestamp" = rustg_unix_timestamp(),
 		"roundid" = GLOB.round_id,
@@ -260,19 +252,19 @@ SUBSYSTEM_DEF(plexora)
 
 /datum/controller/subsystem/plexora/proc/new_note(list/note)
 	note["replay_pass"] = CONFIG_GET(string/replay_password)
-	http_basicasync("noteupdates", note)
+	http_fireandforget("noteupdates", note)
 
 /datum/controller/subsystem/plexora/proc/new_ban(list/ban)
 	// TODO: It might be easier to just send off a ban ID to Plexora, but oh well.
 	// list values are in sql_ban_system.dm
 	ban["replay_pass"] = CONFIG_GET(string/replay_password)
-	http_basicasync("banupdates", ban)
+	http_fireandforget("banupdates", ban)
 
 // Maybe we should consider that, if theres no admin_ckey when creating a new ticket,
 // This isnt a bwoink. Other wise if it does exist, it is a bwoink.
 /datum/controller/subsystem/plexora/proc/aticket_new(datum/admin_help/ticket, msg_raw, is_bwoink, urgent, admin_ckey = null)
 	if(!enabled) return
-	http_basicasync("atickets/new", list(
+	http_fireandforget("atickets/new", list(
 		"id" = ticket.id,
 		"roundid" = GLOB.round_id,
 		"round_timer" = ROUND_TIME(),
@@ -291,7 +283,7 @@ SUBSYSTEM_DEF(plexora)
 
 /datum/controller/subsystem/plexora/proc/aticket_closed(datum/admin_help/ticket, closed_by, close_type = AHELP_CLOSETYPE_CLOSE, close_reason = AHELP_CLOSEREASON_NONE)
 	if(!enabled) return
-	http_basicasync("atickets/close", list(
+	http_fireandforget("atickets/close", list(
 		"id" = ticket.id,
 		"roundid" = GLOB.round_id,
 		"closed_by" = closed_by,
@@ -303,7 +295,7 @@ SUBSYSTEM_DEF(plexora)
 
 /datum/controller/subsystem/plexora/proc/aticket_reopened(datum/admin_help/ticket, reopened_by)
 	if(!enabled) return
-	http_basicasync("atickets/reopen", list(
+	http_fireandforget("atickets/reopen", list(
 		"id" = ticket.id,
 		"roundid" = GLOB.round_id,
 		"time_reopened" = rustg_unix_timestamp(),
@@ -323,7 +315,7 @@ SUBSYSTEM_DEF(plexora)
 
 	if (admin_ckey)	body["admin_ckey"] = admin_ckey
 
-	http_basicasync("atickets/pm", list(
+	http_fireandforget("atickets/pm", list(
 		"id" = ticket.id,
 		"roundid" = GLOB.round_id,
 		"message" = message,
@@ -332,7 +324,7 @@ SUBSYSTEM_DEF(plexora)
 
 /datum/controller/subsystem/plexora/proc/aticket_connection(datum/admin_help/ticket, is_disconnect = TRUE)
 	if(!enabled) return
-	http_basicasync("atickets/connection_notice", list(
+	http_fireandforget("atickets/connection_notice", list(
 		"id" = ticket.id,
 		"roundid" = GLOB.round_id,
 		"is_disconnect" = is_disconnect,
@@ -343,7 +335,7 @@ SUBSYSTEM_DEF(plexora)
 
 /datum/controller/subsystem/plexora/proc/mticket_new(datum/request/ticket)
 	if (!enabled) return
-	http_basicasync("mtickets/new", list(
+	http_fireandforget("mtickets/new", list(
 		"id" = ticket.id,
 		"ckey" = ticket.owner_ckey,
 		"key_name" = ticket.owner_name,
@@ -357,7 +349,7 @@ SUBSYSTEM_DEF(plexora)
 	))
 
 /datum/controller/subsystem/plexora/proc/mticket_pm(datum/request/ticket, mob/frommob, mob/tomob, msg,)
-	http_basicasync("mtickets/pm", list(
+	http_fireandforget("mtickets/pm", list(
 		"id" = ticket.id,
 		"from_ckey" = frommob.ckey,
 		"ckey" = tomob.ckey,
@@ -370,15 +362,27 @@ SUBSYSTEM_DEF(plexora)
 		"message" = msg,
 	))
 
+/// action must be one of PLEXORA_NOTIFYSIGNUP
+/datum/controller/subsystem/plexora/proc/notify_signup(ckey, action)
+	var/list/response = http_basicasync("notify_enroll", list(
+		"ckey" = ckey(ckey),
+		"action" = action
+	), TRUE, TRUE)
+
+	if (isnum(response))
+		return FALSE
+
+	return response["result"]
+
 /datum/controller/subsystem/plexora/proc/topic_listener_response(token, data)
 	if(!enabled) return
-	http_basicasync("topic_emitter", list(
+	http_fireandforget("topic_emitter", list(
 		"token" = token,
 		"data" = data,
 	))
 
-/datum/controller/subsystem/plexora/proc/http_basicasync(path, list/body)
-	if(!enabled) return
+/datum/controller/subsystem/plexora/proc/http_fireandforget(path, list/body, ignore_enabled = FALSE)
+	if(!enabled && !ignore_enabled) return
 
 	var/datum/http_request/request = new(
 		RUSTG_HTTP_METHOD_POST,
@@ -388,6 +392,232 @@ SUBSYSTEM_DEF(plexora)
 		"tmp/response.json"
 	)
 	request.fire_and_forget()
+
+/datum/controller/subsystem/plexora/proc/http_basicasync(path, list/body, decode_json = TRUE, try_return_statuscode_on_error = FALSE)
+	if(!enabled) return
+
+	var/datum/http_request/request = new(
+		RUSTG_HTTP_METHOD_POST,
+		"[base_url]/[path]",
+		json_encode(body),
+		default_headers,
+		"tmp/response.json"
+	)
+	request.begin_async()
+	UNTIL_OR_TIMEOUT(request.is_complete(), 10 SECONDS)
+	var/datum/http_response/response = request.into_response()
+	if (response.errored)
+		// avoid spamming logs
+		if (isnull(plexora_is_alive) || plexora_is_alive)
+			plexora_is_alive = FALSE
+			if (response.status_code && try_return_statuscode_on_error)
+				return response.status_code
+			log_admin("Plexora down! HTTP requests will fail!")
+			CRASH("Failed HTTP request")
+	else if (decode_json)
+		return json_decode(response.body)
+	else
+		return response.body
+
+
+// Procs transferred from the previous Discord subsystem
+
+/**
+ * Given a ckey, look up the discord user id attached to the user, if any
+ *
+ * This gets the most recent entry from the discord link table that is associated with the given ckey
+ *
+ * Arguments:
+ * * lookup_ckey A string representing the ckey to search on
+ */
+/datum/controller/subsystem/plexora/proc/lookup_id(lookup_ckey)
+	var/datum/discord_link_record/link = find_discord_link_by_ckey(lookup_ckey, only_valid = TRUE)
+	if(link)
+		return link.discord_id
+
+/**
+ * Given a discord id as a string, look up the ckey attached to that account, if any
+ *
+ * This gets the most recent entry from the discord_link table that is associated with this discord id snowflake
+ *
+ * Arguments:
+ * * lookup_id The discord id as a string
+ */
+/datum/controller/subsystem/plexora/proc/lookup_ckey(lookup_id)
+	var/datum/discord_link_record/link = find_discord_link_by_discord_id(lookup_id, only_valid = TRUE)
+	if(link)
+		return link.ckey
+
+/datum/controller/subsystem/plexora/proc/get_or_generate_one_time_token_for_ckey(ckey)
+	// Is there an existing valid one time token
+	var/datum/discord_link_record/link = find_discord_link_by_ckey(ckey)
+	if(link)
+		return link.one_time_token
+
+	// Otherwise we make one
+	return generate_one_time_token(ckey)
+
+/**
+ * Generate a token for discord verification
+ *
+ * This uses the common word list to generate a six word random token, this token can then be fed to a discord bot that has access
+ * to the same database, and it can use it to link a ckey to a discord id, with minimal user effort
+ *
+ * It returns the token to the calling proc, after inserting an entry into the discord_link table of the following form
+ *
+ * ```
+ * (unique_id, ckey, null, the current time, the one time token generated)
+ * the null value will be filled out with the discord id by the integrated discord bot when a user verifies
+ * ```
+ *
+ * Notes:
+ * * The token is guaranteed to unique during it's validity period
+ * * The validity period is currently set at 4 hours
+ * * a token may not be unique outside it's validity window (to reduce conflicts)
+ *
+ * Arguments:
+ * * ckey_for a string representing the ckey this token is for
+ *
+ * Returns a string representing the one time token
+ */
+/datum/controller/subsystem/plexora/proc/generate_one_time_token(ckey_for)
+
+	var/not_unique = TRUE
+	var/one_time_token = ""
+	// While there's a collision in the token, generate a new one (should rarely happen)
+	while(not_unique)
+		//Column is varchar 100, so we trim just in case someone does us the dirty later
+		one_time_token = trim(uppertext("PLX-VERIFY-[trim(ckey_for, 5)]-[random_string(4, GLOB.hex_characters)]-[random_string(4, GLOB.hex_characters)]"), 100)
+
+		not_unique = find_discord_link_by_token(one_time_token)
+
+	// Insert into the table, null in the discord id, id and timestamp and valid fields so the db fills them out where needed
+	var/datum/db_query/query_insert_link_record = SSdbcore.NewQuery(
+		"INSERT INTO [format_table_name("discord_links")] (ckey, one_time_token) VALUES(:ckey, :token)",
+		list("ckey" = ckey_for, "token" = one_time_token)
+	)
+
+	if(!query_insert_link_record.Execute())
+		qdel(query_insert_link_record)
+		return ""
+
+	//Cleanup
+	qdel(query_insert_link_record)
+	return one_time_token
+
+/**
+ * Find discord link entry by the passed in user token
+ *
+ * This will look into the discord link table and return the *first* entry that matches the given one time token
+ *
+ * Remember, multiple entries can exist, as they are only guaranteed to be unique for their validity period
+ *
+ * Arguments:
+ * * one_time_token the string of words representing the one time token
+ *
+ * Returns a [/datum/discord_link_record]
+ */
+/datum/controller/subsystem/plexora/proc/find_discord_link_by_token(one_time_token)
+	var/query = "SELECT CAST(discord_id AS CHAR(25)), ckey, MAX(timestamp), one_time_token FROM [format_table_name("discord_links")] WHERE one_time_token = :one_time_token GROUP BY ckey, discord_id, one_time_token LIMIT 1"
+	var/datum/db_query/query_get_discord_link_record = SSdbcore.NewQuery(
+		query,
+		list("one_time_token" = one_time_token)
+	)
+	if(!query_get_discord_link_record.Execute())
+		qdel(query_get_discord_link_record)
+		return
+	if(query_get_discord_link_record.NextRow())
+		var/result = query_get_discord_link_record.item
+		. = new /datum/discord_link_record(result[2], result[1], result[4], result[3])
+
+	//Make sure we clean up the query
+	qdel(query_get_discord_link_record)
+
+/**
+ * Find discord link entry by the passed in user ckey
+ *
+ * This will look into the discord link table and return the *first* entry that matches the given ckey
+ *
+ * Remember, multiple entries can exist
+ *
+ * Arguments:
+ * * ckey the users ckey as a string
+ *
+ * Returns a [/datum/discord_link_record]
+ */
+/datum/controller/subsystem/plexora/proc/find_discord_link_by_ckey(ckey, only_valid = FALSE)
+	var/validsql = ""
+	if(only_valid)
+		validsql = "AND valid = 1"
+
+	var/query = "SELECT CAST(discord_id AS CHAR(25)), ckey, MAX(timestamp), one_time_token FROM [format_table_name("discord_links")] WHERE ckey = :ckey [validsql] GROUP BY ckey, discord_id, one_time_token LIMIT 1"
+	var/datum/db_query/query_get_discord_link_record = SSdbcore.NewQuery(
+		query,
+		list("ckey" = ckey)
+	)
+	if(!query_get_discord_link_record.Execute())
+		qdel(query_get_discord_link_record)
+		return
+
+	if(query_get_discord_link_record.NextRow())
+		var/result = query_get_discord_link_record.item
+		. = new /datum/discord_link_record(result[2], result[1], result[4], result[3])
+
+	//Make sure we clean up the query
+	qdel(query_get_discord_link_record)
+
+
+/**
+ * Find discord link entry by the passed in user ckey
+ *
+ * This will look into the discord link table and return the *first* entry that matches the given ckey
+ *
+ * Remember, multiple entries can exist
+ *
+ * Arguments:
+ * * discord_id The users discord id (string)
+ *
+ * Returns a [/datum/discord_link_record]
+ */
+/datum/controller/subsystem/plexora/proc/find_discord_link_by_discord_id(discord_id, only_valid = FALSE)
+	var/validsql = ""
+	if(only_valid)
+		validsql = "AND valid = 1"
+
+	var/query = "SELECT CAST(discord_id AS CHAR(25)), ckey, MAX(timestamp), one_time_token FROM [format_table_name("discord_links")] WHERE discord_id = :discord_id [validsql] GROUP BY ckey, discord_id, one_time_token LIMIT 1"
+	var/datum/db_query/query_get_discord_link_record = SSdbcore.NewQuery(
+		query,
+		list("discord_id" = discord_id)
+	)
+	if(!query_get_discord_link_record.Execute())
+		qdel(query_get_discord_link_record)
+		return
+
+	if(query_get_discord_link_record.NextRow())
+		var/result = query_get_discord_link_record.item
+		. = new /datum/discord_link_record(result[2], result[1], result[4], result[3])
+
+	//Make sure we clean up the query
+	qdel(query_get_discord_link_record)
+
+
+/**
+ * Extract a discord id from a mention string
+ *
+ * This will regex out the mention <@num> block to extract the discord id
+ *
+ * Arguments:
+ * * discord_id The users discord mention string (string)
+ *
+ * Returns a text string with the discord id or null
+ */
+/datum/controller/subsystem/plexora/proc/get_discord_id_from_mention(mention)
+	var/static/regex/discord_mention_extraction_regex = regex(@"<@([0-9]+)>")
+	discord_mention_extraction_regex.Find(mention)
+	if (length(discord_mention_extraction_regex.group) == 1)
+		return discord_mention_extraction_regex.group[1]
+	return null
+
 
 /datum/world_topic/plx_announce
 	keyword = "PLX_announce"
