@@ -92,6 +92,7 @@
 /// Saves the cassette to the database.
 /// Returns TRUE if successful, FALSE otherwise.
 /datum/cassette/proc/save_to_db()
+	. = FALSE
 	if(!id)
 		CRASH("Attempted to save cassette without an ID to database")
 	if(!SSdbcore.Connect())
@@ -121,8 +122,7 @@
 	))
 	if(!query_save_cassette.warn_execute())
 		qdel(query_save_cassette)
-		stack_trace("Failed to save cassette [id] to database")
-		return FALSE
+		CRASH("Failed to save cassette [id] to database")
 	qdel(query_save_cassette)
 	return TRUE
 
