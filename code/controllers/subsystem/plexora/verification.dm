@@ -76,9 +76,9 @@
 		SSplexora.reverify_cache[user.ckey] = one_time_token
 		verification_code = one_time_token
 
-	if (!user.discord_details)
+	if (!user.persistent_client.discord_details)
 		var/list/plexora_poll_result = SSplexora.poll_ckey_for_verification(user.ckey)
-		user.discord_details = new /datum/discord_details(
+		user.persistent_client.discord_details = new /datum/discord_details(
 			plexora_poll_result["discord_id"],
 			plexora_poll_result["discord_username"],
 			plexora_poll_result["discord_displayname"],
@@ -102,7 +102,7 @@
 	. = list()
 	.["verification_code"] = verification_code
 	.["discord_invite"] = discord_invite
-	.["discord_details"] = user.client.discord_details.convert_to_list()
+	.["discord_details"] = user.persistent_client.discord_details.convert_to_list()
 
 /datum/discord_verification/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
@@ -118,9 +118,7 @@
 		"dverify_image4.png" = 'icons/ui_icons/tgui/dverify_image4.png',
 	)
 
-/client
-	var/datum/discord_details/discord_details
-
+/// Details are on /datum/persistent_client
 /datum/discord_details
 	var/id
 	var/username
