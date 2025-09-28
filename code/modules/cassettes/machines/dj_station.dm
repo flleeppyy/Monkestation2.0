@@ -119,16 +119,17 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	else if(user)
 		balloon_alert(user, "no tape inserted!")
 
-/obj/machinery/dj_station/CtrlClick(mob/user)
-	if(can_interact(user))
-		if(is_ejecting)
-			balloon_alert(user, "busy ejecting tape!")
-			return
-		if(!COOLDOWN_FINISHED(src, switching_tracks))
-			balloon_alert(user, "busy switching tracks!")
-			return
-		eject_tape(user)
-	return ..()
+/obj/machinery/dj_station/click_ctrl(mob/user)
+	if(!can_interact(user))
+		return NONE
+	if(is_ejecting)
+		balloon_alert(user, "busy ejecting tape!")
+		return CLICK_ACTION_BLOCKING
+	if(!COOLDOWN_FINISHED(src, switching_tracks))
+		balloon_alert(user, "busy switching tracks!")
+		return CLICK_ACTION_BLOCKING
+	eject_tape(user)
+	return CLICK_ACTION_SUCCESS
 
 /obj/machinery/dj_station/ui_interact(mob/user, datum/tgui/ui)
 	ui = SStgui.try_update_ui(user, src, ui)
