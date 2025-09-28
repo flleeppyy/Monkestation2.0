@@ -110,7 +110,8 @@ SUBSYSTEM_DEF(plexora)
 		return TRUE
 
 /datum/controller/subsystem/plexora/fire()
-	if(!is_plexora_alive()) return
+	if(!is_plexora_alive())
+		return
 	// Send current status to Plexora
 	var/datum/world_topic/status/status_handler = new()
 	var/list/status = status_handler.Run()
@@ -133,7 +134,8 @@ SUBSYSTEM_DEF(plexora)
 	))
 
 /datum/controller/subsystem/plexora/proc/http_fireandforget(path, list/body, ignore_enabled = FALSE)
-	if(!enabled && !ignore_enabled) return
+	if(!enabled && !ignore_enabled)
+		return
 
 	var/datum/http_request/request = new(
 		RUSTG_HTTP_METHOD_POST,
