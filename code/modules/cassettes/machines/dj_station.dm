@@ -218,11 +218,11 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 			// 	if (CASSETTE_STATUS_UNAPPROVED)
 
 			// Are both sides blank
-			if(!inserted_tape.cassette_data || (!length(inserted_tape.cassette_data.get_side(TRUE)?.songs) || !length(inserted_tape.cassette_data.get_side(FALSE)?.songs)))
-				balloon_alert("this cassette is blank!")
-			if (!inserted_tape.cassette_data)
+			if(!inserted_tape.cassette_data)
 				balloon_alert(user, "this cassette is blank!")
 				return
+			else if(!length(inserted_tape.cassette_data.get_side(TRUE)?.songs) || !length(inserted_tape.cassette_data.get_side(FALSE)?.songs))
+				balloon_alert("this cassette is blank!")
 			var/list/cassette_songs = inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs
 
 			var/song_count = length(cassette_songs)
