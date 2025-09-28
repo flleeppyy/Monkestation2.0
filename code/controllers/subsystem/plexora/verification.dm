@@ -56,7 +56,7 @@
 		to_chat(src, span_warning("This feature requires Plexora to be running."))
 		return
 
-	if(!SSplexora || !SSplexora.reverify_cache)
+	if(!SSplexora?.reverify_cache)
 		to_chat(src, span_warning("Wait for the Discord subsystem to finish initialising"))
 		return
 
