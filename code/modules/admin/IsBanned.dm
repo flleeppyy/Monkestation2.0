@@ -125,7 +125,7 @@
 					message_admins(log)
 					return list("reason"="internalerror", "desc"="\nInternal server error - Plexora failed to poll your ckey. Please try again in a few moments. If issue issue persists, ping @flleeppyy on the Discord.")
 				if (PLEXORA_CKEYPOLL_NOTLINKED, PLEXORA_CKEYPOLL_RECORDNOTVALID)
-					var/one_time_token = SSdiscord.get_or_generate_one_time_token_for_ckey(ckey)
+					var/one_time_token = SSplexora.get_or_generate_one_time_token_for_ckey(ckey)
 					log_access("Denied entry: [ckey] does not have a valid link record.")
 					return list("reason"="linking", "desc"="\nYour Discord account is not linked to BYOND, this is required to join.\nYour verification code is: [one_time_token] - Use this in conjunction with the /verifydiscord command in the Discord server to link your account, then try again.")
 				if (PLEXORA_CKEYPOLL_LINKED_ABSENT, PLEXORA_CKEYPOLL_LINKED_DELETED)

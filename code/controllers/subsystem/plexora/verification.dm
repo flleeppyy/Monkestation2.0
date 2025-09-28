@@ -124,6 +124,7 @@
 	var/username
 	var/displayname
 	var/status
+	var/has_requiredrole
 
 /datum/discord_details/New(id, username, displayname, status = PLEXORA_DOWN)
 	src.id = id
