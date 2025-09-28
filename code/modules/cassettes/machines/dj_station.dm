@@ -246,6 +246,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 			SStgui.update_uis(src)
 			sleep(2.1 SECONDS)
 			playing = found_track
+			SStgui.update_uis(src)
 
 
 // It cannot be stopped.
