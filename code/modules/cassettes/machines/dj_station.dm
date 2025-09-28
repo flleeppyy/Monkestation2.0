@@ -212,8 +212,8 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				balloon_alert(user, "no cassette tape inserted!")
 				return
 
-			switch(inserted_tape.cassette_data.status)
-				if (CASSETTE_STATUS_UNAPPROVED)
+			// switch(inserted_tape.cassette_data.status)
+			// 	if (CASSETTE_STATUS_UNAPPROVED)
 
 			// Are both sides blank
 			if(!inserted_tape.cassette_data || (!length(inserted_tape.cassette_data.get_side(TRUE)?.songs) || !length(inserted_tape.cassette_data.get_side(FALSE)?.songs)))
