@@ -38,11 +38,15 @@ SUBSYSTEM_DEF(plexora)
 	/// People who have tried to verify this round already
 	var/list/reverify_cache = list()
 
+	var/list/allowed_ckeys = list()
+
 /datum/controller/subsystem/plexora/Initialize()
 	if(!CONFIG_GET(flag/plexora_enabled) && !load_old_plexora_config())
 		enabled = FALSE
 		flags |= SS_NO_FIRE
 		return SS_INIT_NO_NEED
+
+	loaded_allowed_ckeys()
 
 	var/comms_key = CONFIG_GET(string/comms_key)
 	if (!comms_key)

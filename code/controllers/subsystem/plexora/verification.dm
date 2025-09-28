@@ -1,10 +1,22 @@
+/datum/controller/subsystem/plexora/proc/loaded_allowed_ckeys()
+	LAZYINITLIST(allowed_ckeys)
+	if (!enabled || !fexists("[global.config.directory]/allowed_ckeys.txt"))
+		return
+	allowed_ckeys.Cut()
+	var/list/lines = world.file2list("[global.config.directory]/allowed_ckeys.txt")
+	for(var/line in lines)
+		if(!length(line))
+			continue
+		if(findtextEx(line, "#", 1, 2))
+			continue
+		LAZYADD(allowed_ckeys, ckey(line))
 
 /**
  * Given a ckey, polls a ckey for verification.
  * Returns one of the values defined in __DEFINES/plexora.dm
  */
 /datum/controller/subsystem/plexora/proc/poll_ckey_for_verification(ckey, required_roleid)
-	if (!enabled)
+	if (!enabled || ckey in allowed_ckeys)
 		return list(
 			"polling_response" = PLEXORA_CKEYPOLL_LINKED_ALLOWEDWHITELIST,
 			"discord_id" = "0000000000000000000",
