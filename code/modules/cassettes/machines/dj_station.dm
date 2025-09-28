@@ -243,6 +243,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				sleep(0.2 SECONDS)
 			PLAY_CASSETTE_SOUND(SFX_DJSTATION_TRACKSWITCH)
 			COOLDOWN_START(src, switching_tracks, 2.1 SECONDS)
+			SStgui.update_uis(src)
 			sleep(2.1 SECONDS)
 			playing = found_track
 
