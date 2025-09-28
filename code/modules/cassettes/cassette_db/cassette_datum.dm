@@ -53,7 +53,6 @@
 
 /// Exports cassette date in the old format.
 /datum/cassette/proc/export_old_format() as /list
-	RETURN_TYPE(/list)
 	. = list(
 		"name" = name,
 		"desc" = desc,
@@ -131,13 +130,11 @@
 /// Simple helper to get a side of the cassette.
 /// TRUE is front side, FALSE is back side.
 /datum/cassette/proc/get_side(front_side = TRUE) as /datum/cassette_side
-	RETURN_TYPE(/datum/cassette_side)
 	return front_side ? front : back
 
 /// Returns a list of all the song names in this cassette.
 /// Really only useful for searching for cassettes via contained song names.
 /datum/cassette/proc/list_song_names() as /list
-	RETURN_TYPE(/list)
 	. = list()
 	for(var/datum/cassette_song/song as anything in front.songs + back.songs)
 		. |= song.name
