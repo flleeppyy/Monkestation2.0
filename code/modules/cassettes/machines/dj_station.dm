@@ -65,7 +65,9 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 /obj/machinery/dj_station/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
 	if(!istype(tool, /obj/item/cassette_tape))
 		return NONE
-	if (is_ejecting)
+	if(DOING_INTERACTION_WITH_TARGET(user, src))
+		return ITEM_INTERACT_BLOCKING
+	if(is_ejecting)
 		balloon_alert(user, "already inserting/ejecting")
 		return ITEM_INTERACT_BLOCKING
 	is_ejecting = TRUE
