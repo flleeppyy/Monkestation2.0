@@ -16,7 +16,7 @@
  * Returns one of the values defined in __DEFINES/plexora.dm
  */
 /datum/controller/subsystem/plexora/proc/poll_ckey_for_verification(ckey, required_roleid)
-	if (!enabled || ckey in allowed_ckeys)
+	if (!enabled || (ckey in allowed_ckeys))
 		return list(
 			"polling_response" = PLEXORA_CKEYPOLL_LINKED_ALLOWEDWHITELIST,
 			"discord_id" = "0000000000000000000",
