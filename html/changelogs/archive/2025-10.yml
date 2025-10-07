@@ -225,6 +225,9 @@
   - qol: Applying a ID trim will give Maintenace access. Meaning you greyshirts can
       get jobs easier now!
 2025-10-07:
+  Absolucy:
+  - qol: Made the energy net's hitbox less shit, so you don't accidentally kill the
+      person inside the net instead of destroying the net.
   EssentialTomato:
   - bugfix: Meteor satellites and vital scanner pads no longer vanish on repacking.
   LassiH:
