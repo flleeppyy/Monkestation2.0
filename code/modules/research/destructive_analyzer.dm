@@ -14,16 +14,29 @@
 	base_icon_state = "d_analyzer"
 	circuit = /obj/item/circuitboard/machine/destructive_analyzer
 
-/obj/machinery/rnd/destructive_analyzer/Initialize(mapload)
-	. = ..()
-	register_context()
-
 /obj/machinery/rnd/destructive_analyzer/add_context(atom/source, list/context, obj/item/held_item, mob/living/user)
+	. = ..()
+
+	var/screentip_set = FALSE
 	if(loaded_item)
 		context[SCREENTIP_CONTEXT_ALT_LMB] = "Remove Item"
+		screentip_set = TRUE
 	else if(!isnull(held_item))
 		context[SCREENTIP_CONTEXT_LMB] = "Insert Item"
-	return CONTEXTUAL_SCREENTIP_SET
+		screentip_set = TRUE
+
+	if(screentip_set)
+		. = CONTEXTUAL_SCREENTIP_SET
+
+/obj/machinery/rnd/destructive_analyzer/examine(mob/user)
+	. = ..()
+	if(!in_range(user, src) && !isobserver(user))
+		return
+
+	if(loaded_item)
+		. += span_notice("[EXAMINE_HINT("Left-Click")] to remove loaded item inside.")
+	else
+		. += span_notice("An item can be loaded inside via [EXAMINE_HINT("Left-Click")].")
 
 /obj/machinery/rnd/destructive_analyzer/attackby(obj/item/weapon, mob/living/user, params)
 	if(user.istate & ISTATE_HARM)
@@ -40,9 +53,9 @@
 	addtimer(CALLBACK(src, PROC_REF(finish_loading)), 1 SECONDS)
 	return TRUE
 
-/obj/machinery/rnd/destructive_analyzer/AltClick(mob/user)
-	. = ..()
+/obj/machinery/rnd/destructive_analyzer/click_alt(mob/living/user)
 	unload_item()
+	return CLICK_ACTION_SUCCESS
 
 /obj/machinery/rnd/destructive_analyzer/update_icon_state()
 	icon_state = "[base_icon_state][loaded_item ? "_l" : null]"
@@ -59,7 +72,7 @@
 	data["server_connected"] = !!stored_research
 	data["node_data"] = list()
 	if(loaded_item)
-		data["item_icon"] = text_ref(loaded_item.icon)
+		data["item_icon"] = loaded_item.icon
 		data["item_icon_state"] = loaded_item.icon_state
 		data["indestructible"] = !(loaded_item.resistance_flags & INDESTRUCTIBLE)
 		data["loaded_item"] = loaded_item
@@ -134,7 +147,7 @@
 	flick("[base_icon_state]_process", src)
 	busy = TRUE
 	addtimer(CALLBACK(src, PROC_REF(reset_busy)), 2.4 SECONDS)
-	use_power(DESTRUCTIVE_ANALYZER_POWER_USAGE)
+	use_energy(DESTRUCTIVE_ANALYZER_POWER_USAGE)
 	var/list/all_contents = loaded_item.get_all_contents()
 	for(var/innerthing in all_contents)
 		destroy_item_individual(innerthing, gain_research_points)
@@ -184,6 +197,7 @@
 	if(!destroy_item())
 		return FALSE
 	stored_research.unhide_node(SSresearch.techweb_node_by_id(node_to_discover.id))
+	stored_research.update_node_status(SSresearch.techweb_node_by_id(node_to_discover.id))
 	return TRUE
 
 #undef DESTRUCTIVE_ANALYZER_DESTROY_POINTS

@@ -295,6 +295,10 @@ GLOBAL_LIST_INIT(loadout_miscunders, generate_loadout_items(/datum/loadout_item/
 	name = "Colorable Bunny Suit"
 	item_path = /obj/item/clothing/under/costume/playbunny
 
+/datum/loadout_item/under/miscellaneous/hula
+	name = "Hula Skirt"
+	item_path = /obj/item/clothing/under/dress/hula
+
 /*
 *	FORMAL UNDERSUITS
 */
@@ -1002,6 +1006,18 @@ GLOBAL_LIST_INIT(loadout_miscunders, generate_loadout_items(/datum/loadout_item/
 /datum/loadout_item/under/miscellaneous/qm_skirtle
 	name = "Quartermaster's Skirtleneck"
 	item_path = /obj/item/clothing/under/rank/cargo/qm/nova/turtleneck/skirt
+	restricted_roles = list(JOB_QUARTERMASTER)
+	requires_purchase = FALSE
+
+/datum/loadout_item/under/miscellaneous/qm_turtle
+	name = "Quartermaster's Turtleneck"
+	item_path = /obj/item/clothing/under/rank/cargo/qm/nova/turtleneck
+	restricted_roles = list(JOB_QUARTERMASTER)
+	requires_purchase = FALSE
+
+/datum/loadout_item/under/miscellaneous/qm_casual
+	name = "Quartermaster's Casualwear"
+	item_path = /obj/item/clothing/under/rank/cargo/qm/nova/casual
 	restricted_roles = list(JOB_QUARTERMASTER)
 	requires_purchase = FALSE
 
