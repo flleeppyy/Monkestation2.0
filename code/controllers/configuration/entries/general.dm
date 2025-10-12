@@ -556,8 +556,6 @@
 /datum/config_entry/string/glitchtip_environment
 	config_entry_value = "production"
 
-/datum/config_entry/flag/glitchtip_enabled
-
 /datum/config_entry/flag/irc_announce_new_game
 	deprecated_by = /datum/config_entry/string/channel_announce_new_game
 

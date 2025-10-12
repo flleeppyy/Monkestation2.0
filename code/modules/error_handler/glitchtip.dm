@@ -2,9 +2,10 @@
 // Configuration options are in entries/general.dm
 
 /proc/send_to_glitchtip(exception/E, list/extra_data = null)
-	if(!CONFIG_GET(flag/glitchtip_enabled) || !CONFIG_GET(string/glitchtip_dsn))
+	#ifndef SPACEMAN_DMM
+	#ifndef OPENDREAM
+	if(!CONFIG_GET(string/glitchtip_dsn))
 		return
-
 	var/glitchtip_dsn = CONFIG_GET(string/glitchtip_dsn)
 
 	// parse DSN to get the key, host and project id
@@ -12,15 +13,14 @@
 	var/dsn_clean = replacetext(replacetext(glitchtip_dsn, "http://", ""), "https://", "")
 	var/at_pos = findtext(dsn_clean, "@")
 	var/slash_pos = findtext(dsn_clean, "/", at_pos)
-
 	if(!at_pos || !slash_pos)
 		log_runtime("Invalid Glitchtip DSN format")
 		return
-
 	var/key = copytext(dsn_clean, 1, at_pos)
 	var/host = copytext(dsn_clean, at_pos + 1, slash_pos)
 	var/project_id = copytext(dsn_clean, slash_pos + 1)
 
+	// Build Glitchtip/Sentry event payload
 	var/list/event_data = list()
 	event_data["event_id"] = rustg_generate_uuid_v4()
 	event_data["timestamp"] = time_stamp_metric()
@@ -29,11 +29,13 @@
 	event_data["server_name"] = world.name
 	event_data["environment"] = CONFIG_GET(string/glitchtip_environment)
 
+	//! SDK information
 	event_data["sdk"] = list(
 		"name" = "byond-glitchtip",
 		"version" = "1.0.0"
 	)
 
+	//! Exception data - Glitchtip expects this format
 	var/list/exception_data = list()
 	exception_data["type"] = "BYOND Runtime Error"
 	exception_data["value"] = E.name
@@ -52,7 +54,7 @@
 
 	// Walk the call stack using callee objects
 	var/frame_count = 0
-	var/max_frames = 35 // Prevent infinite loops or excessive data. Realistically, this should not exceed 30~
+	var/max_frames = 50 // Prevent infinite loops or excessive data
 	for(var/callee/p = caller; p && frame_count < max_frames; p = p.caller)
 		frame_count++
 		var/proc_name = "unknown"
@@ -66,13 +68,13 @@
 			if(slash_pos_inner && slash_pos_inner < length(proc_name))
 				proc_name = copytext(proc_name, slash_pos_inner + 1)
 
-		if(findtext(file_name, "master.dm") && (proc_name == "Loop" || proc_name == "StartProcessing"))
-			break
-
 		// Get file and line information if available
 		if(p.file)
 			file_name = p.file
 			line_num = p.line || 0
+
+		if(findtext(file_name, "master.dm") && (proc_name == "Loop" || proc_name == "StartProcessing"))
+			break
 
 		var/list/frame = list()
 		frame["filename"] = file_name
@@ -221,6 +223,8 @@
 	event_data["fingerprint"] = list("[E.file]:[E.line]", E.name)
 
 	send_glitchtip_request(event_data, host, project_id, key)
+	#endif
+	#endif
 
 /proc/send_glitchtip_request(list/event_data, host, project_id, key)
 	var/glitchtip_url = "https://[host]/api/[project_id]/store/"

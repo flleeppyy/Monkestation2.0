@@ -414,9 +414,9 @@ MINUTE_CLICK_LIMIT 400
 ## Error reporting
 # Your Sentry/Glitchtip DSN url
 #GLITCHTIP_DSN
+
 # Environment this is running in, "production", "development" and "testing" are most common
 #GLITCHTIP_ENVIRONMENT development
-#GLITCHTIP_ENABLED
 
 ## Game Chat Message Options
 ## Various messages to be sent to connected chat channels.
