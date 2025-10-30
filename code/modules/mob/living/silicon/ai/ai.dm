@@ -21,6 +21,7 @@
 	density = TRUE
 	status_flags = CANSTUN|CANPUSH
 	istate = ISTATE_HARM|ISTATE_BLOCKING //so we always get pushed instead of trying to swap
+	forced_interaction_mode = /datum/interaction_mode/no_interaction/nopassthrough //a nothingburger interact mode, which forces the istate above for the rest of time
 	sight = SEE_TURFS | SEE_MOBS | SEE_OBJS
 	hud_type = /datum/hud/ai
 	med_hud = DATA_HUD_MEDICAL_BASIC
@@ -1042,7 +1043,7 @@
 	// I am so sorry
 	SEND_SIGNAL(src, COMSIG_MOB_RESET_PERSPECTIVE)
 
-/mob/living/silicon/ai/revive(full_heal_flags = NONE, excess_healing = 0, force_grab_ghost = FALSE)
+/mob/living/silicon/ai/revive(full_heal_flags = NONE, excess_healing = 0, force_grab_ghost = FALSE, revival_policy = POLICY_REVIVAL)
 	. = ..()
 	if(!.) //successfully ressuscitated from death
 		return

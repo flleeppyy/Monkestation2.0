@@ -497,6 +497,21 @@
 		'sound/creatures/monkey/monkey_screech_7.ogg',
 	)
 
+/datum/sound_effect/visor_down
+	key = SFX_VISOR_DOWN
+	file_paths = list(
+		'sound/items/handling/helmet/visor_down1.ogg',
+		'sound/items/handling/helmet/visor_down2.ogg',
+		'sound/items/handling/helmet/visor_down3.ogg',
+	)
+
+/datum/sound_effect/visor_up
+	key = SFX_VISOR_UP
+	file_paths = list(
+		'sound/items/handling/helmet/visor_up1.ogg',
+		'sound/items/handling/helmet/visor_up2.ogg',
+	)
+
 /datum/sound_effect/djstation/opentakeout
 	key = SFX_DJSTATION_OPENTAKEOUT
 	file_paths = list(
@@ -620,4 +635,3 @@
 		'sound/machines/djstation/tape_asmr18.ogg',
 		'sound/machines/djstation/tape_asmr19.ogg',
 	)
-
