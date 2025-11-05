@@ -542,7 +542,8 @@ ADMIN_VERB(cmd_controller_view_ui, R_SERVER|R_DEBUG, FALSE, "Controller Overview
 			var/delay = SS.wait
 			if(SS.flags & SS_TICKER)
 				delay = TICKS2DS(delay)
-			SS.next_fire = world.time + rand(0, min(delay, 2 SECONDS))
+			// Gotta convert to ticks cause rand needs integers
+			SS.next_fire = world.time + TICKS2DS(rand(0, DS2TICKS(min(delay, 2 SECONDS))))
 
 		var/ss_runlevels = SS.runlevels
 		var/added_to_any = FALSE
@@ -643,7 +644,7 @@ ADMIN_VERB(cmd_controller_view_ui, R_SERVER|R_DEBUG, FALSE, "Controller Overview
 					var/delay = SS.wait
 					if(SS.flags & SS_TICKER)
 						delay = TICKS2DS(delay)
-					SS.next_fire = world.time + rand(0, min(delay, 2 SECONDS))
+					SS.next_fire = world.time + TICKS2DS(rand(0, DS2TICKS(min(delay, 2 SECONDS))))
 
 			subsystems_to_check = current_runlevel_subsystems
 		else
