@@ -1,0 +1,63 @@
+2025-11-01:
+  Absolucy:
+  - bugfix: The plushie cannon/shotgun now actually properly works without having
+      to whack yourself with it.
+  JohnFulpWillard:
+  - refactor: Cortical borer's UI is now better, text now fits and icons aren't blurry
+      anymore.
+  SirNightKnight:
+  - rscadd: ghosts now use the character's hair color directly.
+  notghosti:
+  - map: Icebox maintence bar backroom/dorms no longer has a camera inside the wall
+2025-11-02:
+  Absolucy:
+  - bugfix: Fixed some runtimes with cortical borers with focuses entering/exiting
+      a host.
+  throwawayuseless:
+  - bugfix: Robustness now actually notably affects the natural immune response that
+      a pathogen causes. Pro tip, 100 x 0.01 != 10
+2025-11-04:
+  Absolucy:
+  - sound: Tesla zaps are now covered by the "Machinery" category in the volume mixer.
+  - sound: Tesla zaps now have slightly higher volume falloff over distance.
+  - code_imp: Slightly improved some tesla-related code.
+  - qol: The Shapeshift spell also copies your voice now
+  - sound: Rupees are no longer painfully loud.
+  EatsTheGrapes:
+  - bugfix: Non-dynamic antagonist roles (like Slasher, Florida Man, etc.) now respect
+      antag bans in the preferences menu.
+  - refactor: Integrated non-dynamic antagonist list into middleware to remove redundant
+      code paths.
+  - code_imp: Cleaned up preference middleware structure for consistency.
+  - sound: Added original track "Less Impossible" by Elluvion to the jukebox under
+      the Electronic genre.
+  - balance: Players no longer drop items when the emergency shuttle docks.
+  - refactor: Knockdown logic now uses proper handling and shares structure between
+      status and debuff systems.
+  - code_imp: Simplified tripping and knockdown consistency across files.
+  EssentialTomato:
+  - rscadd: Added halos to the anime implants.
+  MilkForever:
+  - rscadd: Arachnids now have the Sericulture ability, allowing them to produce silk
+      at the cost of hunger.
+  - rscadd: Added Silk. Silk can be used to make silk walls, furniture, floor tiles,
+      clothing and spider structures. Two pieces of silk can be refined into cloth.
+  - qol: Spider blood (AKA Arachnid blood) can now spawn in blood bags in blood freezers.
+      It can also be made in the wall med-stations that use biomass.
+  - rscdel: Removed Skrell blood, Skrell don't even exist.
+  RandomDudeFromTheRim:
+  - map: added in 2 missing walls
+  Snack-Max:
+  - rscadd: Edited Toggled Utility Jumpsuit sprites to show department colors.
+  Tractor-Maam:
+  - rscadd: Added the Voice Obfuscator Gas Mask, a crafting item that makes you sound
+      unknown.
+  - code_imp: Added TRAIT_ANONYMOUS to hide names/jobs only because TRAIT_UNKNOWN
+      extends too far for this use case.
+  Vect0r2:
+  - bugfix: Assemblers don't fuck shit up
+  notghosti:
+  - rscdel: AI Overflow is disabled
+  - balance: AI Triumvirate weight is bumped to 2 (from 1) to compensate for this
+      change.
+  - bugfix: AI Triumvirate will allow for 3 latejoin ai's
