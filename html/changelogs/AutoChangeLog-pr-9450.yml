@@ -1,0 +1,4 @@
+author: "Tractor-Maam"
+delete-after: True
+changes:
+  - qol: "moved View Map Vote Tallies from Server to OOC."
