@@ -22,6 +22,7 @@ SUBSYSTEM_DEF(floxy)
 	base_url = SSfloxy.base_url
 	auth_token = SSfloxy.auth_token
 
+#ifndef TESTING
 /datum/controller/subsystem/floxy/can_vv_get(var_name)
 	if(var_name == NAMEOF(src, auth_token))
 		return FALSE
@@ -31,3 +32,4 @@ SUBSYSTEM_DEF(floxy)
 	if(var_name == NAMEOF(src, auth_token) || var_name == NAMEOF(src, base_url))
 		return FALSE
 	return ..()
+#endif
