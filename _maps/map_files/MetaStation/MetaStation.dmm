@@ -1466,13 +1466,6 @@
 /obj/effect/mapping_helpers/airlock/access/any/supply/mining,
 /turf/open/floor/iron,
 /area/station/cargo/miningoffice)
-"ayz" = (
-/obj/machinery/nanite_program_hub,
-/obj/effect/turf_decal/tile/purple/anticorner{
-	dir = 4
-	},
-/turf/open/floor/iron,
-/area/station/science/circuits)
 "ayH" = (
 /obj/effect/spawner/random/engineering/atmospherics_portable,
 /turf/open/floor/plating,
@@ -2455,6 +2448,34 @@
 /obj/machinery/holopad/secure,
 /turf/open/floor/iron/dark,
 /area/station/ai_monitored/turret_protected/ai_upload)
+"aOe" = (
+/obj/structure/table/wood,
+/obj/item/device/walkman{
+	pixel_y = 4;
+	pixel_x = -6
+	},
+/obj/item/device/walkman{
+	pixel_y = 4;
+	pixel_x = -6
+	},
+/obj/item/device/walkman{
+	pixel_y = 4;
+	pixel_x = -6
+	},
+/obj/item/cassette_tape/blank{
+	pixel_y = 3;
+	pixel_x = 5
+	},
+/obj/item/cassette_tape/blank{
+	pixel_y = 3;
+	pixel_x = 5
+	},
+/obj/item/cassette_tape/blank{
+	pixel_y = 3;
+	pixel_x = 5
+	},
+/turf/open/floor/wood,
+/area/station/service/library)
 "aOg" = (
 /obj/machinery/holopad,
 /turf/open/floor/iron,
@@ -3366,29 +3387,6 @@
 /obj/effect/turf_decal/tile/yellow/anticorner/contrasted,
 /turf/open/floor/iron/white,
 /area/station/medical/chemistry)
-"bcG" = (
-/obj/machinery/camera/directional/north{
-	c_tag = "Science Firing Range";
-	network = list("ss13","rd")
-	},
-/obj/structure/table/reinforced,
-/obj/item/storage/box/disks_nanite{
-	pixel_x = -6;
-	pixel_y = 9
-	},
-/obj/item/storage/box/nanitecontrol{
-	pixel_x = 7;
-	pixel_y = 6
-	},
-/obj/item/storage/box/disks_nanite{
-	pixel_y = 3;
-	pixel_x = -6
-	},
-/obj/effect/turf_decal/tile/purple/half{
-	dir = 1
-	},
-/turf/open/floor/iron/white,
-/area/station/science/circuits)
 "bcQ" = (
 /obj/structure/window/reinforced/spawner/directional/south,
 /obj/structure/window/reinforced/spawner/directional/west,
@@ -3659,10 +3657,6 @@
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
 /turf/open/floor/iron,
 /area/station/security/brig)
-"bhD" = (
-/obj/effect/spawner/random/loafer,
-/turf/open/floor/wood,
-/area/station/maintenance/port/aft)
 "bhM" = (
 /obj/machinery/atmospherics/components/unary/vent_scrubber/on/layer2{
 	dir = 8
@@ -5932,13 +5926,6 @@
 	},
 /turf/open/floor/iron/dark,
 /area/station/command/bridge)
-"cdL" = (
-/obj/machinery/nanite_programmer,
-/obj/effect/turf_decal/tile/purple/half{
-	dir = 4
-	},
-/turf/open/floor/iron,
-/area/station/science/circuits)
 "cdX" = (
 /turf/closed/wall,
 /area/station/engineering/storage/tech)
@@ -15867,6 +15854,13 @@
 /obj/structure/cable,
 /turf/open/floor/plating,
 /area/station/maintenance/starboard/aft)
+"fKk" = (
+/obj/structure/table/wood,
+/obj/machinery/dj_station{
+	pixel_y = 12
+	},
+/turf/open/floor/iron/vaporwave,
+/area/station/service/library/private)
 "fKG" = (
 /obj/effect/landmark/blobstart,
 /turf/open/floor/iron/vaporwave,
@@ -24460,6 +24454,22 @@
 /obj/structure/lattice/catwalk,
 /turf/open/space/basic,
 /area/space/nearstation)
+"iFV" = (
+/obj/machinery/camera/directional/north{
+	c_tag = "Science Firing Range";
+	network = list("ss13","rd")
+	},
+/obj/structure/table/reinforced,
+/obj/item/storage/pill_bottle/radiomagnetic_disruptor,
+/obj/item/storage/box/nanitecontrol{
+	pixel_x = 7;
+	pixel_y = 6
+	},
+/obj/effect/turf_decal/tile/purple/half{
+	dir = 1
+	},
+/turf/open/floor/iron/white,
+/area/station/science/circuits)
 "iFX" = (
 /obj/structure/disposalpipe/segment,
 /turf/open/floor/carpet,
@@ -26588,34 +26598,6 @@
 	},
 /turf/open/floor/iron,
 /area/station/security/prison)
-"jmz" = (
-/obj/structure/table/wood,
-/obj/item/device/walkman{
-	pixel_y = 4;
-	pixel_x = -6
-	},
-/obj/item/device/walkman{
-	pixel_y = 4;
-	pixel_x = -6
-	},
-/obj/item/device/walkman{
-	pixel_y = 4;
-	pixel_x = -6
-	},
-/obj/item/cassette_tape/blank{
-	pixel_y = 3;
-	pixel_x = 5
-	},
-/obj/item/cassette_tape/blank{
-	pixel_y = 3;
-	pixel_x = 5
-	},
-/obj/item/cassette_tape/blank{
-	pixel_y = 3;
-	pixel_x = 5
-	},
-/turf/open/floor/wood,
-/area/station/service/library)
 "jmJ" = (
 /obj/machinery/portable_atmospherics/canister/air,
 /obj/machinery/atmospherics/components/unary/portables_connector/visible/layer4{
@@ -36183,15 +36165,6 @@
 /obj/structure/sign/poster/random/directional/south,
 /turf/open/floor/wood/large,
 /area/station/service/theater)
-"mAm" = (
-/obj/machinery/door/firedoor,
-/obj/machinery/door/airlock/security/glass{
-	name = "Security E.V.A. Storage"
-	},
-/obj/structure/cable,
-/obj/effect/mapping_helpers/airlock/access/all/security/armory,
-/turf/open/floor/iron,
-/area/station/security/brig)
 "mAr" = (
 /obj/structure/cable,
 /obj/effect/turf_decal/stripes/line,
@@ -36201,6 +36174,10 @@
 	},
 /turf/open/floor/iron/dark,
 /area/station/medical/morgue)
+"mAt" = (
+/obj/effect/spawner/random/loafer,
+/turf/open/floor/wood,
+/area/station/maintenance/port/aft)
 "mAy" = (
 /obj/effect/turf_decal/tile/brown{
 	dir = 4
@@ -37147,6 +37124,12 @@
 /obj/machinery/vending/cigarette,
 /turf/open/floor/iron/dark,
 /area/station/command/bridge)
+"mRp" = (
+/obj/effect/turf_decal/tile/purple/anticorner{
+	dir = 4
+	},
+/turf/open/floor/iron,
+/area/station/science/circuits)
 "mRs" = (
 /obj/machinery/atmospherics/pipe/smart/manifold4w/general/hidden,
 /obj/machinery/rnd/server,
@@ -37287,13 +37270,6 @@
 /obj/structure/trash_pile,
 /turf/open/floor/plating,
 /area/station/maintenance/starboard/greater)
-"mTG" = (
-/obj/structure/table/wood,
-/obj/machinery/dj_station{
-	pixel_y = 12
-	},
-/turf/open/floor/iron/vaporwave,
-/area/station/service/library/private)
 "mTI" = (
 /obj/effect/landmark/event_spawn,
 /turf/open/floor/iron,
@@ -43033,6 +43009,12 @@
 /obj/structure/chair/stool/directional/west,
 /turf/open/floor/wood,
 /area/station/commons/lounge)
+"oPy" = (
+/obj/effect/turf_decal/tile/purple/half{
+	dir = 4
+	},
+/turf/open/floor/iron,
+/area/station/science/circuits)
 "oPD" = (
 /obj/machinery/firealarm/directional/south,
 /obj/structure/cable,
@@ -43280,6 +43262,15 @@
 /obj/effect/landmark/start/hangover,
 /turf/open/floor/iron,
 /area/station/hallway/secondary/command)
+"oUD" = (
+/obj/machinery/door/firedoor,
+/obj/machinery/door/airlock/security/glass{
+	name = "Security E.V.A. Storage"
+	},
+/obj/structure/cable,
+/obj/effect/mapping_helpers/airlock/access/all/security/brig,
+/turf/open/floor/iron,
+/area/station/security/brig)
 "oUE" = (
 /obj/effect/turf_decal/tile/red,
 /obj/effect/turf_decal/tile/red{
@@ -45558,6 +45549,15 @@
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
 /turf/open/floor/iron/white,
 /area/station/science/research)
+"pMc" = (
+/obj/machinery/light/directional/north,
+/obj/effect/turf_decal/tile/purple/half{
+	dir = 1
+	},
+/obj/item/storage/box/disks_nanite,
+/obj/structure/table/reinforced,
+/turf/open/floor/iron/white,
+/area/station/science/circuits)
 "pMd" = (
 /obj/machinery/light/small/directional/south,
 /turf/open/floor/engine/n2,
@@ -84501,7 +84501,7 @@ sBL
 fJs
 uxS
 ehn
-bhD
+mAt
 uxS
 vcg
 sBL
@@ -89358,7 +89358,7 @@ nxF
 sVY
 cyk
 qzS
-jmz
+aOe
 ahD
 wki
 jIY
@@ -90910,7 +90910,7 @@ wcL
 yfT
 klf
 tdI
-mTG
+fKk
 mda
 mda
 knK
@@ -94705,7 +94705,7 @@ cWI
 sTP
 tjh
 tjh
-mAm
+oUD
 tjh
 wsX
 wsX
@@ -105332,7 +105332,7 @@ qNA
 gwf
 ucd
 uvh
-bcG
+iFV
 fZm
 fZm
 eEl
@@ -105589,7 +105589,7 @@ hXd
 gwf
 itC
 uvh
-tKZ
+pMc
 fZm
 mfL
 xiu
@@ -105846,8 +105846,8 @@ wGH
 emh
 fQo
 uvh
-ayz
-cdL
+mRp
+oPy
 aBH
 sMV
 uqG
