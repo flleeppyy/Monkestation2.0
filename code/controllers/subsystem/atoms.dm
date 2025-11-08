@@ -379,127 +379,127 @@ let MODE = 'init'; // 'init' or 'late'
 let SORT = 'total'; // 'total' or 'avg'
 
 function buildTree(flat) {
-  const root = {};
-  for(const path in flat) {
-    const entry = flat\[path\];
-    const parts = path.split('/').filter(Boolean);
-    let node = root;
-    let built = '';
-    for(let i=0;i<parts.length;i++) {
-      const part = parts\[i\];
-      built += (built ? '/' : '') + part;
-      if(!node\[part\]) {
-        node\[part\] = { cost: 0, count: 0, direct_cost: 0, direct_count: 0, children: {}, path: built, is_leaf: i === parts.length - 1 };
-      }
-      if(i === parts.length - 1) {
-        node\[part\].direct_cost = entry.cost || 0;
-        node\[part\].direct_count = entry.count || 0;
-      }
-      node\[part\].cost += entry.cost || 0;
-      node\[part\].count += entry.count || 0;
-      node = node\[part\].children;
-    }
-  }
-  return root;
+	const root = {};
+	for(const path in flat) {
+		const entry = flat\[path\];
+		const parts = path.split('/').filter(Boolean);
+		let node = root;
+		let built = '';
+		for(let i=0;i<parts.length;i++) {
+			const part = parts\[i\];
+			built += (built ? '/' : '') + part;
+			if(!node\[part\]) {
+				node\[part\] = { cost: 0, count: 0, direct_cost: 0, direct_count: 0, children: {}, path: built, is_leaf: i === parts.length - 1 };
+			}
+			if(i === parts.length - 1) {
+				node\[part\].direct_cost = entry.cost || 0;
+				node\[part\].direct_count = entry.count || 0;
+			}
+			node\[part\].cost += entry.cost || 0;
+			node\[part\].count += entry.count || 0;
+			node = node\[part\].children;
+		}
+	}
+	return root;
 }
 
 function formatNumber(n) { return Math.round(n * 1000) / 1000; }
 function clearChildren(el) { while(el.firstChild) el.removeChild(el.firstChild); }
 
 function sortedKeys(tree, sortByAvg, totalCost) {
-  const keys = Object.keys(tree);
-  keys.sort((a,b)=>{
-    const n1 = tree\[a\], n2 = tree\[b\];
-    const v1 = sortByAvg ? (n1.cost / Math.max(n1.count,1)) : n1.cost;
-    const v2 = sortByAvg ? (n2.cost / Math.max(n2.count,1)) : n2.cost;
-    return v2 - v1; // descending
-  });
-  return keys;
+	const keys = Object.keys(tree);
+	keys.sort((a,b)=>{
+		const n1 = tree\[a\], n2 = tree\[b\];
+		const v1 = sortByAvg ? (n1.cost / Math.max(n1.count,1)) : n1.cost;
+		const v2 = sortByAvg ? (n2.cost / Math.max(n2.count,1)) : n2.cost;
+		return v2 - v1; // descending
+	});
+	return keys;
 }
 
 let idCounter = 0;
 function renderTree(tree, container, totalCost, sortByAvg) {
-  const keys = sortedKeys(tree, sortByAvg, totalCost);
-  for(const key of keys) {
-    const node = tree\[key\];
-    const cost = node.cost;
-    const count = node.count;
-    const direct_cost = node.direct_cost;
-    const direct_count = node.direct_count;
-    const avg_cost = formatNumber(cost / Math.max(count,1));
-    const percentage = totalCost > 0 ? formatNumber((cost / totalCost) * 100) : 0;
-    idCounter++;
-    const myId = 'node' + idCounter;
-    const hasChildren = Object.keys(node.children).length > 0;
-    let costClass = 'cost-low';
-    if(percentage >= 10) costClass = 'cost-high';
-    else if(percentage >= 1) costClass = 'cost-med';
+	const keys = sortedKeys(tree, sortByAvg, totalCost);
+	for(const key of keys) {
+		const node = tree\[key\];
+		const cost = node.cost;
+		const count = node.count;
+		const direct_cost = node.direct_cost;
+		const direct_count = node.direct_count;
+		const avg_cost = formatNumber(cost / Math.max(count,1));
+		const percentage = totalCost > 0 ? formatNumber((cost / totalCost) * 100) : 0;
+		idCounter++;
+		const myId = 'node' + idCounter;
+		const hasChildren = Object.keys(node.children).length > 0;
+		let costClass = 'cost-low';
+		if(percentage >= 10) costClass = 'cost-high';
+		else if(percentage >= 1) costClass = 'cost-med';
 
-    const item = document.createElement('div');
-    item.className = 'tree-item';
+		const item = document.createElement('div');
+		item.className = 'tree-item';
 
-    const exp = document.createElement('span');
-    exp.className = 'expander';
-    exp.id = 'exp_' + myId;
-    exp.textContent = hasChildren ? '▼' : '\\u00A0';
-    if(hasChildren) exp.style.cursor = 'pointer';
-    item.appendChild(exp);
+		const exp = document.createElement('span');
+		exp.className = 'expander';
+		exp.id = 'exp_' + myId;
+		exp.textContent = hasChildren ? '▼' : '\\u00A0';
+		if(hasChildren) exp.style.cursor = 'pointer';
+		item.appendChild(exp);
 
-    const nameSpan = document.createElement('span');
-    nameSpan.className = costClass;
-    nameSpan.textContent = key;
-    item.appendChild(nameSpan);
+		const nameSpan = document.createElement('span');
+		nameSpan.className = costClass;
+		nameSpan.textContent = key;
+		item.appendChild(nameSpan);
 
-    const info = document.createElement('span');
-    info.innerHTML = ' - <b>' + cost + 'ds</b> <span class=\"count\">(' + count + 'x)</span> <span class=\"avg\">' + avg_cost + 'ds avg</span>';
-    if(direct_cost > 0 && hasChildren) {
-      const directAvg = formatNumber(direct_cost / Math.max(direct_count,1));
-      info.innerHTML += ' (direct: ' + direct_cost + 'ds, ' + direct_count + 'x, ' + directAvg + 'ds avg) ';
-    }
-    info.innerHTML += ' <span class=\"percentage\">(' + percentage + '%)</span>';
-    item.appendChild(info);
+		const info = document.createElement('span');
+		info.innerHTML = ' - <b>' + cost + 'ds</b> <span class=\"count\">(' + count + 'x)</span> <span class=\"avg\">' + avg_cost + 'ds avg</span>';
+		if(direct_cost > 0 && hasChildren) {
+			const directAvg = formatNumber(direct_cost / Math.max(direct_count,1));
+			info.innerHTML += ' (direct: ' + direct_cost + 'ds, ' + direct_count + 'x, ' + directAvg + 'ds avg) ';
+		}
+		info.innerHTML += ' <span class=\"percentage\">(' + percentage + '%)</span>';
+		item.appendChild(info);
 
-    container.appendChild(item);
+		container.appendChild(item);
 
-    if(hasChildren) {
-      const childContainer = document.createElement('div');
-      childContainer.className = 'tree-node';
-      childContainer.id = myId;
-      container.appendChild(childContainer);
-      // by default children are visible; toggle handler
-      exp.addEventListener('click', ()=>{
-        if(childContainer.style.display === 'none') { childContainer.style.display = 'block'; exp.textContent = '▼'; }
-        else { childContainer.style.display = 'none'; exp.textContent = '▶'; }
-      });
-      renderTree(node.children, childContainer, totalCost, sortByAvg);
-    }
-  }
+		if(hasChildren) {
+			const childContainer = document.createElement('div');
+			childContainer.className = 'tree-node';
+			childContainer.id = myId;
+			container.appendChild(childContainer);
+			// by default children are visible; toggle handler
+			exp.addEventListener('click', ()=>{
+				if(childContainer.style.display === 'none') { childContainer.style.display = 'block'; exp.textContent = '▼'; }
+				else { childContainer.style.display = 'none'; exp.textContent = '▶'; }
+			});
+			renderTree(node.children, childContainer, totalCost, sortByAvg);
+		}
+	}
 }
 
 function renderAll() {
-  const flat = (MODE === 'init') ? DATA.init : DATA.late;
-  const tree = buildTree(flat);
-  // compute totals
-  let totalCost = 0, totalCount = 0, types = 0;
-  for(const k in flat) { totalCost += (flat\[k\].cost || 0); totalCount += (flat\[k\].count || 0); types++; }
+	const flat = (MODE === 'init') ? DATA.init : DATA.late;
+	const tree = buildTree(flat);
+	// compute totals
+	let totalCost = 0, totalCount = 0, types = 0;
+	for(const k in flat) { totalCost += (flat\[k\].cost || 0); totalCount += (flat\[k\].count || 0); types++; }
 
-  const summary = document.getElementById('summary');
-  summary.innerHTML = '<h2>' + (MODE === 'late' ? 'Late ' : '') + 'Initialization Cost Analysis</h2>' +
-    '<b>Total ' + (MODE === 'late' ? 'Late ' : '') + 'Init Time:</b> ' + totalCost + ' ds (' + (formatNumber(totalCost/10)) + 's)<br>' +
-    '<b>Total Instances:</b> ' + totalCount + '<br>' +
-    '<b>Total Types:</b> ' + types + '<br>' +
-    '<b>Average Cost:</b> ' + (formatNumber(totalCost / Math.max(totalCount,1))) + ' ds per instance<br>' +
-    '<b>Sorting by:</b> ' + (SORT === 'avg' ? 'Average time per instance' : 'Total time');
+	const summary = document.getElementById('summary');
+	summary.innerHTML = '<h2>' + (MODE === 'late' ? 'Late ' : '') + 'Initialization Cost Analysis</h2>' +
+		'<b>Total ' + (MODE === 'late' ? 'Late ' : '') + 'Init Time:</b> ' + totalCost + ' ds (' + (formatNumber(totalCost/10)) + 's)<br>' +
+		'<b>Total Instances:</b> ' + totalCount + '<br>' +
+		'<b>Total Types:</b> ' + types + '<br>' +
+		'<b>Average Cost:</b> ' + (formatNumber(totalCost / Math.max(totalCount,1))) + ' ds per instance<br>' +
+		'<b>Sorting by:</b> ' + (SORT === 'avg' ? 'Average time per instance' : 'Total time');
 
-  const root = document.getElementById('tree_root');
-  clearChildren(root);
-  idCounter = 0;
-  renderTree(tree, root, totalCost, SORT === 'avg');
-  // update buttons classes
-  document.getElementById('btn_init').className = (MODE === 'init') ? 'active' : '';
-  document.getElementById('btn_late').className = (MODE === 'late') ? 'active' : '';
-  document.getElementById('btn_total').className = (SORT === 'total') ? 'active' : '';
-  document.getElementById('btn_avg').className = (SORT === 'avg') ? 'active' : '';
+	const root = document.getElementById('tree_root');
+	clearChildren(root);
+	idCounter = 0;
+	renderTree(tree, root, totalCost, SORT === 'avg');
+	// update buttons classes
+	document.getElementById('btn_init').className = (MODE === 'init') ? 'active' : '';
+	document.getElementById('btn_late').className = (MODE === 'late') ? 'active' : '';
+	document.getElementById('btn_total').className = (SORT === 'total') ? 'active' : '';
+	document.getElementById('btn_avg').className = (SORT === 'avg') ? 'active' : '';
 }
 
 function setMode(m) { if(MODE === m) return; MODE = m; renderAll(); }
