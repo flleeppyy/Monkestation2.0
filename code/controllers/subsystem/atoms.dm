@@ -471,9 +471,9 @@ SUBSYSTEM_DEF(atoms)
 
 ADMIN_VERB(cmd_display_init_costs, R_DEBUG, FALSE, "Debug Init Costs", "Displays initialization costs in a tree format", ADMIN_CATEGORY_DEBUG)
 	if(!LAZYLEN(SSatoms.init_costs))
-		to_chat(usr, span_notice("Init costs list is empty."))
+		to_chat(user, span_notice("Init costs list is empty."))
 	else
-		usr << browse(HTML_SKELETON(SSatoms.InitCostLog()), "window=initcosts;size=900x600")
+		user << browse(HTML_SKELETON(SSatoms.InitCostLog()), "window=initcosts;size=900x600")
 
 /datum/controller/subsystem/atoms/Topic(href, href_list)
 	. = ..()
