@@ -23,7 +23,7 @@
 	find_table()
 	return INITIALIZE_HINT_LATELOAD
 
-/obj/machinery/computer/operating/LateInitialize()
+/obj/machinery/computer/operating/LateInitialize(mapload_arg)
 	. = ..()
 	var/static/list/dissection_signals = list(
 		COMSIG_OPERATING_COMPUTER_DISSECTION_COMPLETE = TYPE_PROC_REF(/datum/component/experiment_handler, try_run_dissection_experiment)
