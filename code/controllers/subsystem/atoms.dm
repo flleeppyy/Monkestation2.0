@@ -469,11 +469,11 @@ SUBSYSTEM_DEF(atoms)
 			. += build_tree_html(node["children"], total_cost, sort_by_avg)
 			. += "</div>"
 
-ADMIN_VERB(cmd_display_init_costs, R_DEBUG, FALSE, "Debug Init Costs", "Displays initialization costs in a tree format", ADMIN_CATEGORY_DEBUG, mob/m)
+ADMIN_VERB(cmd_display_init_costs, R_DEBUG, FALSE, "Debug Init Costs", "Displays initialization costs in a tree format", ADMIN_CATEGORY_DEBUG)
 	if(!LAZYLEN(SSatoms.init_costs))
-		to_chat(m, span_notice("Init costs list is empty."))
+		to_chat(usr, span_notice("Init costs list is empty."))
 	else
-		m << browse(HTML_SKELETON(SSatoms.InitCostLog()), "window=initcosts;size=900x600")
+		usr << browse(HTML_SKELETON(SSatoms.InitCostLog()), "window=initcosts;size=900x600")
 
 /datum/controller/subsystem/atoms/Topic(href, href_list)
 	. = ..()
