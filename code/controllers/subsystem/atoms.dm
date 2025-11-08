@@ -470,6 +470,8 @@ SUBSYSTEM_DEF(atoms)
 			. += "</div>"
 
 ADMIN_VERB(cmd_display_init_costs, R_DEBUG, FALSE, "Debug Init Costs", "Displays initialization costs in a tree format", ADMIN_CATEGORY_DEBUG)
+  if(!alert(user, "Are you sure you want to view the initialization costs? This may take more than a minute to load.", "Confirm") != "Yes")
+		return
 	if(!LAZYLEN(SSatoms.init_costs))
 		to_chat(user, span_notice("Init costs list is empty."))
 	else
