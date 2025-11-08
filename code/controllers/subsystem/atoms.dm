@@ -15,11 +15,13 @@ SUBSYSTEM_DEF(atoms)
 	///initAtom() adds the atom its creating to this list iff InitializeAtoms() has been given a list to populate as an argument
 	var/list/created_atoms
 
+	#ifdef PROFILE_MAPLOAD_INIT_ATOM
 	var/list/init_costs = list()
 	var/list/init_counts = list()
 
 	var/list/late_init_costs = list()
 	var/list/late_init_counts = list()
+	#endif
 
 	/// Atoms that will be deleted once the subsystem is initialized
 	var/list/queued_deletions = list()
@@ -311,6 +313,7 @@ SUBSYSTEM_DEF(atoms)
 	if(initlog)
 		text2file(initlog, "[GLOB.log_directory]/initialize.log")
 
+#ifdef PROFILE_MAPLOAD_INIT_ATOM
 /datum/controller/subsystem/atoms/proc/InitCostLog(sort_by_avg = FALSE, show_late_init = FALSE)
 	var/list/costs_to_use = show_late_init ? late_init_costs : init_costs
 	var/list/counts_to_use = show_late_init ? late_init_counts : init_counts
@@ -470,7 +473,7 @@ SUBSYSTEM_DEF(atoms)
 			. += "</div>"
 
 ADMIN_VERB(cmd_display_init_costs, R_DEBUG, FALSE, "Debug Init Costs", "Displays initialization costs in a tree format", ADMIN_CATEGORY_DEBUG)
-  if(!alert(user, "Are you sure you want to view the initialization costs? This may take more than a minute to load.", "Confirm") != "Yes")
+	if(!alert(user, "Are you sure you want to view the initialization costs? This may take more than a minute to load.", "Confirm") != "Yes")
 		return
 	if(!LAZYLEN(SSatoms.init_costs))
 		to_chat(user, span_notice("Init costs list is empty."))
@@ -483,3 +486,5 @@ ADMIN_VERB(cmd_display_init_costs, R_DEBUG, FALSE, "Debug Init Costs", "Displays
 		var/sort_by_avg = (href_list["sort"] == "avg")
 		var/show_late_init = (href_list["mode"] == "late")
 		usr << browse(HTML_SKELETON(InitCostLog(sort_by_avg, show_late_init)), "window=initcosts;size=900x600")
+
+#endif
