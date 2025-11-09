@@ -147,3 +147,9 @@
       shifts, albeit requiring more care and attention to the plants stats.
   notghosti:
   - bugfix: Messenger will no longer kick you out of your PDA app into messenger.
+2025-11-09:
+  Tractor-Maam:
+  - qol: moved View Map Vote Tallies from Server to OOC.
+  ancient-engineer:
+  - rscadd: Changed Milthy's plushie name from 'monkey plush' to 'chimpson plush'
+  - rscadd: Changed Milthy's plushie description
