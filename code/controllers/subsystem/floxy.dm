@@ -5,15 +5,27 @@ SUBSYSTEM_DEF(floxy)
 	init_order = INIT_ORDER_FLOXY
 #ifdef UNIT_TESTS
 	flags = SS_NO_INIT | SS_NO_FIRE
+#else
+	flags = SS_HIBERNATE
 #endif
 	/// Base URL for Floxy.
 	var/base_url
+	/// List of queue IDs we're waiting on results from.
+	var/list/pending_ids = list()
+	/// Assoc list of [id] -> completed requests
+	var/alist/completed_ids = alist()
 	/// Auth token used for the header.
 	VAR_PRIVATE/auth_token
 
 	var/static/list/default_headers = list(
 		"Content-Type" = "application/json",
 		"Accept" = "application/json",
+	)
+
+/datum/controller/subsystem/floxy/PreInit()
+	. = ..()
+	hibernate_checks = list(
+		NAMEOF(src, pending_ids),
 	)
 
 /datum/controller/subsystem/floxy/Initialize()
@@ -29,7 +41,16 @@ SUBSYSTEM_DEF(floxy)
 
 /datum/controller/subsystem/floxy/Recover()
 	base_url = SSfloxy.base_url
+	pending_ids = SSfloxy.pending_ids
+	completed_ids = SSfloxy.completed_ids
 	auth_token = SSfloxy.auth_token
+
+/datum/controller/subsystem/floxy/stat_entry(msg)
+	if(auth_token)
+		msg = "Authenticated | Pending: [length(pending_ids)] | Completed: [length(completed_ids)]"
+	else
+		msg = "Unauthenticated"
+	return ..()
 
 #ifndef TESTING
 /datum/controller/subsystem/floxy/can_vv_get(var_name)
