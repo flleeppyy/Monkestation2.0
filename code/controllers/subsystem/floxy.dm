@@ -10,8 +10,8 @@ SUBSYSTEM_DEF(floxy)
 #endif
 	/// Base URL for Floxy.
 	var/base_url
-	/// List of queue IDs we're waiting on results from.
-	var/list/pending_ids = list()
+	/// Assoc list of [id] -> /datum/http_request that we're waiting on results from.
+	var/alist/pending_ids = alist()
 	/// Assoc list of [id] -> completed requests
 	var/alist/completed_ids = alist()
 	/// Auth token used for the header.
