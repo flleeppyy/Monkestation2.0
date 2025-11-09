@@ -12,7 +12,8 @@ SUBSYSTEM_DEF(floxy)
 	var/base_url
 	/// Assoc list of [id] -> /datum/http_request that we're waiting on results from.
 	var/alist/pending_ids = alist()
-	/// Assoc list of [id] -> completed requests
+	/// Assoc list of [id] -> completed requests.
+	/// If a value is null, that means it errored somehow, and floxy.log should be checked for more info.
 	var/alist/completed_ids = alist()
 	/// Auth token used for the header.
 	VAR_PRIVATE/auth_token
@@ -44,6 +45,28 @@ SUBSYSTEM_DEF(floxy)
 	pending_ids = SSfloxy.pending_ids
 	completed_ids = SSfloxy.completed_ids
 	auth_token = SSfloxy.auth_token
+
+/datum/controller/subsystem/floxy/fire(resumed)
+	for(var/id, value in pending_ids)
+		var/datum/http_request/request = value
+		if(!request.is_complete())
+			continue
+		var/datum/http_response/response = request.into_response()
+		pending_ids -= id
+		if(response.errored)
+			log_floxy("[id] errored[response.status_code ? " (status [response.status_code])" : ""]: [response.error || "N/A"]")
+			testing("[id] errored[response.status_code ? " (status [response.status_code])" : ""]: [response.error || "N/A"]")
+			completed_ids[id] = null
+			continue
+		if(!rustg_json_is_valid(response.body))
+			log_floxy("[id] somehow returned invalid JSON??? [response.body]")
+			testing("[id] somehow returned invalid JSON??? [response.body]")
+			completed_ids[id] = null
+			continue
+		var/list/decoded_response = json_decode(response.body)
+		log_floxy("[id] completed")
+		testing("[id] completed: [json_encode(decoded_response, JSON_PRETTY_PRINT)]")
+		completed_ids[id] = decoded_response
 
 /datum/controller/subsystem/floxy/stat_entry(msg)
 	if(auth_token)
