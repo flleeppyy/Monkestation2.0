@@ -370,7 +370,7 @@ function exportJSON() {
 }
 </script>
 <a
-  onclick="window.location.href = 'byond://?action=openLink&link=' + encodeURIComponent('https://monkestation.github.io/ss13-init-cost-viewer/');"
+	onclick="window.location.href = 'byond://?action=openLink&link=' + encodeURIComponent('https://monkestation.github.io/ss13-init-cost-viewer/');"
 	target="_blank"
 	href="#"
 >Website version</a>
