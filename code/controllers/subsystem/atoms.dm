@@ -372,8 +372,8 @@ function exportJSON() {
 <a
   onclick="window.location.href = 'byond://?action=openLink&link=' + encodeURIComponent('https://monkestation.github.io/ss13-init-cost-viewer/');"
 	target="_blank"
+	href="#"
 >Website version</a>
-<a href="https://monkestation.github.io/ss13-init-cost-viewer/" target="_blank"> (the link doesnt work)</a>
 <div class='controls'>
 <div class='tab-group'>
 <button id='btn_init' class='active' onclick='setMode(\"init\")'>Initialize()</button>
