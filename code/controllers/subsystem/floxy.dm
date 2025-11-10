@@ -143,7 +143,7 @@ SUBSYSTEM_DEF(floxy)
 		auth_expiry = ((jwt_info["exp"] - 946684800) * 10) - 1 MINUTES // convert unix timestamp to world.realtime, but 1 minute earlier bc i don't trust this shit to be accurate
 	var/list/user_info = account_info["user"]
 	log_floxy("Logged into Floxy as [user_info["username"]] ([user_info["email"]], [user_info["id"]])")
-	testing("FLOXY: logged in\n---\n[json_encode(account_info, JSON_PRETTY_PRINT)]]\n---")
+	testing("FLOXY: logged in\n---\n[json_encode(account_info, JSON_PRETTY_PRINT)]\n---")
 	return TRUE
 
 /datum/controller/subsystem/floxy/proc/renew_if_needed()
