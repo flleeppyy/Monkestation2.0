@@ -10,8 +10,8 @@ SUBSYSTEM_DEF(floxy)
 #endif
 	/// Base URL for Floxy.
 	var/base_url
-	/// Assoc list of [id] -> /datum/http_request that we're waiting on results from.
-	var/alist/pending_ids = alist()
+	/// List of IDs that we're waiting on results from.
+	var/list/pending_ids = list()
 	/// Assoc list of [id] -> completed requests.
 	/// If a value is null, that means it errored somehow, and floxy.log should be checked for more info.
 	var/alist/completed_ids = alist()
@@ -51,26 +51,18 @@ SUBSYSTEM_DEF(floxy)
 
 /datum/controller/subsystem/floxy/fire(resumed)
 	renew_if_needed()
-	for(var/id, value in pending_ids)
-		var/datum/http_request/request = value
-		if(!request.is_complete())
+	for(var/id in pending_ids)
+		var/list/info = http_basicasync("api/media/[id]", method = RUSTG_HTTP_METHOD_GET)
+		if(!info)
+			pending_ids -= id
 			continue
-		var/datum/http_response/response = request.into_response()
+		var/status = info["status"]
+		if(status != "completed" && status != "failed")
+			continue
 		pending_ids -= id
-		if(response.errored)
-			log_floxy("[id] errored[response.status_code ? " (status [response.status_code])" : ""]: [response.error || "N/A"]")
-			testing("[id] errored[response.status_code ? " (status [response.status_code])" : ""]: [response.error || "N/A"]")
-			completed_ids[id] = null
-			continue
-		if(!rustg_json_is_valid(response.body))
-			log_floxy("[id] somehow returned invalid JSON??? [response.body]")
-			testing("[id] somehow returned invalid JSON??? [response.body]")
-			completed_ids[id] = null
-			continue
-		var/list/decoded_response = json_decode(response.body)
-		log_floxy("[id] completed")
-		testing("[id] completed: [json_encode(decoded_response, JSON_PRETTY_PRINT)]")
-		completed_ids[id] = decoded_response
+		log_floxy("[id] [status]")
+		testing("FLOXY: [id] [status]\n---[json_encode(info, JSON_PRETTY_PRINT)]\n---")
+		completed_ids[id] = info
 
 /datum/controller/subsystem/floxy/stat_entry(msg)
 	if(auth_token)
@@ -93,10 +85,39 @@ SUBSYSTEM_DEF(floxy)
 	return ..()
 
 /datum/controller/subsystem/floxy/CanProcCall(procname)
-	if(procname == "login")
+	if(procname == "login" || procname == "http_basicasync")
 		return FALSE
 	return ..()
 #endif
+
+/datum/controller/subsystem/floxy/proc/queue(url, profile = "ogg-opus", ttl)
+	if(!url)
+		CRASH("No URL passed to SSfloxy.queue")
+	if(!is_http_protocol(url))
+		CRASH("Invalid URL passed to SSfloxy.queue")
+	renew_if_needed()
+	var/list/params = list("url" = url)
+	if(profile)
+		params["profile"] = profile
+	if(ttl)
+		params["ttl"] = ttl
+	var/list/response = http_basicasync("api/media/queue?[list2params(params)]")
+	if(!response)
+		return FALSE
+	var/id = response["id"]
+	if(!id)
+		CRASH("Queue didn't return ID?")
+	var/url = response["url"]
+	if(id in pending_ids)
+		log_floxy("Ignoring duplicate queue attempt: [url] (ID: [id])")
+		return id
+	if(response["status"] == "completed")
+		completed_ids[id] = response
+		log_floxy("[url] was already completed (ID: [id])")
+	else
+		pending_ids |= id
+		log_floxy("Queued [url] (ID: [id])")
+	return id
 
 /datum/controller/subsystem/floxy/proc/login(username, password)
 	auth_token = null
@@ -113,14 +134,14 @@ SUBSYSTEM_DEF(floxy)
 		auth_expiry = ((jwt_info["exp"] - 946684800) * 10) - 1 MINUTES // convert unix timestamp to world.realtime, but 1 minute earlier bc i don't trust this shit to be accurate
 	var/list/user_info = account_info["user"]
 	log_floxy("Logged into Floxy as [user_info["username"]] ([user_info["email"]], [user_info["id"]])")
-	testing("floxy login info: [json_encode(account_info, JSON_PRETTY_PRINT)]")
+	testing("FLOXY: logged in\n---\n[json_encode(account_info, JSON_PRETTY_PRINT)]]\n---")
 	return TRUE
 
 /datum/controller/subsystem/floxy/proc/renew_if_needed()
 	if(!auth_token || !auth_expiry || auth_expiry > world.realtime)
 		return
 	var/username = CONFIG_GET(string/floxy_username)
-	var/list/new_info = http_basicasync("api/token", list("username" = username), RUSTG_HTTP_METHOD_POST, timeout = 5 SECONDS)
+	var/list/new_info = http_basicasync("api/token", list("username" = username), timeout = 5 SECONDS)
 	if(!new_info)
 		return
 	auth_token = new_info["token"]
