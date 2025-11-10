@@ -57,7 +57,7 @@ SUBSYSTEM_DEF(floxy)
 			pending_ids -= id
 			continue
 		var/status = info["status"]
-		if(status != "completed" && status != "failed")
+		if(status != FLOXY_STATUS_COMPLETED && status != FLOXY_STATUS_FAILED)
 			continue
 		pending_ids -= id
 		log_floxy("[id] [status]")
@@ -90,7 +90,7 @@ SUBSYSTEM_DEF(floxy)
 	return ..()
 #endif
 
-/datum/controller/subsystem/floxy/proc/queue(url, profile = "ogg-opus", ttl)
+/datum/controller/subsystem/floxy/proc/queue_media(url, profile = "ogg-opus", ttl)
 	if(!url)
 		CRASH("No URL passed to SSfloxy.queue")
 	if(!is_http_protocol(url))
@@ -111,13 +111,22 @@ SUBSYSTEM_DEF(floxy)
 	if(id in pending_ids)
 		log_floxy("Ignoring duplicate queue attempt: [url] (ID: [id])")
 		return id
-	if(response["status"] == "completed")
+	if(response["status"] == FLOXY_STATUS_COMPLETED)
 		completed_ids[id] = response
 		log_floxy("[url] was already completed (ID: [id])")
 	else
 		pending_ids |= id
 		log_floxy("Queued [url] (ID: [id])")
 	return id
+
+/datum/controller/subsystem/floxy/proc/query_media(id) as /list
+	if(!id)
+		return null
+	if(completed_ids[id])
+		return completed_ids[id]
+	if(id in pending_ids)
+		return list("id" = id, "status" = FLOXY_STATUS_PENDING)
+	return null
 
 /datum/controller/subsystem/floxy/proc/login(username, password)
 	auth_token = null
