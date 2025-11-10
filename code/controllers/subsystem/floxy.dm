@@ -128,6 +128,16 @@ SUBSYSTEM_DEF(floxy)
 		return list("id" = id, "status" = FLOXY_STATUS_PENDING)
 	return null
 
+/datum/controller/subsystem/floxy/proc/download_and_wait(url, profile = "ogg-opus", ttl, timeout)
+	var/id = queue_media(url, profile, ttl)
+	if(!id)
+		return null
+	if(timeout)
+		UNTIL_OR_TIMEOUT(id in completed_ids, timeout)
+	else
+		UNTIL(id in completed_ids)
+	return query_media(id)
+
 /datum/controller/subsystem/floxy/proc/login(username, password)
 	auth_token = null
 	auth_expiry = null
