@@ -107,7 +107,7 @@ SUBSYSTEM_DEF(floxy)
 	var/id = response["id"]
 	if(!id)
 		CRASH("Queue didn't return ID?")
-	var/url = response["url"]
+	url = response["url"]
 	if(id in pending_ids)
 		log_floxy("Ignoring duplicate queue attempt: [url] (ID: [id])")
 		return id
