@@ -357,6 +357,23 @@ button.active { background: #1177bb; }
 .tab-group { display: inline-block; margin-right: 20px; }
 </style>
 
+<input type='button' value='Export JSON' onclick='exportJSON()' />
+<script>
+function exportJSON() {
+	const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.DATA));
+	const dlAnchorElem = document.createElement('a');
+	dlAnchorElem.setAttribute("href", dataStr);
+	dlAnchorElem.setAttribute("download", `init_costs_${Math.floor(Date.now())}.json`);
+	document.body.appendChild(dlAnchorElem);
+	dlAnchorElem.click();
+	dlAnchorElem.remove();
+}
+</script>
+<a
+  onclick="window.location.href = 'byond://?action=openLink&link=' + encodeURIComponent('https://monkestation.github.io/ss13-init-cost-viewer/');"
+	target="_blank"
+>Website version</a>
+<a href="https://monkestation.github.io/ss13-init-cost-viewer/" target="_blank"> (the link doesnt work)</a>
 <div class='controls'>
 <div class='tab-group'>
 <button id='btn_init' class='active' onclick='setMode(\"init\")'>Initialize()</button>
@@ -367,6 +384,7 @@ button.active { background: #1177bb; }
 <button id='btn_avg' onclick='setSort(\"avg\")'>Sort by Average Time</button>
 </div>
 </div>
+
 
 <div id='summary' class='summary'></div>
 <div id='tree_root'></div>
