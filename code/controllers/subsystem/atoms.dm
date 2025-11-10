@@ -338,10 +338,10 @@ SUBSYSTEM_DEF(atoms)
 
 	. = {"
 <style>
-body { font-family: monospace; background: #1e1e1e; color: #d4d4d4; padding: 20px; }
-.tree-node { margin-left: 20px; margin-top: 5px; }
-.tree-item { cursor: pointer; padding: 3px 5px; border-radius: 3px; }
+body { font-family: monospace; }
+.tree-node { margin-left: 20px; }
 .tree-item:hover { background: #2d2d30; }
+#tree_root { background-color: #171717; border: solid 1px #202020; font-family: "Courier New"; padding: 10px; }
 .cost-high { color: #f48771; font-weight: bold; }
 .cost-med { color: #dcdcaa; }
 .cost-low { color: #4ec9b0; }
@@ -350,14 +350,11 @@ body { font-family: monospace; background: #1e1e1e; color: #d4d4d4; padding: 20p
 .count { color: #9cdcfe; font-size: 0.9em; }
 .avg { color: #ce9178; font-size: 0.9em; }
 .summary { background: #252526; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
-.controls { background: #252526; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
-button { background: #0e639c; color: white; border: none; padding: 8px 15px; border-radius: 3px; cursor: pointer; margin-right: 10px; }
-button:hover { background: #1177bb; }
-button.active { background: #1177bb; }
-.tab-group { display: inline-block; margin-right: 20px; }
+.controls { background: #252526; border-radius: 5px; }
+.tab-group { display: inline-block; }
 </style>
 
-<input type='button' value='Export JSON' onclick='exportJSON()' />
+<a href="#" onclick='exportJSON()'>Export JSON</a>
 <script>
 function exportJSON() {
 	const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.DATA));
@@ -373,20 +370,20 @@ function exportJSON() {
 	onclick="window.location.href = 'byond://?action=openLink&link=' + encodeURIComponent('https://monkestation.github.io/ss13-init-cost-viewer/');"
 	target="_blank"
 	href="#"
->Website version</a>
+>Website version (More Features)</a>
 <div class='controls'>
 <div class='tab-group'>
-<button id='btn_init' class='active' onclick='setMode(\"init\")'>Initialize()</button>
-<button id='btn_late' onclick='setMode(\"late\")'>LateInitialize()</button>
-</div>
+<a id='btn_init' class='active' onclick='setMode(\"init\")'>Initialize()</a>
+<a id='btn_late' onclick='setMode(\"late\")'>LateInitialize()</a>
+</div> |
 <div class='tab-group'>
-<button id='btn_total' class='active' onclick='setSort(\"total\")'>Sort by Total Time</button>
-<button id='btn_avg' onclick='setSort(\"avg\")'>Sort by Average Time</button>
+<a id='btn_total' class='active' onclick='setSort(\"total\")'>Sort by Total Time</a>
+<a id='btn_avg' onclick='setSort(\"avg\")'>Sort by Average Time</a>
 </div>
 </div>
 
 
-<div id='summary' class='summary'></div>
+<div id='summary' class='statusDisplay'></div>
 <div id='tree_root'></div>
 
 <script>
@@ -534,6 +531,8 @@ ADMIN_VERB(cmd_display_init_costs, R_DEBUG, FALSE, "Display Init Costs", "Displa
 	if(!LAZYLEN(SSatoms.init_costs))
 		to_chat(user, span_notice("Init costs list is empty."))
 	else
-		user << browse(HTML_SKELETON(SSatoms.InitCostLog()), "window=initcosts;size=900x600")
+		var/datum/browser/panel = new(user, "initcosts", "Initialization Costs", 900, 600)
+		panel.set_content(HTML_SKELETON(SSatoms.InitCostLog()))
+		panel.open()
 
 #endif
