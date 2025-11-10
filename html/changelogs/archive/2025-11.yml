@@ -153,3 +153,26 @@
   ancient-engineer:
   - rscadd: Changed Milthy's plushie name from 'monkey plush' to 'chimpson plush'
   - rscadd: Changed Milthy's plushie description
+2025-11-10:
+  Absolucy:
+  - bugfix: Possible fix for being sucked through holofans.
+  Absolucy, grungussuss:
+  - bugfix: fixed items not falling from a lattice after being deconstructed/destroyed
+  Tostah:
+  - rscadd: Anything gifts can once again (rarely) spawn in maints.
+  - balance: Chaplains cannot get mystery gifts from the maintenance sect
+  Tractor-Maam:
+  - balance: getting dusted by high voltages now keeps your brain safe.
+  notghosti:
+  - map: Final turfs with atmosphere differences have been cleaned up on snow arenas
+  - map: Deltastation Experimentation lab has been given some basic room necessities,
+      including fire protection, cameras,  light switches, ect.
+  - bugfix: RTG's now produce accurate amounts of power, instead of around half. this
+      should help deep storage significantly with power
+  - bugfix: PTL's no longer will heal you if under 25 MW, and now will properly try
+      to kill you normally without gibbing,
+  - bugfix: PTL's will no longer have access to twice the amount of power actually
+      in the power network
+  - bugfix: Ethereals charge rates have been increased/decreased. Some safer activites
+      should include apc's, lights, and rechargers not instantly overcharging, and
+      ethereal cores instantly draining players. Numbers are rough still
