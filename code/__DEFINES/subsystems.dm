@@ -145,7 +145,7 @@
 #define INIT_ORDER_DISCORD 78
 #define INIT_ORDER_PLEXORA 77 // monkestation addition
 #define INIT_ORDER_ACHIEVEMENTS 76 // monkestation edit: 77 -> 76 for plexora
-#define INIT_ORDER_FLOXY 75
+#define INIT_ORDER_FLOXY 75 // should initialize relatively early, so admins can start playing music if they want to. also needs to initialize before cassettes anyways
 #define INIT_ORDER_STATION 74 //This is high priority because it manipulates a lot of the subsystems that will initialize after it.
 #define INIT_ORDER_QUIRKS 73
 #define INIT_ORDER_REAGENTS 72 //HAS to be before mapping and assets - both create objects, which creates reagents, which relies on lists made in this subsystem
