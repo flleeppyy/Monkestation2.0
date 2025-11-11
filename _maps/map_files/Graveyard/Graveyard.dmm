@@ -4555,11 +4555,6 @@
 	},
 /turf/open/floor/iron,
 /area/station/service/hydroponics)
-"bKi" = (
-/obj/item/storage/pill_bottle/radiomagnetic_disruptor,
-/obj/structure/table,
-/turf/open/floor/iron,
-/area/station/science/circuits)
 "bKn" = (
 /obj/effect/turf_decal/trimline/brown/filled/line,
 /obj/structure/disposalpipe/segment{
@@ -9421,6 +9416,11 @@
 	},
 /turf/open/misc/grass/jungle,
 /area/graveyard/surface)
+"dCY" = (
+/obj/item/storage/pill_bottle/radiomagnetic_disruptor,
+/obj/structure/table,
+/turf/open/floor/iron,
+/area/station/science/circuits)
 "dDc" = (
 /obj/effect/turf_decal/stripes/line,
 /turf/open/floor/stone,
@@ -12727,6 +12727,31 @@
 /obj/structure/cable,
 /turf/open/floor/iron,
 /area/station/science/research)
+"eTK" = (
+/obj/structure/table/wood/fancy/orange,
+/obj/item/stamp{
+	pixel_x = 7;
+	pixel_y = 9
+	},
+/obj/item/stamp/denied{
+	pixel_x = 7;
+	pixel_y = 4
+	},
+/obj/item/stamp/qm{
+	pixel_x = 7;
+	pixel_y = -2
+	},
+/obj/item/storage/wallet{
+	pixel_x = -3;
+	pixel_y = 10
+	},
+/obj/effect/turf_decal/siding/wood{
+	dir = 8
+	},
+/obj/structure/cable,
+/obj/machinery/power/apc/auto_name/directional/south,
+/turf/open/floor/wood,
+/area/station/cargo/quartermaster)
 "eTP" = (
 /obj/machinery/atmospherics/components/unary/vent_scrubber/on/layer2{
 	dir = 1
@@ -24374,10 +24399,6 @@
 	},
 /turf/open/floor/carpet/purple,
 /area/station/science/research)
-"jyB" = (
-/obj/machinery/light/directional/north,
-/turf/open/floor/carpet/red,
-/area/station/cargo/quartermaster)
 "jyF" = (
 /obj/machinery/conveyor{
 	dir = 8;
@@ -27497,6 +27518,11 @@
 /obj/machinery/recharge_station,
 /turf/open/floor/iron,
 /area/station/engineering/main)
+"kKw" = (
+/obj/machinery/light/directional/north,
+/obj/machinery/modular_computer/preset/id,
+/turf/open/floor/carpet/red,
+/area/station/cargo/quartermaster)
 "kKy" = (
 /obj/structure/cable,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
@@ -31815,6 +31841,14 @@
 /obj/machinery/duct,
 /turf/open/floor/plating,
 /area/station/maintenance/aft)
+"moQ" = (
+/obj/structure/table,
+/obj/item/nanite_remote,
+/obj/item/nanite_remote,
+/obj/item/nanite_scanner,
+/obj/item/nanite_scanner,
+/turf/open/floor/iron/white,
+/area/station/science/circuits)
 "moR" = (
 /obj/effect/turf_decal/tile/dark_red/fourcorners,
 /obj/machinery/atmospherics/components/unary/vent_scrubber/on/layer2{
@@ -32543,6 +32577,15 @@
 /obj/machinery/camera/autoname/directional/east,
 /turf/open/floor/iron/dark,
 /area/station/science/lab)
+"mDi" = (
+/obj/effect/turf_decal/siding/wood{
+	dir = 8
+	},
+/obj/machinery/atmospherics/components/unary/vent_pump/on/layer4,
+/obj/machinery/airalarm/directional/north,
+/obj/machinery/pdapainter/supply,
+/turf/open/floor/wood,
+/area/station/cargo/quartermaster)
 "mDn" = (
 /obj/structure/closet/secure_closet/freezer/kitchen/maintenance{
 	req_access = null
@@ -36684,13 +36727,6 @@
 /obj/effect/landmark/start/hangover,
 /turf/open/floor/iron,
 /area/station/commons/fitness/recreation)
-"ogS" = (
-/obj/structure/table/wood,
-/obj/machinery/dj_station{
-	pixel_y = 12
-	},
-/turf/open/floor/iron/vaporwave,
-/area/station/service/library)
 "ogV" = (
 /obj/machinery/atmospherics/components/binary/pump{
 	name = "Air to Mix"
@@ -45685,11 +45721,6 @@
 	},
 /turf/open/floor/iron,
 /area/station/engineering/engine_smes)
-"rNl" = (
-/obj/item/storage/box/disks_nanite,
-/obj/structure/table,
-/turf/open/floor/iron,
-/area/station/science/circuits)
 "rNE" = (
 /obj/structure/disposalpipe/segment{
 	dir = 4
@@ -47384,31 +47415,6 @@
 	},
 /turf/open/floor/iron,
 /area/station/engineering/supermatter/room)
-"syo" = (
-/obj/structure/table/wood/fancy/orange,
-/obj/item/stamp{
-	pixel_x = 7;
-	pixel_y = 9
-	},
-/obj/item/stamp/denied{
-	pixel_x = 7;
-	pixel_y = 4
-	},
-/obj/item/stamp/head/qm{
-	pixel_x = 7;
-	pixel_y = -2
-	},
-/obj/item/storage/wallet{
-	pixel_x = -3;
-	pixel_y = 10
-	},
-/obj/effect/turf_decal/siding/wood{
-	dir = 8
-	},
-/obj/structure/cable,
-/obj/machinery/power/apc/auto_name/directional/south,
-/turf/open/floor/wood,
-/area/station/cargo/quartermaster)
 "syw" = (
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
@@ -51712,6 +51718,11 @@
 /obj/effect/spawner/random/entertainment/coin,
 /turf/open/floor/iron,
 /area/graveyard/bunker/science)
+"ufL" = (
+/obj/item/storage/box/disks_nanite,
+/obj/structure/table,
+/turf/open/floor/iron,
+/area/station/science/circuits)
 "ufM" = (
 /obj/structure/bed,
 /obj/machinery/light/small/directional/north,
@@ -58814,14 +58825,6 @@
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
 /turf/open/floor/iron/dark/textured,
 /area/station/security/prison)
-"wTt" = (
-/obj/structure/table,
-/obj/item/nanite_remote,
-/obj/item/nanite_remote,
-/obj/item/nanite_scanner,
-/obj/item/nanite_scanner,
-/turf/open/floor/iron/white,
-/area/station/science/circuits)
 "wTT" = (
 /obj/machinery/door/poddoor/shutters{
 	dir = 4;
@@ -60661,14 +60664,6 @@
 /obj/effect/spawner/structure/window,
 /turf/open/floor/plating,
 /area/station/cargo/sorting)
-"xCc" = (
-/obj/effect/turf_decal/siding/wood{
-	dir = 8
-	},
-/obj/machinery/atmospherics/components/unary/vent_pump/on/layer4,
-/obj/machinery/airalarm/directional/north,
-/turf/open/floor/wood,
-/area/station/cargo/quartermaster)
 "xCf" = (
 /obj/effect/turf_decal/trimline/dark_red/filled/line{
 	dir = 8
@@ -62403,6 +62398,13 @@
 /obj/machinery/duct,
 /turf/open/floor/wood,
 /area/station/command/heads_quarters/cmo)
+"yiN" = (
+/obj/structure/table/wood,
+/obj/machinery/dj_station{
+	pixel_y = 12
+	},
+/turf/open/floor/iron/vaporwave,
+/area/station/service/library)
 "yiR" = (
 /obj/machinery/atmospherics/components/unary/vent_pump/on/layer4,
 /turf/open/floor/wood,
@@ -146305,7 +146307,7 @@ uMt
 vNc
 fGQ
 lkC
-jyB
+kKw
 lGn
 fTW
 hhJ
@@ -146562,10 +146564,10 @@ vNc
 vNc
 fGQ
 lkC
-xCc
+mDi
 uja
 jEG
-syo
+eTK
 lkC
 bUo
 ohY
@@ -168659,7 +168661,7 @@ kzl
 quA
 jrD
 bMB
-ogS
+yiN
 iyc
 thN
 fqb
@@ -173804,7 +173806,7 @@ sZv
 mvt
 asF
 roX
-wTt
+moQ
 lFE
 lFA
 ooD
@@ -174832,8 +174834,8 @@ sZv
 mTZ
 abZ
 rzJ
-rNl
-bKi
+ufL
+dCY
 tiX
 kkb
 kSK
