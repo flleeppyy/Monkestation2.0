@@ -15,6 +15,7 @@ SUBSYSTEM_DEF(floxy)
 	/// Assoc list of [id] -> completed requests.
 	/// If a value is null, that means it errored somehow, and floxy.log should be checked for more info.
 	var/alist/completed_ids = alist()
+	var/alist/cached_metadata = alist()
 	/// world.realtime value of when the current auth token will expire
 	var/auth_expiry
 	/// Auth token used for the header.
@@ -46,6 +47,7 @@ SUBSYSTEM_DEF(floxy)
 	base_url = SSfloxy.base_url
 	pending_ids = SSfloxy.pending_ids
 	completed_ids = SSfloxy.completed_ids
+	cached_metadata = SSfloxy.cached_metadata
 	auth_expiry = SSfloxy.auth_expiry
 	auth_token = SSfloxy.auth_token
 
@@ -118,6 +120,19 @@ SUBSYSTEM_DEF(floxy)
 		pending_ids |= id
 		log_floxy("Queued [url] (ID: [id])")
 	return id
+
+/datum/controller/subsystem/floxy/proc/fetch_media_metadata(url) as /list
+	if(!url)
+		CRASH("No URL passed to SSfloxy.fetch_media_metadata")
+	if(!is_http_protocol(url))
+		CRASH("Invalid URL passed to SSfloxy.fetch_media_metadata")
+	if(cached_metadata[url])
+		return cached_metadata[url]
+	renew_if_needed()
+	var/list/metadata = http_basicasync("api/ytdlp?url=[url_encode(url)]", method = RUSTG_HTTP_METHOD_GET, timeout = 15 SECONDS)
+	if(metadata)
+		cached_metadata[url] = metadata
+		return metadata
 
 /datum/controller/subsystem/floxy/proc/query_media(id) as /list
 	if(!id)
