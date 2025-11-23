@@ -6,7 +6,7 @@
 		'sound/machines/djstation/machine_track_switch_loop4.ogg',
 		'sound/machines/djstation/machine_track_switch_loop5.ogg',
 	)
-	mid_length = 1.5 SECONDS
+	mid_length = 1.4 SECONDS
 	start_sound = list(
 		'sound/machines/djstation/machine_track_switch_start1.ogg',
 		'sound/machines/djstation/machine_track_switch_start2.ogg',
@@ -22,7 +22,7 @@
 		'sound/machines/djstation/machine_track_switch_end4.ogg',
 		'sound/machines/djstation/machine_track_switch_end5.ogg',
 	)
-	volume = 80
+	volume = 75
 	channel = CHANNEL_MACHINERY
 	/// The index of the current sound being played.
 	var/index = 1
