@@ -25,16 +25,18 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 
 	var/is_ejecting = FALSE
 	var/broadcasting = FALSE
+	/// Are we currently switching tracks?
+	var/switching_tracks = FALSE
 	/// The currently inserted cassette, if any.
 	var/obj/item/cassette_tape/inserted_tape
 	/// The song currently being played, if any.
 	var/datum/cassette_song/playing
 	/// The REALTIMEOFDAY that the current song was started.
 	var/song_start_time
+	/// Looping sound used when switching cassette tracks.
+	var/datum/looping_sound/cassette_track_switch/switch_sound
 
 	COOLDOWN_DECLARE(next_song_timer)
-	// Are we switching tracks right now? (AKA, we cant do anything else with the thing until it switches tracks.)
-	COOLDOWN_DECLARE(switching_tracks)
 
 /obj/machinery/dj_station/Initialize(mapload)
 	. = ..()
@@ -43,8 +45,10 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	if(QDELETED(GLOB.dj_booth))
 		GLOB.dj_booth = src
 	ADD_TRAIT(src, TRAIT_ALT_CLICK_BLOCKER, INNATE_TRAIT)
+	switch_sound = new(src)
 
 /obj/machinery/dj_station/Destroy()
+	QDEL_NULL(switch_sound)
 	if(!QDELETED(inserted_tape))
 		inserted_tape.forceMove(drop_location())
 	inserted_tape = null
@@ -127,7 +131,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	if(is_ejecting)
 		balloon_alert(user, "busy ejecting tape!")
 		return CLICK_ACTION_BLOCKING
-	if(!COOLDOWN_FINISHED(src, switching_tracks))
+	if(switching_tracks)
 		balloon_alert(user, "busy switching tracks!")
 		return CLICK_ACTION_BLOCKING
 	eject_tape(user)
@@ -140,14 +144,13 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		ui.open()
 
 /obj/machinery/dj_station/ui_data(mob/user)
-	var/is_switching_tracks = !COOLDOWN_FINISHED(src, switching_tracks)
 	. = list(
 		"broadcasting" = broadcasting,
 		"song_cooldown" = COOLDOWN_TIMELEFT(src, next_song_timer),
 		"progress" = song_start_time ? (REALTIMEOFDAY - song_start_time) : 0,
 		"side" = inserted_tape?.flipped,
-		"current_song" = is_switching_tracks ? null : (inserted_tape?.cassette_data ? inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs.Find(playing) - 1 : null),
-		"switching_tracks" = is_switching_tracks,
+		"current_song" = switching_tracks ? null : (inserted_tape?.cassette_data ? inserted_tape.cassette_data.get_side(!inserted_tape.flipped).songs.Find(playing) - 1 : null),
+		"switching_tracks" = switching_tracks,
 	)
 
 
@@ -179,7 +182,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	testing("dj station [action]([json_encode(params)])")
 	switch(action)
 		if("eject", "play", "stop")
-			if(!COOLDOWN_FINISHED(src, switching_tracks))
+			if(switching_tracks)
 				balloon_alert(user, "busy switching tracks!")
 				return TRUE
 
@@ -201,7 +204,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 			return TRUE
 		if("set_track")
 			. = TRUE
-			if(!COOLDOWN_FINISHED(src, switching_tracks))
+			if(switching_tracks)
 				balloon_alert(user, "already switching tracks!")
 				return
 			var/index = params["index"]
@@ -240,16 +243,19 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				PLAY_CASSETTE_SOUND(SFX_DJSTATION_STOP)
 				balloon_alert("already on that track!")
 				return
+			switching_tracks = TRUE
 			if(playing)
 				PLAY_CASSETTE_SOUND(SFX_DJSTATION_STOP)
 				sleep(0.2 SECONDS)
-			PLAY_CASSETTE_SOUND(SFX_DJSTATION_TRACKSWITCH)
-			COOLDOWN_START(src, switching_tracks, 2.1 SECONDS)
+			switch_sound.start()
 			SStgui.update_uis(src)
-			sleep(2.1 SECONDS)
-			playing = found_track
+			if(SSfloxy.download_and_wait(found_track.url, timeout = 30 SECONDS))
+				playing = found_track
+			else
+				playing = null
+			switching_tracks = FALSE
 			SStgui.update_uis(src)
-
+			switch_sound.stop()
 
 // It cannot be stopped.
 /obj/machinery/dj_station/take_damage(damage_amount, damage_type, damage_flag, sound_effect, attack_dir, armour_penetration)
