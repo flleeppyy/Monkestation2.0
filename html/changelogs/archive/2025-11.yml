@@ -394,3 +394,14 @@
   - balance: Ammo reserves dropped to 375 to refill equally with new values.
   - bugfix: Avtomat AC 3 no longer will enter -4 bullets upon firing every single
       bullter
+2025-11-23:
+  Tractor-Maam:
+  - bugfix: fixed chem masters not considering the second beakers size in its buffer
+      if the first wasnt a cryo beaker.
+  notghosti:
+  - rscadd: Drone's are given a modified T-Ray scanner that can show thermal differences.
+  - balance: Maintenance drones will no longer be blacklisted from machinery during
+      Yellow alert
+  - balance: Drone tools are given a additional space to fit a round start construction
+      bag.
+  - qol: drones can equip items with hotkeys
