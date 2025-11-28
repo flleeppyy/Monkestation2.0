@@ -34,6 +34,7 @@
 	RegisterSignals(parent, list(COMSIG_LIVING_RESET_PULL_OFFSETS, COMSIG_LIVING_SET_PULL_OFFSET, COMSIG_MOVABLE_MOVED), PROC_REF(unpixel_shift))
 	RegisterSignal(parent, COMSIG_MOB_CLIENT_PRE_LIVING_MOVE, PROC_REF(pre_move_check))
 	RegisterSignal(parent, COMSIG_LIVING_CAN_ALLOW_THROUGH, PROC_REF(check_passable))
+	RegisterSignal(parent, COMSIG_LIVING_RESTING, PROC_REF(check_passable))
 
 /datum/component/pixel_shift/UnregisterFromParent()
 	UnregisterSignal(parent, list(
@@ -104,6 +105,7 @@
 		var/mob/living/owner = parent
 		owner.pixel_x = owner.body_position_pixel_x_offset + owner.base_pixel_x
 		owner.pixel_y = owner.body_position_pixel_y_offset + owner.base_pixel_y
+		owner.transform = turn(owner.transform, -how_tilted)
 	qdel(src)
 
 /// In-turf pixel movement which can allow things to pass through if the threshold is met.
