@@ -112,14 +112,14 @@ SUBSYSTEM_DEF(floxy)
 	url = response["url"]
 	if(id in pending_ids)
 		log_floxy("Ignoring duplicate queue attempt: [url] (ID: [id])")
-		return id
+		return response
 	if(response["status"] == FLOXY_STATUS_COMPLETED)
 		completed_ids[id] = response
 		log_floxy("[url] was already completed (ID: [id])")
 	else
 		pending_ids |= id
 		log_floxy("Queued [url] (ID: [id])")
-	return id
+	return response
 
 /datum/controller/subsystem/floxy/proc/fetch_media_metadata(url) as /list
 	if(!url)
@@ -144,7 +144,8 @@ SUBSYSTEM_DEF(floxy)
 	return null
 
 /datum/controller/subsystem/floxy/proc/download_and_wait(url, profile = "ogg-opus", ttl, timeout)
-	var/id = queue_media(url, profile, ttl)
+	var/list/queue_info = queue_media(url, profile, ttl)
+	var/id = queue_info?["id"]
 	if(!id)
 		return null
 	if(timeout)

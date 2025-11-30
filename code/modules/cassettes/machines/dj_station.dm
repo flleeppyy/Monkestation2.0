@@ -245,7 +245,8 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				sleep(0.2 SECONDS)
 			switch_sound.start()
 			SStgui.update_uis(src)
-			if(SSfloxy.download_and_wait(found_track.url, timeout = 30 SECONDS))
+			var/list/info = SSfloxy.download_and_wait(found_track.url, timeout = 30 SECONDS)
+			if(info)
 				playing = found_track
 			else
 				playing = null
