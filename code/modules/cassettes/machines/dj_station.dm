@@ -109,21 +109,21 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	if(is_ejecting)
 		balloon_alert(user, "already ejecting!")
 		return
-	if(inserted_tape)
-		is_ejecting = TRUE
-		PLAY_CASSETTE_SOUND(SFX_DJSTATION_OPENTAKEOUTANDCLOSE)
-		if (!do_after(user, 1.5 SECONDS, src))
-			is_ejecting = FALSE
-			return
-		inserted_tape.forceMove(drop_location())
-		is_ejecting = FALSE
-		if(user)
-			balloon_alert(user, "tape ejected")
-			user.put_in_hands(inserted_tape)
-			inserted_tape = null
-			update_static_data_for_all_viewers()
-	else if(user)
+	if(!inserted_tape)
 		balloon_alert(user, "no tape inserted!")
+		return
+	is_ejecting = TRUE
+	PLAY_CASSETTE_SOUND(SFX_DJSTATION_OPENTAKEOUTANDCLOSE)
+	if (!do_after(user, 1.5 SECONDS, src))
+		is_ejecting = FALSE
+		return
+	inserted_tape.forceMove(drop_location())
+	is_ejecting = FALSE
+	if(user)
+		balloon_alert(user, "tape ejected")
+		user.put_in_hands(inserted_tape)
+		inserted_tape = null
+		update_static_data_for_all_viewers()
 
 /obj/machinery/dj_station/click_ctrl(mob/user)
 	if(!can_interact(user))
@@ -144,7 +144,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		ui.open()
 
 /obj/machinery/dj_station/ui_data(mob/user)
-	. = list(
+	return list(
 		"broadcasting" = broadcasting,
 		"song_cooldown" = COOLDOWN_TIMELEFT(src, next_song_timer),
 		"progress" = song_start_time ? (REALTIMEOFDAY - song_start_time) : 0,

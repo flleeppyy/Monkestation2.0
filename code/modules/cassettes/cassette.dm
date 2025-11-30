@@ -46,7 +46,7 @@
 /obj/item/cassette_tape/attack_self(mob/user)
 	. = ..()
 	flipped = !flipped
-	to_chat(user, span_notice("You flip [src]."))
+	user.balloon_alert(user, "flipped cassette")
 	playsound(src, SFX_CASSETTE_ASMR, 50, FALSE)
 
 	update_appearance(UPDATE_ICON_STATE)
