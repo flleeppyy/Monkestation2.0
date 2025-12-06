@@ -44,3 +44,35 @@
   - rscadd: Mouse cubes can now be shaken to create rats.
   notghosti:
   - bugfix: Anchoring crystals now apply forced toxin healing rather than regular.
+2025-12-05:
+  Absolucy:
+  - rscdel: You can no longer deep fry brains, unless they're soulless (deep fried
+      Pun Pun brain is still on the menu, don't worry).
+  - bugfix: Fixed voice of god just not working sometimes.
+  - balance: Changelings now need 1 absorb in order to obtain transformation sting.
+  - rscadd: Mutadone can be used to heavily reduce the duration of transformation
+      sting while it's in your system.
+  - balance: When a non-bloodsucker/vassal is breaking out of silver cuffs, the resist
+      will not be canceled by moving them.
+  Absolucy, Ical92, lizardqueenlexi:
+  - map: Demonic-Frost Miner's ruin has received an aesthetic refresh!
+  Absolucy, Melbert:
+  - image: The animation for being dusted now takes into account your sprite, rather
+      than being a normal nude spaceman
+  EssentialTomato:
+  - bugfix: Aux base construction console now builds selected structures instead of
+      just walls.
+  - bugfix: Aux base construction console can be restocked again.
+  - bugfix: Fixed ashwalker clothing storage being invisible.
+  Evalence0:
+  - balance: Potassium now depletes at a reasonable rate from floran's blood, instead
+      of staying forever and causing damage.
+  - bugfix: added metabolism rate to potassium for florans.
+  Gboster-0:
+  - bugfix: the robot wabbajack list is actually weighted now as it was supposed to
+      be
+  Shoddd:
+  - balance: pka pistol capacity returned to 200%
+  Tractor-Maam:
+  - rscadd: Chat Client is now a stock PDA app.
+  - balance: Chat Client is now 4GQ, down from 8GQ.
