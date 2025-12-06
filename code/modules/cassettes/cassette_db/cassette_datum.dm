@@ -39,17 +39,18 @@
 	author.name = data["author_name"]
 	author.ckey = ckey(data["author_ckey"])
 
-	for(var/i in 1 to 2)
-		var/datum/cassette_side/side = get_side(i % 2) // side2 = 0, side1 = 1
-		var/side_name = "side[i]"
-		var/list/song_urls = data["songs"][side_name]
-		var/list/song_names = data["song_names"][side_name]
-		if(length(song_urls) != length(song_names))
-			stack_trace("amount of song urls for [side_name] ([length(song_urls)]) did not match amount of song names for [side_name] ([length(song_names)])")
+	for(var/side_name, side_data in data["songs"])
+		var/datum/cassette_side/side
+		if(side_name == "side1")
+			side = front
+		else if(side_name == "side2")
+			side = back
+		else
+			stack_trace("Unexpected side name '[side_name]' in cassette [name]")
 			continue
-		side.design = data["[side_name]_icon"]
-		for(var/idx in 1 to length(song_urls))
-			side.songs += new /datum/cassette_song(song_names[idx], song_urls[idx])
+		side.design = side_data["icon"] || /datum/cassette_side::design
+		for(var/list/track as anything in side_data["tracks"])
+			side.songs += new /datum/cassette_song(track["title"], track["url"], track["duration"], track["artist"], track["album"])
 
 /// Exports cassette date in the old format.
 /datum/cassette/proc/export_old_format() as /list
@@ -154,14 +155,16 @@
 /// Imports data for this cassette side to the JSON format used by the database.
 /datum/cassette_side/proc/import_from_db(list/data)
 	design = data["design"]
-	for(var/list/song as anything in data["songs"])
-		songs += new /datum/cassette_song(song["name"], song["url"], song["length"])
+	for(var/list/song_data as anything in data["tracks"])
+		var/datum/cassette_song/song = new
+		song.import(song_data)
+		songs += song
 
 /// Exports data from this cassette side in the JSON format used by the database.
 /datum/cassette_side/proc/export_for_db()
-	. = list("design" = design, "songs" = list())
+	. = list("design" = design, "tracks" = list())
 	for(var/datum/cassette_song/song as anything in songs)
-		.["songs"] += list(list("name" = song.name, "url" = song.url, "length" = song.length))
+		.["songs"] += list(song.export())
 
 /datum/cassette_side/Destroy(force)
 	QDEL_LIST(songs)
@@ -172,11 +175,31 @@
 	var/name
 	/// The URL of the song.
 	var/url
-	/// The length of the song (in seconds)
-	var/length
+	/// The duration of the song (in seconds)
+	var/duration = 0
+	var/artist
+	var/album
 
-/datum/cassette_song/New(name, url, length)
+/datum/cassette_song/New(name, url, duration, artist, album)
 	. = ..()
 	src.name = name
 	src.url = url
-	src.length = isnum(length) ? max(length, 0) : 0
+	src.duration = isnum(duration) ? max(duration, 0) : 0
+	src.artist = artist
+	src.album = album
+
+/datum/cassette_song/proc/import(list/data)
+	name = data["title"]
+	url = data["url"]
+	duration = data["duration"]
+	artist = data["artist"]
+	album = data["album"]
+
+/datum/cassette_song/proc/export()
+	return list(
+		"title" = name,
+		"url" = url,
+		"duration" = duration,
+		"artist" = artist,
+		"album" = album,
+	)

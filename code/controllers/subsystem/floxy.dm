@@ -37,7 +37,7 @@ SUBSYSTEM_DEF(floxy)
 	var/username = CONFIG_GET(string/floxy_username)
 	var/password = CONFIG_GET(string/floxy_password)
 	if(!base_url || !username || !password)
-		flags |= SS_NO_FIRE
+		can_fire = FALSE
 		return SS_INIT_NO_NEED
 	if(!login(username, password))
 		return SS_INIT_FAILURE
@@ -50,6 +50,11 @@ SUBSYSTEM_DEF(floxy)
 	cached_metadata = SSfloxy.cached_metadata
 	auth_expiry = SSfloxy.auth_expiry
 	auth_token = SSfloxy.auth_token
+
+/// Clears the completed IDs and metadata.
+/datum/controller/subsystem/floxy/proc/clear_cache()
+	completed_ids.Cut()
+	cached_metadata.Cut()
 
 /datum/controller/subsystem/floxy/fire(resumed)
 	renew_if_needed()
@@ -143,7 +148,7 @@ SUBSYSTEM_DEF(floxy)
 		return list("id" = id, "status" = FLOXY_STATUS_PENDING)
 	return null
 
-/datum/controller/subsystem/floxy/proc/download_and_wait(url, profile = "ogg-opus", ttl, timeout)
+/datum/controller/subsystem/floxy/proc/download_and_wait(url, profile = "ogg-opus", ttl, timeout, discard_failed = FALSE)
 	var/list/queue_info = queue_media(url, profile, ttl)
 	var/id = queue_info?["id"]
 	if(!id)
@@ -152,7 +157,10 @@ SUBSYSTEM_DEF(floxy)
 		UNTIL_OR_TIMEOUT(id in completed_ids, timeout)
 	else
 		UNTIL(id in completed_ids)
-	return query_media(id)
+	var/list/info = query_media(id)
+	if(discard_failed && info?["status"] == FLOXY_STATUS_FAILED)
+		completed_ids -= id
+	return info
 
 /datum/controller/subsystem/floxy/proc/login(username, password)
 	auth_token = null

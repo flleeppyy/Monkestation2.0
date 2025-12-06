@@ -1,7 +1,7 @@
 
 /obj/item/cassette_tape
-	name = "Debug Cassette Tape"
-	desc = "You shouldn't be seeing this!"
+	name = "blank cassette tape"
+	desc = "A blank cassette tape, waiting for music to be added."
 	icon = 'icons/obj/cassettes/walkman.dmi'
 	icon_state = "cassette_flip"
 	w_class = WEIGHT_CLASS_SMALL
@@ -37,7 +37,7 @@
 		if(length(random_cassette))
 			cassette_data = random_cassette[1]
 	cassette_data ||= new
-	update_appearance(UPDATE_DESC | UPDATE_ICON_STATE)
+	update_appearance(UPDATE_NAME | UPDATE_DESC | UPDATE_ICON_STATE)
 
 /obj/item/cassette_tape/Destroy(force)
 	cassette_data = null
@@ -51,8 +51,12 @@
 
 	update_appearance(UPDATE_ICON_STATE)
 
+/obj/item/cassette_tape/update_name(updates)
+	name = cassette_data.name || src::name
+	return ..()
+
 /obj/item/cassette_tape/update_desc(updates)
-	desc = cassette_data.desc || "A generic cassette."
+	desc = cassette_data.desc || src::desc
 	return ..()
 
 /obj/item/cassette_tape/update_icon_state()
@@ -108,7 +112,6 @@
 			update_appearance(UPDATE_DESC)
 			return ITEM_INTERACT_SUCCESS
 	return ITEM_INTERACT_BLOCKING
-
 
 /obj/item/cassette_tape/blank
 //	id = "blank"

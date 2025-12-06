@@ -47,7 +47,9 @@ export enum CassetteDesign {
 type Song = {
   name: string;
   url: string;
-  length: number; // in seconds
+  length: number; // in deciseconds
+  artist?: string;
+  album?: string;
 };
 
 type Cassette = {
@@ -226,62 +228,61 @@ export const DjStation = () => {
   return (
     <Window title="DJ Station" width={1000} height={650} resizable>
       <Window.Content>
-        {data.switching_tracks ? (
+        {!!data.switching_tracks && (
           <LoadingScreen CustomIcon="spinner" CustomText="Selecting track..." />
-        ) : (
-          <Stack horizontal fill>
-            <Stack.Item grow={1}>
-              <Stack vertical fill>
-                <Section
-                  title="Tape Info"
-                  buttons={
-                    <Button fluid icon="eject" onClick={() => act('eject')}>
-                      Eject
-                    </Button>
-                  }
-                >
-                  <LabeledList>
-                    <LabeledList.Item label="Tape Author">
-                      {cassette?.author || 'Unknown'}
-                    </LabeledList.Item>
-                    <LabeledList.Item label="Description">
-                      {cassette?.desc || 'No description'}
-                    </LabeledList.Item>
-                    <LabeledList.Item label="Total Tracks">
-                      {songs.length}
-                    </LabeledList.Item>
-                    <LabeledList.Item label="Total Duration">
-                      {songs.length
-                        ? formatTime(
-                            songs.reduce((sum, s) => sum + s.length, 0),
-                            'default',
-                          )
-                        : 'N/A'}
-                    </LabeledList.Item>
-                  </LabeledList>
-                </Section>
-                <Section
-                  fill
-                  scrollable
-                  title={`Track list - Side ${side != null ? (side ? 'A' : 'B') : '?'}`}
-                >
-                  {songs && songs.length ? (
-                    <AvailableTracks songs={songs} currentSong={currentSong} />
-                  ) : (
-                    <Box color="bad">
-                      {cassette ? 'No songs on this side.' : 'No tape inserted'}
-                    </Box>
-                  )}
-                </Section>
-              </Stack>
-            </Stack.Item>
-            <Stack.Item grow={1}>
-              <Section title="Currently Playing" fill>
-                <Controls data={data} />
-              </Section>
-            </Stack.Item>
-          </Stack>
         )}
+        <Stack horizontal fill>
+          <Stack.Item grow={1}>
+            <Stack vertical fill>
+              <Section
+                title="Tape Info"
+                buttons={
+                  <Button fluid icon="eject" onClick={() => act('eject')}>
+                    Eject
+                  </Button>
+                }
+              >
+                <LabeledList>
+                  <LabeledList.Item label="Tape Author">
+                    {cassette?.author || 'Unknown'}
+                  </LabeledList.Item>
+                  <LabeledList.Item label="Description">
+                    {cassette?.desc || 'No description'}
+                  </LabeledList.Item>
+                  <LabeledList.Item label="Total Tracks">
+                    {songs.length}
+                  </LabeledList.Item>
+                  <LabeledList.Item label="Total Duration">
+                    {songs.length
+                      ? formatTime(
+                          songs.reduce((sum, s) => sum + s.length, 0),
+                          'default',
+                        )
+                      : 'N/A'}
+                  </LabeledList.Item>
+                </LabeledList>
+              </Section>
+              <Section
+                fill
+                scrollable
+                title={`Track list - Side ${side !== null ? (side ? 'A' : 'B') : '?'}`}
+              >
+                {songs?.length ? (
+                  <AvailableTracks songs={songs} currentSong={currentSong} />
+                ) : (
+                  <Box color="bad">
+                    {cassette ? 'No songs on this side.' : 'No tape inserted'}
+                  </Box>
+                )}
+              </Section>
+            </Stack>
+          </Stack.Item>
+          <Stack.Item grow={1}>
+            <Section title="Currently Playing" fill>
+              <Controls data={data} />
+            </Section>
+          </Stack.Item>
+        </Stack>
       </Window.Content>
     </Window>
   );
