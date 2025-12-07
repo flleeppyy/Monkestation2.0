@@ -289,3 +289,6 @@ GLOBAL_LIST_INIT(testing_global_profiler, list("_PROFILE_NAME" = "Global"))
 
 /proc/log_floxy(text, list/data)
 	logger.Log(LOG_CATEGORY_FLOXY, text, data)
+
+/proc/log_music(text, list/data)
+	logger.Log(LOG_CATEGORY_MUSIC, text, data)

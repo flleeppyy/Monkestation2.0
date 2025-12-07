@@ -23,6 +23,9 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	density = TRUE
 	move_resist = MOVE_FORCE_OVERPOWERING
 
+	processing_flags = START_PROCESSING_MANUALLY
+	subsystem_type = /datum/controller/subsystem/processing/fastprocess // to try to keep it as seamless as possible when the song ends
+
 	var/is_ejecting = FALSE
 	var/broadcasting = FALSE
 	/// Are we currently switching tracks?
@@ -59,11 +62,11 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	inserted_tape = null
 	playing = null
 	if(GLOB.dj_booth == src)
+		GLOB.dj_booth = null
 		for(var/mob/listener as anything in GLOB.music_listeners)
 			if(QDELETED(listener))
 				continue
 			listener.client?.tgui_panel?.stop_music()
-		GLOB.dj_booth = null
 	return ..()
 
 /obj/machinery/dj_station/add_context(atom/source, list/context, obj/item/held_item, mob/user)
@@ -74,6 +77,17 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 
 	if(inserted_tape)
 		context[SCREENTIP_CONTEXT_CTRL_LMB] = "Eject Tape"
+
+/obj/machinery/dj_station/process()
+	if(!playing?.duration || !broadcasting || !song_start_time)
+		return PROCESS_KILL
+	if(REALTIMEOFDAY > (song_start_time + (playing.duration * 1 SECONDS)))
+		end_processing() // doing this instead of PROCESS_KILL because i think there's a possibility of this sleeping?
+		log_music("Song \"[playing.name]\" from [inserted_tape.name] ([inserted_tape.cassette_data?.id || "no cassette id"]) finished playing at [AREACOORD(src)]")
+		PLAY_CASSETTE_SOUND(SFX_DJSTATION_STOP)
+		broadcasting = FALSE
+		song_start_time = 0
+		SStgui.update_uis(src)
 
 /obj/machinery/dj_station/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
 	if(!istype(tool, /obj/item/cassette_tape))
@@ -122,17 +136,18 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 		balloon_alert(user, "no tape inserted!")
 		return
 	is_ejecting = TRUE
+	balloon_alert(user, "ejecting tape...")
 	PLAY_CASSETTE_SOUND(SFX_DJSTATION_OPENTAKEOUTANDCLOSE)
 	if (!do_after(user, 1.5 SECONDS, src))
 		is_ejecting = FALSE
 		return
 	inserted_tape.forceMove(drop_location())
 	is_ejecting = FALSE
-	if(user)
-		balloon_alert(user, "tape ejected")
-		user.put_in_hands(inserted_tape)
-		inserted_tape = null
-		update_static_data_for_all_viewers()
+	log_music("[key_name(user)] ejected [inserted_tape.name] ([inserted_tape.cassette_data?.id || "no cassette id"]) at [AREACOORD(src)]")
+	balloon_alert(user, "tape ejected")
+	user.put_in_hands(inserted_tape)
+	inserted_tape = null
+	update_static_data_for_all_viewers()
 
 /obj/machinery/dj_station/click_ctrl(mob/user)
 	if(!can_interact(user))
@@ -202,25 +217,28 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 			return TRUE
 		if("play")
 			. = TRUE
-			PLAY_CASSETTE_SOUND(SFX_DJSTATION_PLAY)
 			if(!playing || !music_endpoint)
 				balloon_alert(user, "no track set!")
 				return
+			PLAY_CASSETTE_SOUND(SFX_DJSTATION_PLAY)
 			song_start_time = REALTIMEOFDAY
 			broadcasting = TRUE
 			INVOKE_ASYNC(src, PROC_REF(play_to_all_listeners))
 			SStgui.update_uis(src)
+			log_music("[key_name(user)] began playing the track \"[playing.name]\" from [inserted_tape.name] ([inserted_tape.cassette_data?.id || "no cassette id"]) at [AREACOORD(src)]")
+			begin_processing()
 		if("stop")
 			. = TRUE
-			PLAY_CASSETTE_SOUND(SFX_DJSTATION_STOP)
 			if(!playing || !broadcasting)
 				balloon_alert(user, "not playing!")
 				return
+			end_processing()
 			PLAY_CASSETTE_SOUND(SFX_DJSTATION_STOP)
 			broadcasting = FALSE
 			song_start_time = 0
 			INVOKE_ASYNC(src, PROC_REF(stop_for_all_listeners))
 			SStgui.update_uis(src)
+			log_music("[key_name(user)] stopped playing song \"[playing.name]\" from [inserted_tape.name] ([inserted_tape.cassette_data?.id || "no cassette id"]) at [AREACOORD(src)]")
 		if("set_track")
 			. = TRUE
 			if(switching_tracks)
@@ -234,8 +252,9 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				balloon_alert(user, "no cassette tape inserted!")
 				return
 
-			// switch(inserted_tape.cassette_data.status)
-			// 	if (CASSETTE_STATUS_UNAPPROVED)
+			if(inserted_tape.cassette_data?.status != CASSETTE_STATUS_APPROVED)
+				balloon_alert(user, "cannot play bootleg tapes!")
+				return
 
 			// Are both sides blank
 			if(!length(inserted_tape.cassette_data?.front?.songs) || !length(inserted_tape.cassette_data?.back?.songs))
@@ -258,6 +277,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				PLAY_CASSETTE_SOUND(SFX_DJSTATION_STOP)
 				balloon_alert(user, "already on that track!")
 				return
+			log_music("[key_name(user)] switched the track to \"[found_track.name]\" from [inserted_tape.name] ([inserted_tape.cassette_data?.id || "no cassette id"]) at [AREACOORD(src)]")
 			switching_tracks = TRUE
 			if(broadcasting)
 				broadcasting = FALSE

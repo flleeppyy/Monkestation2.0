@@ -62,3 +62,6 @@
 
 /datum/log_category/floxy
 	category = LOG_CATEGORY_FLOXY
+
+/datum/log_category/music
+	category = LOG_CATEGORY_MUSIC
