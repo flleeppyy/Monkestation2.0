@@ -131,7 +131,7 @@
 								var/item_string = "null"
 
 								try
-									if(item == null)
+									if(isnull(item))
 										item_string = "null"
 									else if(isnum(item))
 										item_string = "[item]"
