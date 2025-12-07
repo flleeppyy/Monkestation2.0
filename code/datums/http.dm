@@ -113,7 +113,7 @@
 		var/list/comments = comment
 		if (length(comments))
 			. += " ("
-			for (var/i = 1; i <= length(comments); i++)
+			for (var/i = 1 to length(comments))
 				. += "[comments[i]]"
 				if (i == length(comments))
 					. += ")"
