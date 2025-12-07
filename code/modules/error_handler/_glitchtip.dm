@@ -126,7 +126,7 @@
 							var/max_list_items = 20 // Prevent too long contents
 							var/items_to_show = min(length(L), max_list_items)
 
-							for(var/j = 1; j <= items_to_show; j++)
+							for(var/j = 1 to items_to_show)
 								var/datum/item = L[j]
 								var/item_string = "null"
 
