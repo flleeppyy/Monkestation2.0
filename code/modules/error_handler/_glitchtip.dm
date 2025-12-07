@@ -99,7 +99,7 @@
 
 				// Not so sanely convert argument to string representation
 				try
-					if(arg_value == null)
+					if(isnull(arg_value))
 						arg_string = "null"
 					else if(isnum(arg_value))
 						arg_string = "[arg_value]"
