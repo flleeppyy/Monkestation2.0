@@ -93,7 +93,7 @@
 
 		// Add procedure arguments
 		if(p.args && length(p.args))
-			for(var/i = 1; i <= length(p.args); i++)
+			for(var/i = 1 to length(p.args))
 				var/datum/arg_value = p.args[i]
 				var/arg_string = "null"
 
