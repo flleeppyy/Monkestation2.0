@@ -4,9 +4,9 @@
 /proc/send_to_glitchtip(exception/E, list/extra_data = null)
 	#ifndef SPACEMAN_DMM
 	#ifndef OPENDREAM
-	if(!CONFIG_GET(string/glitchtip_dsn))
-		return
 	var/glitchtip_dsn = CONFIG_GET(string/glitchtip_dsn)
+	if(!glitchtip_dsn)
+		return
 
 	// parse DSN to get the key, host and project id
 	// Format: https://key@host/project_id
