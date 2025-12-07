@@ -183,8 +183,8 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	if(cassette)
 		var/datum/cassette_side/side = cassette.get_side()
 		.["cassette"] = list(
-			"name" = cassette.name,
-			"desc" = cassette.desc,
+			"name" = html_decode(cassette.name),
+			"desc" = html_decode(cassette.desc),
 			"author" = cassette.author?.name,
 			"design" = side?.design || /datum/cassette_side::design,
 			"songs" = list(),
