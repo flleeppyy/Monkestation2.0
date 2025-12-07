@@ -2,8 +2,7 @@
 // Configuration options are in entries/general.dm
 
 /proc/send_to_glitchtip(exception/E, list/extra_data = null)
-	#ifndef SPACEMAN_DMM
-	#ifndef OPENDREAM
+	#if !defined(SPACEMAN_DMM) && !defined(OPENDREAM)
 	var/glitchtip_dsn = CONFIG_GET(string/glitchtip_dsn)
 	if(!glitchtip_dsn)
 		return
@@ -223,7 +222,6 @@
 	event_data["fingerprint"] = list("[E.file]:[E.line]", E.name)
 
 	send_glitchtip_request(event_data, host, project_id, key)
-	#endif
 	#endif
 
 /proc/send_glitchtip_request(list/event_data, host, project_id, key)
