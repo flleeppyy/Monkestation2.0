@@ -1,11 +1,3 @@
-#warn TODO: walkmen
-GLOBAL_LIST_INIT(parsed_audio, list())
-
-GLOBAL_LIST_INIT(youtube_exempt, list(
-	"walkman" = list(),
-	"dj-station" = list()
-))
-
 #define sound_to(target, sound) target << (sound)
 #define NEXT_SONG_USE_TIMER (5 SECONDS)
 /obj/item/device/walkman
@@ -43,6 +35,10 @@ GLOBAL_LIST_INIT(youtube_exempt, list(
 	var/current_song_duration = 0
 	///cooldown used by the next song to stop overlapping sounds between url based songs and normal ones
 	COOLDOWN_DECLARE(next_song_use)
+
+/obj/item/device/walkman/Initialize(mapload)
+	..()
+	return INITIALIZE_HINT_QDEL // just for now
 
 /*
 /obj/item/device/walkman/Initialize(mapload)
