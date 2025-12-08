@@ -42,6 +42,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	var/datum/looping_sound/cassette_track_switch/switch_sound
 
 	COOLDOWN_DECLARE(next_song_timer)
+	COOLDOWN_DECLARE(fake_loading_time)
 
 /obj/machinery/dj_station/Initialize(mapload)
 	. = ..()
@@ -288,8 +289,19 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				sleep(0.2 SECONDS)
 			switch_sound.start()
 			SStgui.update_uis(src)
+			COOLDOWN_START(src, fake_loading_time, 3 SECONDS)
 			var/list/info = SSfloxy.download_and_wait(found_track.url, timeout = 30 SECONDS, discard_failed = TRUE)
 			testing(fieldset_block("info for [html_encode(found_track.url)]", html_encode(json_encode(info, JSON_PRETTY_PRINT)), "boxed_message purple_box"))
+			// fake loading time in case there's already a download cached and it returns immediately
+			if(!COOLDOWN_FINISHED(src, fake_loading_time))
+				// waow that was fast, are you failed,
+				if(info["status"] == FLOXY_STATUS_FAILED)
+					SSfloxy.delete_media(info["id"], hard = TRUE, force = TRUE)
+					info = SSfloxy.download_and_wait(found_track.url, timeout = 30 SECONDS, discard_failed = TRUE)
+				else
+					var/remaining = rand(4, 8) SECONDS - COOLDOWN_TIMELEFT(src, fake_loading_time)
+					testing("waiting extra [remaining] seconds to simulate loading time")
+					sleep(remaining)
 			if(info)
 				playing = found_track
 				if(length(info["endpoints"]))
@@ -297,6 +309,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				else
 					log_floxy("Floxy did not return a music endpoint for [found_track.url]")
 					stack_trace("Floxy did not return a music endpoint for [found_track.url]")
+					balloon_alert(user, "the loader mechanism malfunctioned!")
 				var/list/metadata = info["metadata"]
 				if(playing.duration <= 0 && metadata?["duration"])
 					playing.duration = metadata["duration"]
@@ -304,6 +317,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 				playing = null
 				music_endpoint = null
 				song_start_time = 0
+				balloon_alert(user, "it got stuck! try again?")
 				INVOKE_ASYNC(src, PROC_REF(stop_for_all_listeners))
 			switching_tracks = FALSE
 			SStgui.update_uis(src)

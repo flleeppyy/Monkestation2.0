@@ -126,6 +126,24 @@ SUBSYSTEM_DEF(floxy)
 		log_floxy("Queued [url] (ID: [id])")
 	return response
 
+/datum/controller/subsystem/floxy/proc/delete_media(id, force = FALSE, hard = FALSE)
+	if(!id)
+		CRASH("No ID passed to SSfloxy.delete_media")
+	renew_if_needed()
+	var/list/params = list()
+	if(force)
+		params["force"] = "true"
+	if(hard)
+		params["hard"] = "true"
+	var/datum/http_response/response = http_basicasync("api/media/[id]?[list2params(params)]", method = RUSTG_HTTP_METHOD_DELETE, just_response = TRUE)
+	if(!response)
+		return FALSE
+	pending_ids -= id
+	completed_ids -= id
+	cached_metadata -= id
+	log_floxy("Deleted media ID: [id]")
+	return TRUE
+
 /datum/controller/subsystem/floxy/proc/fetch_media_metadata(url) as /list
 	if(!url)
 		CRASH("No URL passed to SSfloxy.fetch_media_metadata")
@@ -194,7 +212,7 @@ SUBSYSTEM_DEF(floxy)
 	else
 		auth_expiry = null
 
-/datum/controller/subsystem/floxy/proc/http_basicasync(path, list/body, method = RUSTG_HTTP_METHOD_POST, decode_json = TRUE, timeout = 10 SECONDS, auth = TRUE)
+/datum/controller/subsystem/floxy/proc/http_basicasync(path, list/body, method = RUSTG_HTTP_METHOD_POST, decode_json = TRUE, timeout = 10 SECONDS, auth = TRUE, just_response = FALSE)
 	var/list/headers = default_headers
 	if(auth)
 		headers = default_headers.Copy()
@@ -213,5 +231,7 @@ SUBSYSTEM_DEF(floxy)
 		CRASH("Floxy response errored: status code [response.status_code]")
 	else if(decode_json)
 		return json_decode(response.body)
+	else if(just_response)
+		return response
 	else
 		return response.body

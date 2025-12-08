@@ -106,9 +106,9 @@ class Controls extends Component<{ data: Data }> {
   async fetchThumbnail() {
     const token = ++this.fetchToken;
     const { current_song: current_songId } = this.props.data;
-    if (!current_songId) return;
+    if (current_songId == null) return this.setState({ fetchThumbnail: null });
     const current_song = getSong(current_songId, this.props.data.cassette);
-    if (!current_song?.url) return;
+    if (!current_song?.url) return this.setState({ fetchThumbnail: null });
     const thumb = await getThumbnailUrl(current_song.url);
     if (token === this.fetchToken) {
       this.setState({ thumbnailUrl: thumb });
@@ -125,9 +125,11 @@ class Controls extends Component<{ data: Data }> {
     } = this.props.data;
     const cassette = this.props.data?.cassette;
 
-    const { thumbnailUrl } = this.state;
-
     const current_song = getSong(current_songId, cassette);
+
+    if (current_song == null) this.setState({ fetchThumbnail: null });
+
+    const { thumbnailUrl } = this.state;
 
     return (
       <Stack fill vertical>
