@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-import { classes, pureComponentHooks } from 'common/react';
+import { BooleanLike, classes, pureComponentHooks } from 'common/react';
 import { InfernoNode } from 'inferno';
 import { BoxProps, computeBoxClassName, computeBoxProps } from './Box';
 
@@ -13,7 +13,7 @@ const FA_OUTLINE_REGEX = /-o$/;
 type IconPropsUnique = {
   name: string;
   size?: number;
-  spin?: boolean;
+  spin?: BooleanLike;
   className?: string;
   rotation?: number;
   style?: string | Record<string, string>;
@@ -56,7 +56,7 @@ export const Icon = (props: IconProps) => {
       iconClass += 'fa-';
     }
     iconClass += faName;
-    if (spin) {
+    if (!!spin) {
       iconClass += ' fa-spin';
     }
   }

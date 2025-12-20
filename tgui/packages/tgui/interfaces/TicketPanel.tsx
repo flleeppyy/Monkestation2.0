@@ -186,7 +186,7 @@ export class TicketPanel extends Component<{}, TicketPanelState> {
     }
   }
 
-  toggleAutoscroll = () => {
+  handleToggleAutoScroll = () => {
     this.setState((prev) => ({ autoscroll: !prev.autoscroll }));
   };
 
@@ -291,7 +291,7 @@ export class TicketPanel extends Component<{}, TicketPanelState> {
                         <Button
                           icon={this.state?.autoscroll ? 'lock' : 'unlock'}
                           selected={this.state?.autoscroll}
-                          onClick={this.toggleAutoscroll}
+                          onClick={this.handleToggleAutoScroll}
                           tooltip="Toggle autoscroll"
                         />
                       }
@@ -307,7 +307,7 @@ export class TicketPanel extends Component<{}, TicketPanelState> {
                 </Stack>
               </Stack.Item>
               <Stack.Item width="40%">
-                <TicketMessages ticket={data} title="Message" />
+                <TicketMessages title="Message" />
               </Stack.Item>
             </Stack>
           </Window.Content>
@@ -317,7 +317,7 @@ export class TicketPanel extends Component<{}, TicketPanelState> {
     return (
       <Window title="Ticket Viewer" width={700} height={700} resizable>
         <Window.Content scrollable>
-          <TicketMessages title={data.name} ticket={data} showTicketLog />
+          <TicketMessages title={data.name} showTicketLog />
         </Window.Content>
       </Window>
     );
@@ -325,7 +325,6 @@ export class TicketPanel extends Component<{}, TicketPanelState> {
 }
 
 interface TicketMessagesProps {
-  ticket: TicketData;
   title: string;
   showTicketLog?: boolean;
 }
@@ -341,13 +340,13 @@ export class TicketMessages extends Component<
 > {
   textareaRef = createRef<HTMLTextAreaElement>();
   act = useBackend().act;
+  state = {
+    message: '',
+    lastTyping: 0,
+  };
 
   constructor(props: TicketMessagesProps) {
     super(props);
-    this.state = {
-      message: '',
-      lastTyping: 0,
-    };
   }
 
   handleInput = (_e: Event, value: string) => {
@@ -357,7 +356,7 @@ export class TicketMessages extends Component<
       return;
     }
 
-    if (!this.state!.lastTyping || now - this.state!.lastTyping >= 500) {
+    if (!this.state.lastTyping || now - this.state.lastTyping >= 500) {
       this.act('typing');
       this.setState({ lastTyping: now });
     }
@@ -444,7 +443,7 @@ export class TicketMessages extends Component<
                 Send Message
               </Button>
               {!!typing?.length &&
-                (!!ticket.is_admin ? (
+                (ticket.is_admin ? (
                   <span>
                     {(typing as string[]).join(', ')}{' '}
                     {typing.length > 1 ? 'are typing' : 'is typing'}

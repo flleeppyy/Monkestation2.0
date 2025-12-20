@@ -8,7 +8,7 @@ import { BooleanLike, classes, pureComponentHooks } from 'common/react';
 import { Component, InfernoNode, RefObject, createRef } from 'inferno';
 import { KEY_ENTER, KEY_ESCAPE, KEY_SPACE } from 'common/keycodes';
 import { createLogger } from '../logging';
-import { Box, BoxProps } from './Box';
+import { Box, BoxProps, computeBoxClassName } from './Box';
 import { Icon } from './Icon';
 import { Tooltip } from './Tooltip';
 import { Placement } from '@popperjs/core';
@@ -63,7 +63,7 @@ export const Button = (props: BoxProps & ButtonProps) => {
     children,
     onclick,
     onClick,
-    multiLine,
+    verticalAlignContent,
     ...rest
   } = props;
   const hasContent = !!(content || children);
@@ -93,11 +93,15 @@ export const Button = (props: BoxProps & ButtonProps) => {
         circular && 'Button--circular',
         compact && 'Button--compact',
         iconRight && 'Button--iconRight',
-        multiLine && 'Button--multiLine',
+        verticalAlignContent && 'Button--flex',
+        verticalAlignContent && fluid && 'Button--flex--fluid',
+        verticalAlignContent &&
+          'Button--verticalAlignContent--' + verticalAlignContent,
         color && typeof color === 'string'
-          ? 'Button--color--' + color + (translucent ? '--translucent' : '')
-          : 'Button--color--default' + (translucent ? '--translucent' : ''),
+          ? 'Button--color--' + color
+          : 'Button--color--default',
         className,
+        computeBoxClassName(rest),
       ])}
       tabIndex={!disabled && '0'}
       color={textColor}
