@@ -6,120 +6,160 @@
  */
 
 import { classes } from 'common/react';
-import { Component, createRef } from 'inferno';
-import { Box } from './Box';
+import { Component, createRef, RefObject } from 'inferno';
+import { Box, BoxProps } from './Box';
 import { toInputValue } from './Input';
 import { KEY_ENTER, KEY_ESCAPE, KEY_TAB } from 'common/keycodes';
 
-export class TextArea extends Component {
-  constructor(props) {
+/* ---------- Types ---------- */
+
+export interface TextAreaProps {
+  value?: string;
+  displayedValue?: string;
+  placeholder?: string;
+  maxLength?: number;
+  resize?: CSSStyleDeclaration['resize'];
+  scrollbar?: boolean;
+  noborder?: boolean;
+  fluid?: boolean;
+  nowrap?: boolean;
+  autoFocus?: boolean;
+  autoSelect?: boolean;
+  selfClear?: boolean;
+  dontUseTabForIndent?: boolean;
+  innerRef?: RefObject<HTMLTextAreaElement>;
+
+  onInput?: (e: KeyboardEvent, value: string) => void;
+  onChange?: (e: Event, value: string) => void;
+  onKeyDown?: (e: KeyboardEvent, value: string) => void;
+  onKeyPress?: (e: KeyboardEvent, value: string) => void;
+  onKey?: (e: KeyboardEvent, value: string) => void;
+  onEnter?: (e: KeyboardEvent, value: string) => void;
+  onEscape?: (e: KeyboardEvent) => void;
+  onFocus?: (e: FocusEvent) => void;
+  onBlur?: (e: FocusEvent) => void;
+
+  className?: string;
+  style?: Record<string, any>;
+  textareaStyle?: Record<string, any>;
+}
+
+interface TextAreaState {
+  editing: boolean;
+  scrolledAmount: number;
+}
+
+/* ---------- Component ---------- */
+
+export class TextArea extends Component<
+  TextAreaProps & BoxProps,
+  TextAreaState
+> {
+  textareaRef: RefObject<HTMLTextAreaElement>;
+  handleOnInput: (e: Event) => void;
+  handleOnChange: (e: Event) => void;
+  handleKeyPress: (e: KeyboardEvent) => void;
+  handleKeyDown: (e: KeyboardEvent) => void;
+  handleFocus: (_e: FocusEvent) => void;
+  handleBlur: (e: FocusEvent) => void;
+  handleScroll: (e) => void;
+  state: TextAreaState = {
+    editing: false,
+    scrolledAmount: 0,
+  };
+
+  constructor(props: TextAreaProps) {
     super(props);
-    this.textareaRef = props.innerRef || createRef();
+
+    this.textareaRef = props.innerRef || createRef<HTMLTextAreaElement>();
     this.state = {
       editing: false,
       scrolledAmount: 0,
     };
     const { dontUseTabForIndent = false } = props;
-    this.handleOnInput = (e) => {
-      const { editing } = this.state;
+
+    this.handleOnInput = (e: KeyboardEvent) => {
       const { onInput } = this.props;
-      if (!editing) {
-        this.setEditing(true);
-      }
-      if (onInput) {
-        onInput(e, e.target.value);
-      }
+      const target = e.target as HTMLTextAreaElement;
+
+      if (!this.state?.editing) this.setEditing(true);
+      onInput?.(e, target.value);
     };
-    this.handleOnChange = (e) => {
-      const { editing } = this.state;
+
+    this.handleOnChange = (e: KeyboardEvent) => {
       const { onChange } = this.props;
-      if (editing) {
-        this.setEditing(false);
-      }
-      if (onChange) {
-        onChange(e, e.target.value);
-      }
+      const target = e.target as HTMLTextAreaElement;
+
+      if (this.state?.editing) this.setEditing(false);
+      onChange?.(e, target.value);
     };
-    this.handleKeyPress = (e) => {
-      const { editing } = this.state;
+
+    this.handleKeyPress = (e: KeyboardEvent) => {
       const { onKeyPress } = this.props;
-      if (!editing) {
-        this.setEditing(true);
-      }
-      if (onKeyPress) {
-        onKeyPress(e, e.target.value);
-      }
+      const target = e.target as HTMLTextAreaElement;
+
+      if (!this.state?.editing) this.setEditing(true);
+      onKeyPress?.(e, target.value);
     };
-    this.handleKeyDown = (e) => {
-      const { editing } = this.state;
-      const { onChange, onInput, onEnter, onKey } = this.props;
+
+    this.handleKeyDown = (e: KeyboardEvent) => {
+      const { onChange, onInput, onEnter, onKey, selfClear } = this.props;
+      const target = e.target as HTMLTextAreaElement;
+
       if (e.keyCode === KEY_ENTER) {
         this.setEditing(false);
-        if (onChange) {
-          onChange(e, e.target.value);
-        }
-        if (onInput) {
-          onInput(e, e.target.value);
-        }
-        if (onEnter) {
-          onEnter(e, e.target.value);
-        }
-        if (this.props.selfClear) {
-          e.target.value = '';
-          e.target.blur();
+        onChange?.(e, target.value);
+        onInput?.(e, target.value);
+        onEnter?.(e, target.value);
+
+        if (selfClear) {
+          target.value = '';
+          target.blur();
         }
         return;
       }
       if (e.keyCode === KEY_ESCAPE) {
-        if (this.props.onEscape) {
-          this.props.onEscape(e);
-        }
+        this.props.onEscape?.(e);
         this.setEditing(false);
-        if (this.props.selfClear) {
-          e.target.value = '';
+
+        if (selfClear) {
+          target.value = '';
         } else {
-          e.target.value = toInputValue(this.props.value);
-          e.target.blur();
+          target.value = toInputValue(this.props.value);
+          target.blur();
         }
         return;
       }
-      if (!editing) {
-        this.setEditing(true);
-      }
+
+      if (!this.state?.editing) this.setEditing(true);
       // Custom key handler
-      if (onKey) {
-        onKey(e, e.target.value);
-      }
-      if (!dontUseTabForIndent) {
-        const keyCode = e.keyCode || e.which;
-        if (keyCode === KEY_TAB) {
-          e.preventDefault();
-          const { value, selectionStart, selectionEnd } = e.target;
-          e.target.value =
-            value.substring(0, selectionStart) +
-            '\t' +
-            value.substring(selectionEnd);
-          e.target.selectionEnd = selectionStart + 1;
-          if (onInput) {
-            onInput(e, e.target.value);
-          }
-        }
+      onKey?.(e, target.value);
+
+      if (!dontUseTabForIndent && e.keyCode === KEY_TAB) {
+        e.preventDefault();
+        const { value, selectionStart, selectionEnd } = target;
+
+        target.value =
+          value.substring(0, selectionStart!) +
+          '\t' +
+          value.substring(selectionEnd!);
+
+        target.selectionEnd = (selectionStart ?? 0) + 1;
+        onInput?.(e, target.value);
       }
     };
-    this.handleFocus = (e) => {
-      const { editing } = this.state;
-      if (!editing) {
-        this.setEditing(true);
-      }
+
+    this.handleFocus = (_e: FocusEvent) => {
+      if (!this.state?.editing) this.setEditing(true);
     };
-    this.handleBlur = (e) => {
-      const { editing } = this.state;
+
+    this.handleBlur = (e: FocusEvent) => {
       const { onChange } = this.props;
-      if (editing) {
+      const target = e.target as HTMLTextAreaElement;
+
+      if (this.state?.editing) {
         this.setEditing(false);
-        if (onChange) {
-          onChange(e, e.target.value);
-        }
+        onChange?.(e, target.value);
       }
     };
     this.handleScroll = (e) => {
@@ -141,10 +181,10 @@ export class TextArea extends Component {
     }
     if (this.props.autoFocus || this.props.autoSelect) {
       setTimeout(() => {
-        input.focus();
+        input?.focus();
 
         if (this.props.autoSelect) {
-          input.select();
+          input?.select();
         }
       }, 1);
     }
@@ -163,8 +203,8 @@ export class TextArea extends Component {
     this.setState({ editing });
   }
 
-  getValue() {
-    return this.textareaRef.current && this.textareaRef.current.value;
+  getValue(): string | undefined {
+    return this.textareaRef.current?.value;
   }
 
   render() {
@@ -184,6 +224,7 @@ export class TextArea extends Component {
       noborder,
       displayedValue,
       resize,
+      textareaStyle,
       ...boxProps
     } = this.props;
     // Box props
@@ -237,11 +278,13 @@ export class TextArea extends Component {
           maxLength={maxLength}
           style={{
             color: displayedValue ? 'rgba(0, 0, 0, 0)' : 'inherit',
-            resize: resize,
-            position: resize !== 'none' && 'relative',
+            // i cant find the fucking type for css propertys so fuck you
+            resize: resize as 'none',
+            position: resize !== 'none' ? 'relative' : undefined,
             'min-height':
-              resize !== 'none' ? rest?.height || 'inherit' : 'inherit',
+              resize !== 'none' ? String(rest?.height || 'inherit') : 'inherit',
             height: resize !== 'none' ? 'max-content' : 'inherit',
+            ...textareaStyle,
           }}
         />
       </Box>
