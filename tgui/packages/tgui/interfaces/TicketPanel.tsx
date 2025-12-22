@@ -462,7 +462,7 @@ export class TicketMessages extends Component<
                 <Box key={related.id} m="2px">
                   <a
                     href="#"
-                    onclick={(e) => {
+                    onClick={(e) => {
                       e.preventDefault();
                       this.act('open_ticket', {
                         ticket_id: related.id,

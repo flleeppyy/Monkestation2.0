@@ -56,7 +56,7 @@ export const Icon = (props: IconProps) => {
       iconClass += 'fa-';
     }
     iconClass += faName;
-    if (!!spin) {
+    if (spin) {
       iconClass += ' fa-spin';
     }
   }

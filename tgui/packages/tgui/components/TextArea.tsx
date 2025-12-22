@@ -52,7 +52,7 @@ interface TextAreaState {
 /* ---------- Component ---------- */
 
 export class TextArea extends Component<
-  TextAreaProps & BoxProps,
+  BoxProps & TextAreaProps,
   TextAreaState
 > {
   textareaRef: RefObject<HTMLTextAreaElement>;
