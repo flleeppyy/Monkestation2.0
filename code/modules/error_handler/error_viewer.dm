@@ -25,7 +25,7 @@ GLOBAL_DATUM(error_cache, /datum/error_viewer/error_cache)
 	var/name = ""
 
 /datum/error_viewer/proc/browse_to(client/user, html)
-	var/datum/browser/browser = new(user.mob, "error_viewer", null, 600, 400)
+	var/datum/browser/browser = new(user.mob, "error_viewer", null, 850, 650)
 	browser.set_content(html)
 	browser.add_head_content({"
 	<style>
@@ -43,6 +43,38 @@ GLOBAL_DATUM(error_cache, /datum/error_viewer/error_cache)
 		display: inline-block;
 	}
 	</style>
+	<script>
+		document.addEventListener("DOMContentLoaded", (ev) => {
+		const clicky = document.getElementById("open_external_log_viewer");
+
+		clicky.addEventListener("click", (ev) => {
+			(async () => {
+				const start = Date.now();
+				const timeoutMs = 5000;
+				const pollIntervalMs = 250;
+				while (Date.now() - start < timeoutMs) {
+					try {
+						const head = await fetch("current_log.json", { method: "HEAD" });
+						if (head.ok) {
+							const res = await fetch("current_log.json");
+							const logtext = await res.text();
+
+							const params = new URLSearchParams()
+							params.set("log_text", logtext);
+							params.set("log_name", '[get_log_file_path()]');
+							params.set("ignore_non_runtimes", true);
+							params.set("organized", true);
+							window.location.href = `https://monkestation.github.io/ss13-log-viewer/#${params.toString()}`;
+							return;
+						}
+					} catch (_) {	}
+					await new Promise(r => setTimeout(r, pollIntervalMs));
+				}
+				console.error("Timed out waiting for current_log.json");
+			})()
+		});
+	})
+	</script>
 	"})
 	browser.open()
 
@@ -54,7 +86,9 @@ GLOBAL_DATUM(error_cache, /datum/error_viewer/error_cache)
 	if (istype(back_to))
 		. += back_to.make_link("<b>&lt;&lt;&lt;</b>", null, linear)
 
-	. += "[make_link("Refresh")]<br><br>"
+	. += "[make_link("Refresh")]"
+	. += "<a id='open_external_log_viewer' href='byond://?_src_=holder;[HrefToken()];viewruntime=[REF(src)];viewruntime_externallog=1'>Enhanced Log Viewer (Does not persist logs)</a><br><br>"
+	. += "<br><br>"
 
 /datum/error_viewer/proc/show_to(user, datum/error_viewer/back_to, linear)
 	// Specific to each child type
@@ -72,6 +106,15 @@ GLOBAL_DATUM(error_cache, /datum/error_viewer/error_cache)
 		back_to_param += ";viewruntime_linear=1"
 
 	return "<a href='byond://?_src_=holder;[HrefToken()];viewruntime=[REF(src)][back_to_param]'>[linktext]</a>"
+
+/datum/error_viewer/proc/get_log_file_path(client/user)
+	return "[GLOB.log_directory]/[get_category_logfile(/datum/log_category/debug_runtime)].log.json"
+
+/datum/error_viewer/proc/send_log_file(client/user)
+	if(!user)
+		return
+	var/log_file = file(get_log_file_path())
+	DIRECT_OUTPUT(user, browse_rsc(log_file, "current_log.json"))
 
 /datum/error_viewer/error_cache
 	var/list/errors = list()
