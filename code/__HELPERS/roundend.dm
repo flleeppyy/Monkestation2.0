@@ -1024,6 +1024,8 @@ GLOBAL_LIST_INIT(round_end_images, world.file2list("data/image_urls.txt")) // MO
 			break
 	if(!completed)
 		return
+	// Note: The math for this is complicated, but if we have an average crew member size of like, 50, each crew member will get
+	// 1000. The 2nd paremter rounds up to that nearest number
 	var/amount = CEILING(50000 / total_crew, 50) // nice even number
 	for(var/ckey in joined_player_list)
 		LAZYINITLIST(rewards[ckey])
