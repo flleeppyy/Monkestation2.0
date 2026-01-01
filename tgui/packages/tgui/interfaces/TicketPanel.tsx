@@ -10,8 +10,8 @@ import {
 } from '../components';
 import { Window } from '../layouts';
 import { decodeHtmlEntities } from 'common/string';
-import { createRef } from 'inferno';
-import { Component } from 'inferno';
+import { createRef } from 'react';
+import { Component } from 'react';
 import { BooleanLike } from 'common/react';
 import { KEY_BACKSPACE } from 'common/keycodes';
 
@@ -200,10 +200,9 @@ export class TicketPanel extends Component<{}, TicketPanelState> {
           title={`Ticket #${data.id} - ${data.name} - ${data.is_resolved ? 'Resolved' : 'Unresolved'}`}
           width={1200}
           height={700}
-          resizable
         >
           <Window.Content>
-            <Stack horizontal fill>
+            <Stack direction="row" fill>
               <Stack.Item width="60%">
                 <Stack vertical fill>
                   <Stack.Item>
@@ -215,9 +214,9 @@ export class TicketPanel extends Component<{}, TicketPanelState> {
                             position="bottom"
                           >
                             <span
-                              class={State2Color(data.state)}
+                              className={State2Color(data.state)}
                               style={{
-                                'text-decoration': 'underline',
+                                textDecoration: 'underline',
                               }}
                             >
                               Ticket #{data.id}
@@ -286,7 +285,8 @@ export class TicketPanel extends Component<{}, TicketPanelState> {
                       title="Event log"
                       fill
                       scrollable
-                      scrollableRef={this.logRef}
+                      // scrollableRef={this.logRef}
+                      ref={this.logRef}
                       buttons={
                         <Button
                           icon={this.state?.autoscroll ? 'lock' : 'unlock'}
@@ -315,7 +315,7 @@ export class TicketPanel extends Component<{}, TicketPanelState> {
       );
     }
     return (
-      <Window title="Ticket Viewer" width={700} height={700} resizable>
+      <Window title="Ticket Viewer" width={700} height={700}>
         <Window.Content scrollable>
           <TicketMessages title={data.name} showTicketLog />
         </Window.Content>
@@ -425,11 +425,13 @@ export class TicketMessages extends Component<
               ))}
             <TextArea
               fluid
-              innerRef={this.textareaRef}
+              ref={this.textareaRef}
               value={message}
               placeholder="Enter your message (Ctrl+Enter to send)"
               className="replybox"
-              resize="vertical"
+              style={{
+                resize: 'vertical',
+              }}
               onInput={this.handleInput}
               height="350px"
             />

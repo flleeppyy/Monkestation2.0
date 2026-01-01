@@ -1,4 +1,4 @@
-import { Component } from 'inferno';
+import { useEffect, useRef, useState } from 'react';
 import ace from 'ace-builds';
 
 import 'ace-builds/src-noconflict/theme-tomorrow_night';
@@ -6,7 +6,8 @@ import 'ace-builds/src-noconflict/mode-lua';
 import 'ace-builds/src-noconflict/mode-text';
 import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/ext-statusbar';
-import { BoxProps, computeBoxClassName, computeBoxProps } from '../Box';
+import { BoxProps } from '../Box';
+import { computeBoxClassName, computeBoxProps } from 'tgui-core/ui';
 import { classes } from 'common/react';
 import { NTSLMode } from './languages/ntsl';
 
@@ -17,108 +18,60 @@ type Props = {
   onChange?: (value: string) => void;
 } & BoxProps;
 
-export class AceEditor extends Component<Props> {
-  private container?: HTMLDivElement;
-  private editor?: ace.Ace.Editor;
-  private suppressChange = false;
-  private debounceTimer: number | null = null;
+const DEBOUNCE_TIME = 500;
 
-  private lastSentValue = '';
-  private lastRemoteValue?: string;
-  private isSynced = true;
-  private hasReceivedInitialValue = false;
+export function AceEditor(props: Props) {
+  const { value, language, readOnly, onChange, ...rest } = props;
 
-  componentDidMount() {
-    this.editor = ace.edit(this.container!);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const editorRef = useRef<ace.Ace.Editor | null>(null);
+  const suppressChangeRef = useRef(false);
+  const debounceTimerRef = useRef<number | null>(null);
 
-    this.editor.setTheme('ace/theme/tomorrow_night');
-    if (this.props.language === 'ntsl') {
-      this.editor.session.setMode(new NTSLMode());
-    } else {
-      this.editor.session.setMode(`ace/mode/${this.props.language ?? 'text'}`);
-    }
+  const lastSentValueRef = useRef('');
+  const lastRemoteValueRef = useRef<string | undefined>(undefined);
+  const hasReceivedInitialValueRef = useRef(false);
 
-    this.editor.setOptions({
-      fontSize: '12px',
-      showPrintMargin: false,
-      wrap: true,
-      readOnly: this.props.readOnly ?? false,
-      enableLiveAutocompletion: true,
-      enableBasicAutocompletion: true,
-    });
+  const [isSynced, setIsSynced] = useState(true);
 
-    if (this.props.value !== undefined) {
-      this.suppressChange = true;
-      this.editor.setValue(this.props.value);
-      this.lastSentValue = this.props.value;
-      this.lastRemoteValue = this.props.value;
-      this.hasReceivedInitialValue = true;
-      this.suppressChange = false;
-    }
+  const sendCurrentValue = () => {
+    const editor = editorRef.current;
+    if (!editor) return false;
 
-    this.editor.session.on('change', () => {
-      if (this.suppressChange) return;
+    const current = editor.getValue();
+    if (current === lastSentValueRef.current) return false;
 
-      this.isSynced = false;
-      this.forceUpdate();
+    lastSentValueRef.current = current;
+    onChange?.(current);
 
-      if (this.debounceTimer !== null) clearTimeout(this.debounceTimer);
-      this.debounceTimer = window.setTimeout(() => {
-        this.debounceTimer = null;
-        this.sendCurrentValue();
-      }, 200);
-    });
-
-    this.editor.commands.addCommand({
-      name: 'save',
-      bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
-      exec: () => {
-        if (!this.editor) return;
-        if (this.debounceTimer !== null) {
-          clearTimeout(this.debounceTimer);
-          this.debounceTimer = null;
-        }
-        if (this.sendCurrentValue()) this.showSavedPopup();
-      },
-    });
-  }
-
-  sendCurrentValue(): boolean {
-    if (!this.editor) return false;
-    const value = this.editor.getValue();
-    if (value === this.lastSentValue) return false;
-
-    this.lastSentValue = value;
-    this.props.onChange?.(value);
-    // mark as dirty until server echoes back
-    this.isSynced = this.lastRemoteValue === value;
-    this.forceUpdate();
+    const synced = lastRemoteValueRef.current === current;
+    setIsSynced(synced);
     return true;
-  }
+  };
 
-  showSavedPopup(text = 'Saved') {
-    if (!this.editor) return;
+  const showSavedPopup = (text = 'Saved') => {
+    const editor = editorRef.current;
+    if (!editor) return;
 
-    const pos = this.editor.getCursorPosition();
-    const coords = this.editor.renderer.textToScreenCoordinates(
-      pos.row,
-      pos.column,
-    );
+    const pos = editor.getCursorPosition();
+    const coords = editor.renderer.textToScreenCoordinates(pos.row, pos.column);
 
     const popup = document.createElement('div');
     popup.textContent = text;
-    popup.style.position = 'fixed';
-    popup.style.left = `${coords.pageX + 8}px`;
-    popup.style.top = `${coords.pageY - 20}px`;
-    popup.style.padding = '2px 6px';
-    popup.style.fontSize = '11px';
-    popup.style.background = 'rgba(0, 0, 0, 0.85)';
-    popup.style.color = '#fff';
-    popup.style.borderRadius = '4px';
-    popup.style.pointerEvents = 'none';
-    popup.style.zIndex = '9999';
-    popup.style.opacity = '1';
-    popup.style.transition = 'opacity 150ms ease-out';
+    Object.assign(popup.style, {
+      position: 'fixed',
+      left: `${coords.pageX + 8}px`,
+      top: `${coords.pageY - 20}px`,
+      padding: '2px 6px',
+      fontSize: '11px',
+      background: 'rgba(0, 0, 0, 0.85)',
+      color: '#fff',
+      borderRadius: '4px',
+      pointerEvents: 'none',
+      zIndex: '9999',
+      opacity: '1',
+      transition: 'opacity 150ms ease-out',
+    });
 
     document.body.appendChild(popup);
 
@@ -126,76 +79,135 @@ export class AceEditor extends Component<Props> {
       popup.style.opacity = '0';
       setTimeout(() => popup.remove(), 150);
     }, 700);
-  }
+  };
 
-  componentDidUpdate(prev: Props) {
-    if (!this.editor) return;
+  useEffect(() => {
+    const editor = ace.edit(containerRef.current!);
+    editorRef.current = editor;
 
-    if (prev.language !== this.props.language) {
-      if (this.props.language === 'ntsl')
-        this.editor.session.setMode(new NTSLMode());
-      else
-        this.editor.session.setMode(
-          `ace/mode/${this.props.language ?? 'text'}`,
-        );
+    editor.setTheme('ace/theme/tomorrow_night');
+    if (language === 'ntsl') {
+      editor.session.setMode(new NTSLMode());
+    } else {
+      editor.session.setMode(`ace/mode/${language ?? 'text'}`);
     }
 
-    if (prev.readOnly !== this.props.readOnly) {
-      this.editor.setReadOnly(this.props.readOnly ?? false);
+    editor.setOptions({
+      fontSize: '12px',
+      showPrintMargin: false,
+      wrap: true,
+      readOnly: readOnly ?? false,
+      enableLiveAutocompletion: true,
+      enableBasicAutocompletion: true,
+    });
+
+    if (value !== undefined) {
+      suppressChangeRef.current = true;
+      editor.setValue(value);
+      lastSentValueRef.current = value;
+      lastRemoteValueRef.current = value;
+      hasReceivedInitialValueRef.current = true;
+      suppressChangeRef.current = false;
     }
 
-    if (
-      this.props.value !== undefined &&
-      this.props.value !== this.lastRemoteValue
-    ) {
-      const current = this.editor.getValue();
+    editor.session.on('change', () => {
+      if (suppressChangeRef.current) return;
 
-      if (!this.hasReceivedInitialValue || current !== this.props.value) {
-        this.suppressChange = true;
-        this.editor.setValue(this.props.value); // preserve cursor
-        this.lastSentValue = this.props.value;
-        this.suppressChange = false;
+      setIsSynced(false);
 
-        this.hasReceivedInitialValue = true;
+      if (debounceTimerRef.current !== null) {
+        clearTimeout(debounceTimerRef.current);
       }
 
-      this.lastRemoteValue = this.props.value;
-      this.isSynced = this.lastSentValue === this.lastRemoteValue;
-      this.forceUpdate();
+      debounceTimerRef.current = window.setTimeout(() => {
+        debounceTimerRef.current = null;
+        sendCurrentValue();
+      }, DEBOUNCE_TIME);
+    });
+
+    editor.commands.addCommand({
+      name: 'save',
+      bindKey: { win: 'Ctrl-S', mac: 'Command-S' },
+      exec: () => {
+        if (debounceTimerRef.current !== null) {
+          clearTimeout(debounceTimerRef.current);
+          debounceTimerRef.current = null;
+        }
+        if (sendCurrentValue()) showSavedPopup();
+      },
+    });
+
+    return () => {
+      if (debounceTimerRef.current !== null) {
+        clearTimeout(debounceTimerRef.current);
+      }
+      editor.destroy();
+      editorRef.current = null;
+    };
+  }, []);
+
+  // language change
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    if (language === 'ntsl') {
+      editor.session.setMode(new NTSLMode());
+    } else {
+      editor.session.setMode(`ace/mode/${language ?? 'text'}`);
     }
-  }
+  }, [language]);
 
-  componentWillUnmount() {
-    if (this.debounceTimer !== null) clearTimeout(this.debounceTimer);
-    this.editor?.destroy();
-    this.container = undefined;
-  }
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor) return;
 
-  render() {
-    const { onChange, language, value, ...rest } = this.props;
-    return (
+    editor.setReadOnly(readOnly ?? false);
+  }, [readOnly]);
+
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor || value === undefined) return;
+
+    if (value !== lastRemoteValueRef.current) {
+      const current = editor.getValue();
+
+      if (!hasReceivedInitialValueRef.current || current !== value) {
+        suppressChangeRef.current = true;
+        editor.setValue(value);
+        lastSentValueRef.current = value;
+        suppressChangeRef.current = false;
+        hasReceivedInitialValueRef.current = true;
+      }
+
+      lastRemoteValueRef.current = value;
+      setIsSynced(lastSentValueRef.current === value);
+    }
+  }, [value]);
+
+  return (
+    <>
       <div
         className={classes([computeBoxClassName(rest)])}
-        ref={(el) => (this.container = el!)}
+        ref={containerRef}
         style={{ width: '100%', height: '100%', position: 'relative' }}
         {...computeBoxProps(rest)}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '1em',
-            left: '1em',
-            width: '16px',
-            height: '16px',
-            'z-index': 4,
-            'border-radius': '50%',
-            'background-color': this.isSynced ? '#3fb950' : '#3b82f6',
-            'box-shadow': '0 0 4px rgba(0,0,0,0.6)',
-            'pointer-events': 'none',
-          }}
-          title={this.isSynced ? 'All changes saved' : 'Unsaved changes'}
-        />
-      </div>
-    );
-  }
+      ></div>
+      <div
+        title={isSynced ? 'All changes saved' : 'Unsaved changes'}
+        style={{
+          position: 'absolute',
+          bottom: '1em',
+          left: '1em',
+          width: '16px',
+          height: '16px',
+          zIndex: 4,
+          borderRadius: '50%',
+          backgroundColor: isSynced ? '#3fb950' : '#3b82f6',
+          boxShadow: '0 0 4px rgba(0,0,0,0.6)',
+          pointerEvents: 'none',
+        }}
+      />
+    </>
+  );
 }

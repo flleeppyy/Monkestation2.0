@@ -8465,10 +8465,10 @@ __metadata:
   resolution: "tgui@workspace:packages/tgui"
   dependencies:
     "@types/marked": "npm:^4.0.8"
-    ace-builds: "npm:^1.43.5"
     "@types/node": "npm:^25.0.3"
     "@types/react": "npm:^19.2.7"
     "@types/react-dom": "npm:^19.2.3"
+    ace-builds: "npm:^1.43.5"
     common: "workspace:*"
     csstype: "npm:^3.1.1"
     dateformat: "npm:^4.6.2"

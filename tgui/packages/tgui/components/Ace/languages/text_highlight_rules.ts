@@ -93,7 +93,7 @@ export class TextHighlightRules implements Ace.HighlightRules {
 
     const pushState = (currentState: string, stack: string[]): string => {
       if (currentState !== 'start' || stack.length)
-        stack.unshift(this.nextState!, currentState);
+        { stack.unshift(this.nextState!, currentState); }
       return this.nextState!;
     };
 
@@ -138,7 +138,7 @@ export class TextHighlightRules implements Ace.HighlightRules {
           for (const r in rule.rules) {
             if (rules[r]) {
               if ((rules[r] as any).push)
-                (rules[r] as any).push.apply(rules[r], rule.rules[r]);
+                { (rules[r] as any).push.apply(rules[r], rule.rules[r]); }
             } else {
               rules[r] = rule.rules[r];
             }
@@ -152,7 +152,7 @@ export class TextHighlightRules implements Ace.HighlightRules {
         if (includeName) {
           if (includeName === '$self') toInsert = rules['start'];
           else if (Array.isArray(includeName))
-            toInsert = (includeName as Rule['include']).map((x) => rules[x]);
+            { toInsert = (includeName as Rule['include']).map((x) => rules[x]); }
           else toInsert = rules[includeName];
         }
 
@@ -160,7 +160,7 @@ export class TextHighlightRules implements Ace.HighlightRules {
           const args: any[] = [i, 1, ...toInsert];
           state.splice.apply(state, args);
           // skip included rules since they are already processed
-          //i += args.length - 3;
+          // i += args.length - 3;
           i--;
         }
 
@@ -192,7 +192,7 @@ export class TextHighlightRules implements Ace.HighlightRules {
     Object.keys(map!).forEach((className) => {
       const a = map![className];
       const list = a.split(splitChar || '|');
-      for (let i = list.length; i--; ) {
+      for (let i = list.length; i--;) {
         let word = list[i];
         this.$keywordList.push(word);
         if (ignoreCase) word = word.toLowerCase();

@@ -41,7 +41,7 @@ export class NTSLHighlightRules extends TextHighlightRules {
 
         // Operators
         {
-          regex: /[\+\-\/\*\(\)\{\}\;\=\,\|\&\~\^\!\%\<\>]/,
+          regex: /[+-/*(){};=,|&~^!%<>]/,
           token: 'keyword.operator.ntsl',
         },
 
