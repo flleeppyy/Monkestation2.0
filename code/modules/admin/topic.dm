@@ -1367,7 +1367,9 @@
 		if(href_list["viewruntime_externallog"])
 			error_viewer.send_log_file(owner)
 			return
-
+		if(href_list["viewruntime_savelog"])
+			error_viewer.save_log(owner, href_list["viewruntime_savelog"])
+			return
 		if(href_list["viewruntime_backto"])
 			error_viewer.show_to(owner, locate(href_list["viewruntime_backto"]), href_list["viewruntime_linear"])
 		else
