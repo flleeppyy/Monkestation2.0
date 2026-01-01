@@ -1,4 +1,5 @@
-import { useBackend, useLocalState } from '../backend';
+import { BooleanLike } from 'common/react';
+import { sendAct, useBackend, useLocalState } from '../backend';
 import {
   Box,
   Button,
@@ -104,6 +105,7 @@ export const NTSLCoding = (props) => {
 const ScriptEditor = (props) => {
   const { act, data } = useBackend<Data>();
   const { stored_code, user_name } = data;
+
   return (
     <Box width="100%" height="100%">
       <AceEditor
