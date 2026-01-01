@@ -1,6 +1,6 @@
 import { Component, createRef } from 'react';
-import hljs from 'highlight.js/lib/core';
-import lua from 'highlight.js/lib/languages/lua';
+// import hljs from 'highlight.js/lib/core';
+// import lua from 'highlight.js/lib/languages/lua';
 import { useBackend, useLocalState } from '../../backend';
 import {
   Box,
@@ -22,8 +22,9 @@ import { Log } from './Log';
 import { TaskManager } from './TaskManager';
 import { LuaEditorData, LuaEditorModal } from './types';
 import { logger } from '../../logging';
+import { AceEditor } from '../../components/Ace/Editor';
 
-hljs.registerLanguage('lua', lua);
+// hljs.registerLanguage('lua', lua);
 
 interface LuaEditorState {
   showJumpToBottomButton: boolean;
@@ -250,7 +251,7 @@ export class LuaEditor extends Component<{}, LuaEditorState> {
                     <Section fill>
                       <Stack fill vertical>
                         <Stack.Item grow>
-                          <TextArea
+                          {/* <TextArea
                             fluid
                             width="100%"
                             height="100%"
@@ -271,7 +272,7 @@ export class LuaEditor extends Component<{}, LuaEditorState> {
                                 }}
                               />
                             }
-                            onDrop={async (event: DragEvent) => {
+                            onDrop={async (event) => {
                               if (event.dataTransfer?.files.length) {
                                 event.preventDefault();
                                 setScriptInput(
@@ -279,7 +280,24 @@ export class LuaEditor extends Component<{}, LuaEditorState> {
                                 );
                               }
                             }}
-                          />
+                          /> */}
+                          <AceEditor
+                            width="100%"
+                            height="100%"
+                            value={scriptInput}
+                            onDrop={async (event) => {
+                              if (event.dataTransfer?.files.length) {
+                                event.preventDefault();
+                                setScriptInput(
+                                  await event.dataTransfer.files[0].text(),
+                                );
+                              }
+                            }}
+                            language="lua"
+                            onChange={(value) => {
+                              setScriptInput(value);
+                            }}
+                          ></AceEditor>
                         </Stack.Item>
                         <Stack.Item>
                           <Button

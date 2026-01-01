@@ -16,12 +16,20 @@ type Props = {
   language?: 'lua' | 'text' | 'ntsl';
   readOnly?: boolean;
   onChange?: (value: string) => void;
+  debounceTime?: number;
 } & BoxProps;
 
-const DEBOUNCE_TIME = 500;
+const DEFAULT_DEBOUNCE_TIME = 500;
 
 export function AceEditor(props: Props) {
-  const { value, language, readOnly, onChange, ...rest } = props;
+  const {
+    value,
+    language,
+    readOnly,
+    debounceTime = DEFAULT_DEBOUNCE_TIME,
+    onChange,
+    ...rest
+  } = props;
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const editorRef = useRef<ace.Ace.Editor | null>(null);
@@ -99,6 +107,8 @@ export function AceEditor(props: Props) {
       readOnly: readOnly ?? false,
       enableLiveAutocompletion: true,
       enableBasicAutocompletion: true,
+      // TODO: change in the future once we switch to react-ace instead.
+      useWorker: false,
     });
 
     if (value !== undefined) {
@@ -122,7 +132,7 @@ export function AceEditor(props: Props) {
       debounceTimerRef.current = window.setTimeout(() => {
         debounceTimerRef.current = null;
         sendCurrentValue();
-      }, DEBOUNCE_TIME);
+      }, debounceTime);
     });
 
     editor.commands.addCommand({
@@ -186,7 +196,7 @@ export function AceEditor(props: Props) {
   }, [value]);
 
   return (
-    <>
+    <div>
       <div
         className={classes([computeBoxClassName(rest)])}
         ref={containerRef}
@@ -208,6 +218,6 @@ export function AceEditor(props: Props) {
           pointerEvents: 'none',
         }}
       />
-    </>
+    </div>
   );
 }

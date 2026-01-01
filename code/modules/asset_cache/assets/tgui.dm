@@ -3,8 +3,6 @@
 	assets = list(
 		"tgui.bundle.js" = file("tgui/public/tgui.bundle.js"),
 		"tgui.bundle.css" = file("tgui/public/tgui.bundle.css"),
-		// monaco editor
-		"editor.worker.js" = file("tgui/public/editor.worker.js"),
 	)
 	var/ready = FALSE
 
