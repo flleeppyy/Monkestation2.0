@@ -202,7 +202,7 @@ export function AceEditor(props: Props) {
         ref={containerRef}
         style={{ width: '100%', height: '100%', position: 'relative' }}
         {...computeBoxProps(rest)}
-      ></div>
+       />
       <div
         title={isSynced ? 'All changes saved' : 'Unsaved changes'}
         style={{
