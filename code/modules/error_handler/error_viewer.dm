@@ -102,7 +102,7 @@ GLOBAL_DATUM(error_cache, /datum/error_viewer/error_cache)
 	. += {"
 		<div style="display: flex; justify-content: space-between">
 			<div id="funky">
-			 	[istype(back_to) ? back_to.make_link("<b>&lt;&lt;&lt;</b>", null, linear) : ""]
+				[istype(back_to) ? back_to.make_link("<b>&lt;&lt;&lt;</b>", null, linear) : ""]
 				[make_link("Refresh")]
 				<a id='open_external_log_viewer' href='byond://?_src_=holder;[HrefToken()];viewruntime=[REF(src)];viewruntime_externallog=1'>Enhanced Log Viewer (Does not persist logs)</a>
 			</div>
