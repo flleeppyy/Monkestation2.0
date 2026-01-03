@@ -75,6 +75,7 @@ GLOBAL_DATUM(error_cache, /datum/error_viewer/error_cache)
 								"ignore_non_runtimes",
 								"organized",
 								"enable_back_button",
+								"disable_upload",
 							];
 							for (const option of options)
 							  params.set(option, true);
