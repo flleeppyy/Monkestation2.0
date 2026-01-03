@@ -141,6 +141,7 @@ GLOBAL_DATUM(error_cache, /datum/error_viewer/error_cache)
 		return
 	var/log_file = file("[get_log_file_path()].json")
 	var/unique_filename = "current_log-[random_string(4, GLOB.hex_characters)].json"
+	to_chat(user, span_notice("Sending log file '[get_log_file_path()].json'..."))
 	DIRECT_OUTPUT(user, browse_rsc(log_file, unique_filename))
 	DIRECT_OUTPUT(user, output(unique_filename, "error_viewer.browser:set_log"))
 
