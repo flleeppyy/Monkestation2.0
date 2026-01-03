@@ -54,7 +54,7 @@ GLOBAL_DATUM(error_cache, /datum/error_viewer/error_cache)
 		clicky.addEventListener("click", (ev) => {
 			(async () => {
 				const start = Date.now();
-				const timeoutMs = 5000;
+				const timeoutMs = 10_000;
 				const pollIntervalMs = 250;
 				while (Date.now() - start < timeoutMs) {
 					try {
