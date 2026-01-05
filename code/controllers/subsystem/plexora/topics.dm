@@ -121,6 +121,10 @@
 	name = "meow"
 	item_path = /obj/item/fish_analyzer
 
+/datum/store_item/uwuuwu1_sdklfhaiwufhasuikldfhikluhli
+	name = "meow"
+	item_path = /obj/item/fish_analyzer
+
 
 /datum/store_item/uwuuwu/bweh1
 /datum/store_item/uwuuwu/bweh2
