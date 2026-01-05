@@ -115,7 +115,7 @@
 
 /datum/world_topic/plx_getloadoutrewards
 	keyword = "PLX_getloadoutrewards"
-	require_comms_key = TRUE
+	require_comms_key = FALSE
 
 /datum/world_topic/plx_getloadoutrewards/Run(list/input)
 	var/list/typelist = list()
