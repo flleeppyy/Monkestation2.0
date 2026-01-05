@@ -117,6 +117,10 @@
 	keyword = "PLX_getloadoutrewards"
 	require_comms_key = FALSE
 
+/datum/store_item/uwuuwu
+	name = "meow"
+	item_path = /obj/item/fish_analyzer
+
 /datum/store_item/uwuuwu/bweh1
 /datum/store_item/uwuuwu/bweh2
 /datum/store_item/uwuuwu/bweh3
