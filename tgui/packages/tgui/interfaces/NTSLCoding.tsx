@@ -230,7 +230,7 @@ const ServerList = (props) => {
         <Input
           mb={1}
           value={network}
-          onChange={(_, value) =>
+          onChange={(value) =>
             act('set_network', {
               new_network: value,
             })
