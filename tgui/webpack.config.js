@@ -28,6 +28,11 @@ module.exports = (env = {}, argv) => {
   // Temporary
   const mode = "development";
   env.NODE_ENV = "development";
+  const bench = env.TGUI_BENCH;
+
+  /**
+   * @type {import('webpack').Configuration}
+   */
   const config = {
     mode: mode === 'production' ? 'production' : 'development',
     context: path.resolve(__dirname),
