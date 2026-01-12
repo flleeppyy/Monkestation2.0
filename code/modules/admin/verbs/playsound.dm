@@ -154,6 +154,16 @@ ADMIN_VERB_CUSTOM_EXIST_CHECK(play_web_sound)
 	return !!CONFIG_GET(string/floxy_url)
 
 ADMIN_VERB(play_web_sound, R_SOUND, FALSE, "Play Internet Sound", "Play a given internet sound to all players.", ADMIN_CATEGORY_FUN)
+	if(GLOB.dj_booth?.broadcasting)
+		var/prompt = tgui_alert(
+			user,
+			message = "The on-station cassette player is currently broadcasting, please be courteous of others when playing music over them, as they have a cooldown, and admins do not.\
+			Do you still want to play a sound?",
+			title = "Heads up!",
+			buttons = list("Yes", "No")
+		)
+		if(prompt != "Yes")
+			return
 	var/web_sound_input = tgui_input_text(user, "Enter content URL (supported sites only, leave blank to stop playing)", "Play Internet Sound", null)
 
 	if(length(web_sound_input))

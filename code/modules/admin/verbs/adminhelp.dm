@@ -284,7 +284,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 /datum/admin_help/proc/format_embed_discord(message)
 	var/datum/discord_embed/embed = new()
 	embed.title = "Ticket #[id]"
-	embed.description = @"[Join Server!](http://play.monkestation.com:3121)"
+	embed.description = CONFIG_GET(string/roundend_webhook_description)
 	embed.author = key_name(initiator_ckey)
 	var/round_state
 	switch(SSticker.current_state)

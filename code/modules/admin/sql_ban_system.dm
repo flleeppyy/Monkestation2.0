@@ -790,12 +790,15 @@
 	unban_panel.set_content(jointext(output, ""))
 	unban_panel.open()
 
-/datum/admins/proc/unban(ban_id, player_key, player_ip, player_cid, role, page, admin_key)
+/datum/admins/proc/unban(ban_id, player_key, player_ip, player_cid, role, page, admin_key, mirror_edit = FALSE)
 	if(!check_rights(R_BAN))
 		return
 	if(!SSdbcore.Connect())
 		to_chat(usr, span_danger("Failed to establish database connection."), confidential = TRUE)
 		return
+	var/mirror_unban = FALSE
+	if(tgui_alert(usr, "Do you want to unban matching bans related to this one?", "Mirror Unban", list("Yes", "No")) == "Yes")
+		mirror_unban = TRUE
 	var/target = ban_target_string(player_key, player_ip, player_cid)
 	// Make sure the only input that doesn't early return is "Yes" - This is the only situation in which we want the unban to proceed.
 	if(tgui_alert(usr, "Please confirm unban of [target] from [role].", "Unban confirmation", list("Yes", "No")) != "Yes")
@@ -803,6 +806,25 @@
 	var/kn = key_name(usr)
 	var/kna = key_name_admin(usr)
 	var/change_message = "[usr.client.key] unbanned [target] from [role] on [SQLtime()] during round #[GLOB.round_id]<hr>"
+
+	var/list/arguments = list(
+		"ban_id" = ban_id,
+		"admin_ckey" = usr.client.ckey,
+		"admin_ip" = usr.client.address,
+		"admin_cid" = usr.client.computer_id,
+		"round_id" = GLOB.round_id,
+		"change_message" = change_message,
+	)
+
+	var/where
+	if(mirror_unban)
+		var/list/wherelist = list("bantime = (SELECT bantime FROM [format_table_name("ban")] WHERE id = :ban_id)")
+		wherelist += "ckey = :ckey"
+		arguments["ckey"] = ckey(player_key)
+		where = wherelist.Join(" AND ")
+	else
+		where = "id = :ban_id"
+
 	var/datum/db_query/query_unban = SSdbcore.NewQuery({"
 		UPDATE [format_table_name("ban")] SET
 			unbanned_datetime = NOW(),
@@ -811,8 +833,8 @@
 			unbanned_computerid = :admin_cid,
 			unbanned_round_id = :round_id,
 			edits = CONCAT(IFNULL(edits,''), :change_message)
-		WHERE id = :ban_id
-	"}, list("ban_id" = ban_id, "admin_ckey" = usr.client.ckey, "admin_ip" = usr.client.address, "admin_cid" = usr.client.computer_id, "round_id" = GLOB.round_id, "change_message" = change_message))
+		WHERE [where]
+	"}, arguments)
 	if(!query_unban.warn_execute())
 		qdel(query_unban)
 		return

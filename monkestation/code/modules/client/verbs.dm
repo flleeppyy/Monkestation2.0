@@ -5,6 +5,7 @@ GLOBAL_LIST(antag_token_config)
 #define ADMIN_REJECT_ANTAG_TOKEN(user) "(<A href='byond://?_src_=holder;[HrefToken(forceGlobal = TRUE)];reject_antag_token=[REF(user)]'>No</a>)"
 #define ADMIN_APPROVE_TOKEN_EVENT(user) "(<A href='byond://?_src_=holder;[HrefToken(forceGlobal = TRUE)];approve_token_event=[REF(user)]'>Yes</a>)"
 #define ADMIN_REJECT_TOKEN_EVENT(user) "(<A href='byond://?_src_=holder;[HrefToken(forceGlobal = TRUE)];reject_token_event=[REF(user)]'>No</a>)"
+#define ADMIN_CHECK_ANTAGS(user) "<a href='byond://?_src_=holder;[HrefToken(forceGlobal = TRUE)];check_antagonist=1'>Check antagonists</a>"
 /client/verb/spend_antag_tokens()
 	set category = "IC"
 	set name = "Spend Antag Tokens"
@@ -106,7 +107,7 @@ GLOBAL_LIST(antag_token_config)
 			to_chat(src, span_boldnotice("Your request has been sent."))
 			logger.Log(LOG_CATEGORY_META, "[usr] has requested to use their event tokens to trigger [selected_event.event_name]([selected_event]).")
 			send_formatted_admin_message( \
-				"[ADMIN_LOOKUPFLW(src)] has requested use their event tokens to trigger [selected_event.event_name]([selected_event]).\n\n[ADMIN_APPROVE_TOKEN_EVENT(src)] | [ADMIN_REJECT_TOKEN_EVENT(src)]",	\
+				"[ADMIN_LOOKUPFLW(src)] has requested use their event tokens to trigger [selected_event.event_name]([selected_event]).\n\n[ADMIN_APPROVE_TOKEN_EVENT(src)] | [ADMIN_REJECT_TOKEN_EVENT(src)] | [ADMIN_CHECK_ANTAGS(src)]",	\
 				title = "Event Token Request", \
 				color_override = "orange" \
 			)
@@ -176,3 +177,4 @@ GLOBAL_LIST(antag_token_config)
 #undef ADMIN_REJECT_ANTAG_TOKEN
 #undef ADMIN_APPROVE_TOKEN_EVENT
 #undef ADMIN_REJECT_TOKEN_EVENT
+#undef ADMIN_CHECK_ANTAGS
