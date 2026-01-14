@@ -92,7 +92,7 @@ GLOBAL_PROTECT(href_token)
 		GLOB.protected_admins[target] = src
 	try_give_profiling()
 	try_give_devtools()
-	if (force_active || (rank_flags() & R_AUTOADMIN))
+	if (force_active || ((rank_flags() & R_AUTOADMIN) || usr.client.prefs.get_preference(/datum/preference/toggle/autoadmin)))
 		activate()
 	else
 		deactivate()
