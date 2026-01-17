@@ -541,7 +541,7 @@
 
 	usr = mockadmin
 
-	to_chat(client, span_boldannounce("You have been kicked from the server by [key_name_admin(usr)]. Reason: [reason]"))
+	to_chat_immediate(client, span_boldannounce("You have been kicked from the server by [key_name_admin(usr)]. Reason: [reason]"))
 
 	qdel(client)
 
