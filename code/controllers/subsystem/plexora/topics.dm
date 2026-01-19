@@ -521,6 +521,7 @@
 /datum/world_topic/plx_kick
 	keyword = "PLX_kick"
 	require_comms_key = TRUE
+
 /datum/world_topic/plx_kick/Run(list/input)
 	var/ckey = input["ckey"]
 	var/reason = input["reason"]
@@ -531,7 +532,7 @@
 
 	var/client/client = disambiguate_client(ckey)
 
-	if (QDELETED(client))
+	if(QDELETED(client))
 		return list("error" = PLEXORA_ERROR_CLIENTNOTEXIST)
 
 	// Mock admin
@@ -539,14 +540,10 @@
 		key = kicker,
 	)
 
-	usr = mockadmin
-
-	to_chat_immediate(client, span_boldannounce("You have been kicked from the server by [key_name_admin(usr)]. Reason: [reason]"))
-
+	to_chat(client, span_boldannounce("You have been kicked from the server by [key_name_admin(mockadmin)]. Reason: [reason]"))
 	qdel(client)
-
-	log_admin("Discord: [key_name(usr)] has kicked [key_name(client)] from the server! Reason: [reason]")
-	message_admins("Discord: [key_name_admin(usr)] has kicked [key_name_admin(client)] from the server! Reason: [reason]")
+	log_admin("Discord: [key_name(mockadmin)] has kicked [key_name(client)] from the server! Reason: [reason]")
+	message_admins("Discord: [key_name_admin(mockadmin)] has kicked [key_name_admin(client)] from the server! Reason: [reason]")
 
 /datum/world_topic/plx_ticketaction
 	keyword = "PLX_ticketaction"
