@@ -13,7 +13,6 @@ import { decodeHtmlEntities } from 'common/string';
 import { createRef, useCallback, useEffect, useRef, useState } from 'react';
 import { Component } from 'react';
 import { BooleanLike } from 'common/react';
-import { KEY_BACKSPACE } from 'common/keycodes';
 
 const getButtons = (data: TicketData) => [
   [
@@ -231,21 +230,19 @@ export class TicketPanel extends Component<{}, TicketPanelState> {
                           <span>
                             Assigned Admin:{' '}
                             <b>
-                              <>
-                                {data.admin || 'Unassigned'}{' '}
-                                <Button
-                                  m="1.0px"
-                                  icon={
-                                    data.admin ? 'folder-closed' : 'folder-open'
-                                  }
-                                  onClick={() =>
-                                    act(data.admin ? 'Unclaim' : 'Claim')
-                                  }
-                                  lineHeight="1.3em"
-                                >
-                                  {data.admin ? 'Unclaim' : 'Claim'}
-                                </Button>
-                              </>
+                              {data.admin || 'Unassigned'}{' '}
+                              <Button
+                                m="1.0px"
+                                icon={
+                                  data.admin ? 'folder-closed' : 'folder-open'
+                                }
+                                onClick={() =>
+                                  act(data.admin ? 'Unclaim' : 'Claim')
+                                }
+                                lineHeight="1.3em"
+                              >
+                                {data.admin ? 'Unclaim' : 'Claim'}
+                              </Button>
                             </b>
                             <br />
                             {data.opened_at}
