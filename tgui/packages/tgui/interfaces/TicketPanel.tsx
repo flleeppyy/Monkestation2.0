@@ -1,18 +1,19 @@
 import { useBackend } from '../backend';
-import {
-  Section,
-  Button,
-  Box,
-  Flex,
-  TextArea,
-  Stack,
-  Tooltip,
-} from '../components';
+import { Section, Button, Box, Flex, Stack, Tooltip } from '../components';
 import { Window } from '../layouts';
 import { decodeHtmlEntities } from 'common/string';
-import { createRef, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  createRef,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Component } from 'react';
 import { BooleanLike } from 'common/react';
+import { computeBoxClassName, computeBoxProps } from 'tgui-core/ui';
+import { classes } from 'tgui-core/react';
 
 const getButtons = (data: TicketData) => [
   [
@@ -421,7 +422,7 @@ export function TicketMessages(props: TicketMessagesProps) {
               </Box>
             ))}
 
-          <TextArea
+          <TguiRawTextArea
             fluid
             ref={textareaRef}
             placeholder="Enter your message (Ctrl+Enter to send)"
@@ -475,3 +476,44 @@ export function TicketMessages(props: TicketMessagesProps) {
     </Stack>
   );
 }
+
+type Props = Partial<{
+  /** Don't use tab for indent */
+  dontUseTabForIndent: boolean;
+  /**
+   * Provides a Record with key: markupChar entries which can be used for
+   * ctrl + key combinations to surround a selected text with the markup
+   * character
+   */
+  userMarkup: Record<string, string>;
+}> &
+  TextInputProps<HTMLTextAreaElement>;
+
+export const TguiRawTextArea = forwardRef<HTMLTextAreaElement, Props>(
+  // eslint-disable-next-line prefer-arrow-callback
+  function TguiRawTextArea(props, ref) {
+    const { className, fluid, monospace, disabled, ...rest } = props;
+
+    const boxProps = computeBoxProps(rest);
+
+    const clsx = classes([
+      'Input',
+      'TextArea',
+      fluid && 'Input--fluid',
+      monospace && 'Input--monospace',
+      disabled && 'Input--disabled',
+      computeBoxClassName<HTMLTextAreaElement>(rest),
+      className,
+    ]);
+
+    return (
+      <textarea
+        {...boxProps}
+        {...rest}
+        ref={ref}
+        className={clsx}
+        autoComplete="off"
+      />
+    );
+  },
+);
