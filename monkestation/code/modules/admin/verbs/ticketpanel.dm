@@ -77,13 +77,14 @@
 	.["id"] = id
 	.["ourckey"] = user.ckey
 	.["admin"] = hide_key(handling_admin_ckey, is_admin)
-	if(is_admin)
-		.["currently_typing"] = currently_typing.Copy()
-	else
-		for(var/ckey in currently_typing)
-			if(istext(ckey) && ckey != initiator_ckey)
-				.["currently_typing"] = "Administrator"
-				break
+	.["currently_typing"] = null
+
+	if (length(currently_typing))
+		if (is_admin)
+			.["currently_typing"] = currently_typing.Copy()
+		else
+			.["currently_typing"] = "Administrator"
+
 	.["state"] = state
 	.["initiator_key_name"] = initiator_key_name
 	.["opened_at"] = "Opened at: [gameTimestamp(wtime = opened_at)] ([gameTimestamp(wtime = world.time - opened_at, legend = TRUE)] ago)"
@@ -92,11 +93,12 @@
 	var/datum/mind/initiator_mind = initiator_mob && initiator_mob.mind
 	.["has_client"] = !!initiator
 	.["has_mob"] = !!initiator_mob
-	.["role"] = initiator_mind && initiator_mind.assigned_role
+	.["role"] = initiator_mind && list("type" = initiator_mind.assigned_role, "title" = initiator_mind.assigned_role.title)
 	.["antag"] = initiator_mind && initiator_mind.special_role
 
 	var/location = ""
 	if(is_admin && initiator_mob)
+		.["can_popup"] = !isnewplayer(initiator_mob)
 		var/turf/T = get_turf(initiator.mob)
 		location = "([initiator.mob.loc == T ? "" : "in [initiator.mob.loc] at "][T.x], [T.y], [T.z]"
 		if(isturf(T))
@@ -243,6 +245,9 @@
 			return
 		if("Claim")
 			ticket.Claim(TRUE)
+			return
+		if("Unclaim")
+			ticket.Unclaim(TRUE)
 			return
 		if("TP")
 			if(!ticket.initiator)

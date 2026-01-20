@@ -9,7 +9,6 @@ import {
   Section,
   Stack,
   Tabs,
-  TextArea,
   ProgressBar,
   MenuBar,
 } from '../../components';
@@ -297,7 +296,7 @@ export class LuaEditor extends Component<{}, LuaEditorState> {
                             onChange={(value) => {
                               setScriptInput(value);
                             }}
-                          ></AceEditor>
+                           />
                         </Stack.Item>
                         <Stack.Item>
                           <Button

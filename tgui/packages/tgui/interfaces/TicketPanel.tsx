@@ -1,21 +1,38 @@
+/* eslint-disable react/jsx-max-depth */
 import { useBackend } from '../backend';
-import { Section, Button, Box, Flex, Stack, Tooltip } from '../components';
+import {
+  Section,
+  Button,
+  Box,
+  Flex,
+  Stack,
+  Tooltip,
+  TextArea,
+} from '../components';
 import { Window } from '../layouts';
 import { decodeHtmlEntities } from 'common/string';
 import {
-  createRef,
+  ComponentProps,
   forwardRef,
   useCallback,
   useEffect,
   useRef,
   useState,
 } from 'react';
-import { Component } from 'react';
 import { BooleanLike } from 'common/react';
 import { computeBoxClassName, computeBoxProps } from 'tgui-core/ui';
 import { classes } from 'tgui-core/react';
 
-const getButtons = (data: TicketData) => [
+type TicketButton = {
+  name: string;
+  act: string;
+  icon: string;
+  disabled?: boolean;
+  tooltip?: string;
+};
+const getButtons: (data: TicketData) => TicketButton[][] = (
+  data: TicketData,
+) => [
   [
     {
       name: '',
@@ -66,15 +83,14 @@ const getButtons = (data: TicketData) => [
       act: 'Notes',
       icon: 'paperclip',
     },
-    // {
-    //   name: 'Claim',
-    //   act: 'Claim',
-    //   icon: 'folder-open',
-    // },
     {
       name: 'Popup',
       act: 'popup',
       icon: 'window-restore',
+      disabled: !data.can_popup,
+      tooltip: !data.can_popup
+        ? "Can't popup, player is in the lobby."
+        : undefined,
     },
   ],
   [
@@ -108,7 +124,7 @@ const getButtons = (data: TicketData) => [
   ],
 ];
 
-const State2Color = (state) => {
+const State2Color = (state: TicketState) => {
   switch (state) {
     case TicketState.ACTIVE:
       return 'color-grey';
@@ -133,7 +149,10 @@ interface TicketData {
 
   has_client: BooleanLike;
   has_mob: BooleanLike;
-  role: string;
+  role: {
+    type: string;
+    title: string;
+  };
   antag: string | null;
   currently_typing: string[] | string;
 
@@ -143,6 +162,7 @@ interface TicketData {
     time: string;
     ckey: string;
   }>;
+  can_popup?: BooleanLike;
 
   related_tickets: {
     id: string;
@@ -162,53 +182,47 @@ const TicketStateString = {
   [TicketState.RESOLVED]: 'Resolved',
 };
 
-interface TicketPanelState {
-  autoscroll: boolean;
-}
+export function TicketPanel() {
+  const { data, act } = useBackend<TicketData>();
+  const logRef = useRef<HTMLDivElement>(null);
 
-export class TicketPanel extends Component<{}, TicketPanelState> {
-  logRef = createRef<HTMLDivElement>();
-  act = useBackend().act;
+  const [autoscroll, setAutoscroll] = useState(true);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      autoscroll: true,
-    };
-  }
+  useEffect(() => {
+    if (!autoscroll) return;
 
-  componentDidUpdate() {
-    if (!this.state?.autoscroll) return;
-
-    const el = this.logRef.current;
+    const el = logRef.current;
     if (el) {
       el.scrollTop = el.scrollHeight;
     }
-  }
+  });
 
-  handleToggleAutoScroll = () => {
-    this.setState((prev) => ({ autoscroll: !prev.autoscroll }));
+  const handleToggleAutoScroll = () => {
+    setAutoscroll((prev) => !prev);
   };
 
-  render() {
-    const { data, act } = useBackend<TicketData>();
-
-    if (data.is_admin) {
-      return (
-        <Window
-          theme="admintickets"
-          title={`Ticket #${data.id} - ${data.name} - ${data.is_resolved ? 'Resolved' : 'Unresolved'}`}
-          width={1200}
-          height={700}
-        >
-          <Window.Content>
-            <Stack direction="row" fill>
-              <Stack.Item width="60%">
-                <Stack vertical fill>
-                  <Stack.Item>
-                    <Section
-                      title={
-                        <>
+  if (data.is_admin) {
+    return (
+      <Window
+        theme="admintickets"
+        title={`Ticket #${data.id} - ${data.name} - ${data.is_resolved ? 'Resolved' : 'Unresolved'}`}
+        width={1200}
+        height={700}
+      >
+        <Window.Content>
+          <Stack direction="row" fill>
+            <Stack.Item width="60%">
+              <Stack vertical fill>
+                <Stack.Item>
+                  <Section
+                    title={
+                      <Stack
+                        style={{
+                          display: 'flex',
+                          width: '100%',
+                        }}
+                      >
+                        <Stack.Item>
                           <Tooltip
                             content={`Status: ${TicketStateString[data.state]}`}
                             position="bottom"
@@ -222,116 +236,125 @@ export class TicketPanel extends Component<{}, TicketPanelState> {
                               Ticket #{data.id}
                             </span>{' '}
                           </Tooltip>
+                        </Stack.Item>
+                        <Stack.Item
+                          style={{
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            flex: 1,
+                          }}
+                        >
                           - {data.initiator_key_name}: {data.name}
-                        </>
-                      }
-                    >
-                      <Stack vertical fill>
-                        <Stack.Item>
-                          <span>
-                            Assigned Admin:{' '}
-                            <b>
-                              {data.admin || 'Unassigned'}{' '}
-                              <Button
-                                m="1.0px"
-                                icon={
-                                  data.admin ? 'folder-closed' : 'folder-open'
-                                }
-                                onClick={() =>
-                                  act(data.admin ? 'Unclaim' : 'Claim')
-                                }
-                                lineHeight="1.3em"
-                              >
-                                {data.admin ? 'Unclaim' : 'Claim'}
-                              </Button>
-                            </b>
-                            <br />
-                            {data.opened_at}
-                          </span>
-                        </Stack.Item>
-                        <Stack.Item>
-                          Job: <b>{data.role}</b> <br />
-                          Antag: <b>{data.antag || 'No'}</b>
-                          <br />
-                          Location: <b>{data.location}</b>
-                        </Stack.Item>
-                        <Stack.Item>
-                          {getButtons(data).map((button_row, i) => (
-                            <Flex key={i} direction="row">
-                              {button_row.map((button) => (
-                                <Flex.Item key={button.act} grow={1}>
-                                  <Button
-                                    fluid
-                                    m="2.5px"
-                                    icon={button.icon}
-                                    disabled={button.disabled}
-                                    onClick={(
-                                      (val) => () =>
-                                        act(val)
-                                    )(button.act)}
-                                  >
-                                    {button.name}
-                                  </Button>
-                                </Flex.Item>
-                              ))}
-                            </Flex>
-                          ))}
                         </Stack.Item>
                       </Stack>
-                    </Section>
-                  </Stack.Item>
-                  <Stack.Item grow={1} height="100%">
-                    <Section
-                      title="Event log"
-                      fill
-                      scrollable
-                      // scrollableRef={this.logRef}
-                      ref={this.logRef}
-                      buttons={
-                        <Button
-                          icon={this.state?.autoscroll ? 'lock' : 'unlock'}
-                          selected={this.state?.autoscroll}
-                          onClick={this.handleToggleAutoScroll}
-                          tooltip="Toggle autoscroll"
-                        />
-                      }
-                    >
-                      {data.log.map((entry) => (
-                        <Box key={entry.time} m="2px">
-                          {entry.time} - <b>{entry.ckey}</b> -{' '}
-                          {decodeHtmlEntities(entry.text)}
-                        </Box>
-                      ))}
-                    </Section>
-                  </Stack.Item>
-                </Stack>
-              </Stack.Item>
-              <Stack.Item width="40%">
-                <TicketMessages title="Message" />
-              </Stack.Item>
-            </Stack>
-          </Window.Content>
-        </Window>
-      );
-    }
-    return (
-      <Window title="Ticket Viewer" width={700} height={700}>
-        <Window.Content scrollable>
-          <TicketMessages title={data.name} showTicketLog />
+                    }
+                  >
+                    <Stack vertical fill>
+                      <Stack.Item>
+                        <span>
+                          Assigned Admin:{' '}
+                          <b>
+                            {data.admin || 'Unassigned'}{' '}
+                            <Button
+                              m="1.0px"
+                              icon={
+                                data.admin ? 'folder-closed' : 'folder-open'
+                              }
+                              onClick={() =>
+                                act(data.admin ? 'Unclaim' : 'Claim')
+                              }
+                              lineHeight="1.3em"
+                            >
+                              {data.admin ? 'Unclaim' : 'Claim'}
+                            </Button>
+                          </b>
+                          <br />
+                          {data.opened_at}
+                        </span>
+                      </Stack.Item>
+                      <Stack.Item>
+                        Job:{' '}
+                        <b>
+                          {data.role?.title} ({data.role?.type})
+                        </b>{' '}
+                        <br />
+                        Antag: <b>{data.antag || 'No'}</b>
+                        <br />
+                        Location: <b>{data.location}</b>
+                      </Stack.Item>
+                      <Stack.Item>
+                        {getButtons(data).map((button_row, i) => (
+                          <Flex key={i} direction="row">
+                            {button_row.map((button) => (
+                              <Flex.Item key={button.act} grow={1}>
+                                <Button
+                                  fluid
+                                  m="2.5px"
+                                  icon={button.icon}
+                                  disabled={button.disabled}
+                                  onClick={(
+                                    (val) => () =>
+                                      act(val)
+                                  )(button.act)}
+                                  tooltip={button.tooltip}
+                                >
+                                  {button.name}
+                                </Button>
+                              </Flex.Item>
+                            ))}
+                          </Flex>
+                        ))}
+                      </Stack.Item>
+                    </Stack>
+                  </Section>
+                </Stack.Item>
+                <Stack.Item grow={1} height="100%">
+                  <Section
+                    title="Event log"
+                    fill
+                    scrollable
+                    // scrollableRef={this.logRef}
+                    ref={logRef}
+                    buttons={
+                      <Button
+                        icon={autoscroll ? 'lock' : 'unlock'}
+                        selected={autoscroll}
+                        onClick={handleToggleAutoScroll}
+                        tooltip="Toggle autoscroll"
+                      />
+                    }
+                  >
+                    {data.log.map((entry) => (
+                      <Box key={entry.time} m="2px">
+                        {entry.time} - <b>{entry.ckey}</b> -{' '}
+                        {decodeHtmlEntities(entry.text)}
+                      </Box>
+                    ))}
+                  </Section>
+                </Stack.Item>
+              </Stack>
+            </Stack.Item>
+            <Stack.Item width="40%">
+              <TicketMessages title="Message" />
+            </Stack.Item>
+          </Stack>
         </Window.Content>
       </Window>
     );
   }
+  return (
+    <Window title="Ticket Viewer" width={700} height={700}>
+      <Window.Content scrollable>
+        <TicketMessages title={data.name} showTicketLog />
+      </Window.Content>
+    </Window>
+  );
 }
 
 interface TicketMessagesProps {
   title: string;
   showTicketLog?: boolean;
-}
-
-interface TicketMessagesState {
-  message: string;
-  lastTyping: number;
 }
 
 export function TicketMessages(props: TicketMessagesProps) {
@@ -401,14 +424,23 @@ export function TicketMessages(props: TicketMessagesProps) {
     }
   }, [isTicketActive]);
 
-  const typing =
-    typeof ticket.currently_typing === 'string'
-      ? ticket.currently_typing
-      : ticket.currently_typing
-        ? Object.keys(ticket.currently_typing).filter(
-            (e) => e !== ticket.ourckey,
-          )
-        : [];
+  const typing = ticket.currently_typing;
+
+  function Typing() {
+    if (!typing) return null;
+
+    if (Array.isArray(typing)) {
+      const names = typing.join(', ');
+      const verb = typing.length > 1 ? 'are' : 'is';
+      return (
+        <span>
+          {names} {verb} typing…
+        </span>
+      );
+    } else {
+      return <span>{typing} is typing…</span>;
+    }
+  }
 
   return (
     <Stack vertical>
@@ -427,8 +459,10 @@ export function TicketMessages(props: TicketMessagesProps) {
             ref={textareaRef}
             placeholder="Enter your message (Ctrl+Enter to send)"
             className="replybox"
-            style={{ resize: 'vertical' }}
-            height="350px"
+            style={{
+              resize: 'vertical',
+              height: showTicketLog ? '100px' : '250px',
+            }}
           />
 
           <div>
@@ -440,15 +474,7 @@ export function TicketMessages(props: TicketMessagesProps) {
               Send Message
             </Button>
 
-            {!!typing?.length &&
-              (ticket.is_admin ? (
-                <span>
-                  {(typing as string[]).join(', ')}{' '}
-                  {typing.length > 1 ? 'are typing' : 'is typing'}...
-                </span>
-              ) : (
-                <span>An admin is typing...</span>
-              ))}
+            <Typing />
           </div>
         </Section>
       </Stack.Item>
@@ -477,19 +503,10 @@ export function TicketMessages(props: TicketMessagesProps) {
   );
 }
 
-type Props = Partial<{
-  /** Don't use tab for indent */
-  dontUseTabForIndent: boolean;
-  /**
-   * Provides a Record with key: markupChar entries which can be used for
-   * ctrl + key combinations to surround a selected text with the markup
-   * character
-   */
-  userMarkup: Record<string, string>;
-}> &
-  TextInputProps<HTMLTextAreaElement>;
-
-export const TguiRawTextArea = forwardRef<HTMLTextAreaElement, Props>(
+export const TguiRawTextArea = forwardRef<
+  HTMLTextAreaElement,
+  ComponentProps<typeof TextArea>
+>(
   // eslint-disable-next-line prefer-arrow-callback
   function TguiRawTextArea(props, ref) {
     const { className, fluid, monospace, disabled, ...rest } = props;
@@ -507,13 +524,7 @@ export const TguiRawTextArea = forwardRef<HTMLTextAreaElement, Props>(
     ]);
 
     return (
-      <textarea
-        {...boxProps}
-        {...rest}
-        ref={ref}
-        className={clsx}
-        autoComplete="off"
-      />
+      <textarea {...boxProps} ref={ref} className={clsx} autoComplete="off" />
     );
   },
 );
