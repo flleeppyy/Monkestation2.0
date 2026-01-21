@@ -865,7 +865,12 @@ GLOBAL_DATUM_INIT(admin_help_ui_handler, /datum/admin_help_ui_handler, new)
 /client/verb/adminhelp()
 	set category = "Admin"
 	set name = "Adminhelp"
+	if(current_ticket && !usr.client.holder)
+		if(!COOLDOWN_FINISHED(src, current_ticket.client_message_cooldown))
+			to_chat(usr, span_warning("You must wait [COOLDOWN_TIMELEFT(src, current_ticket.client_message_cooldown) * 0.1] seconds before sending another message."))
+			return
 	GLOB.admin_help_ui_handler.ui_interact(mob)
+	COOLDOWN_START(src, client_message_cooldown, 3 SECONDS)
 	to_chat(src, span_boldnotice("Adminhelp failing to open or work? <a href='byond://?src=[REF(src)];tguiless_adminhelp=1'>Click here</a>"))
 
 /client/verb/view_latest_ticket()

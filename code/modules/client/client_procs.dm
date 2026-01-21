@@ -115,8 +115,13 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 	// TGUIless adminhelp
 	if(href_list["tguiless_adminhelp"])
+		if(current_ticket && !usr.client.holder)
+			if(!COOLDOWN_FINISHED(src, current_ticket.client_message_cooldown))
+				to_chat(usr, span_warning("You must wait [COOLDOWN_TIMELEFT(src, current_ticket.client_message_cooldown) * 0.1] seconds before sending another message."))
+				return
 		current_ticket?.currently_typing[ckey] = CLASSIC_ADMINPM_TIME_KEY
 		no_tgui_adminhelp(input(src, "Enter your ahelp", "Ahelp") as null|message)
+		COOLDOWN_START(src, client_message_cooldown, 3 SECONDS)
 		current_ticket?.currently_typing -= ckey
 		return
 
