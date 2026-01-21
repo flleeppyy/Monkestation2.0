@@ -69,7 +69,7 @@ GLOBAL_LIST(antag_token_config)
 
 	to_chat(src, span_boldnotice("Your request has been sent to the admins."))
 	send_formatted_admin_message( \
-		"[ADMIN_LOOKUPFLW(src)] has requested to use their antag token to be a [chosen_antagonist::name].\n\n[ADMIN_APPROVE_ANTAG_TOKEN(src)] | [ADMIN_REJECT_ANTAG_TOKEN(src)]",	\
+		"[ADMIN_LOOKUPFLW(src)] has requested to use their antag token to be a [chosen_antagonist::name].\n\n[ADMIN_APPROVE_ANTAG_TOKEN(src)] | [ADMIN_REJECT_ANTAG_TOKEN(src)] | [ADMIN_CHECK_ANTAGS(src)]",	\
 		title = "Antag Token Request", \
 		color_override = "orange" \
 	)
