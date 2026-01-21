@@ -229,7 +229,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	// var/list/player_interactions // MONKESTATION - variable removed in favor of datum _interactions
 	/// List of admin ckeys that are involved, like through responding
 	var/list/admins_involved = list()
-	/// Alist of (ckey:last_type_time) that are currently typing in this ticket, whether through an `input` or tgui. This should be iterated through every 5 seconds
+	/// Alist of (ckey:last_type_time) that are currently typing in this ticket, whether through an `input` or tgui. Entries older than 3 seconds are deleted
 	var/list/currently_typing = list()
 	/// Has the player replied to this ticket yet?
 	var/player_replied = FALSE

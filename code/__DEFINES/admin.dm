@@ -184,5 +184,5 @@ GLOBAL_VAR_INIT(ghost_role_flags, (~0))
 //Monke edit for port servers
 #define MRP2_PORT		3122
 #define MRP_PORT		3121
-#define HRP_PORT		1342
+#define HRP_PORT		6969
 #define VANDERLIN_PORT	1541
