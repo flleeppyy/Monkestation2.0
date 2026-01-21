@@ -2,8 +2,6 @@
 /// Path to the base directory for cassette stuff
 #define CASSETTE_BASE_DIR "data/cassette_storage/"
 #endif
-/// Path to the file containing a list of cassette IDs.
-#define CASSETTE_ID_FILE (CASSETTE_BASE_DIR + "ids.json")
 /// Path to the data for the cassette of the given ID.
 #define CASSETTE_FILE(id) (CASSETTE_BASE_DIR + "[id].json")
 

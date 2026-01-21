@@ -127,7 +127,7 @@ const getButtons: (data: TicketData) => TicketButton[][] = (
 const State2Color = (state: TicketState) => {
   switch (state) {
     case TicketState.ACTIVE:
-      return 'color-grey';
+      return 'color-light-grey';
     case TicketState.CLOSED:
       return 'color-bad';
     case TicketState.RESOLVED:
@@ -205,7 +205,7 @@ export function TicketPanel() {
     return (
       <Window
         theme="admintickets"
-        title={`Ticket #${data.id} - ${data.name} - ${data.is_resolved ? 'Resolved' : 'Unresolved'}`}
+        title={`Ticket #${data.id} - ${data.initiator_key_name} - ${data.is_resolved ? 'Resolved' : 'Unresolved'}`}
         width={1200}
         height={700}
       >
@@ -460,6 +460,7 @@ export function TicketMessages(props: TicketMessagesProps) {
             placeholder="Enter your message (Ctrl+Enter to send)"
             className="replybox"
             style={{
+              lineHeight: '1em',
               resize: 'vertical',
               height: showTicketLog ? '100px' : '250px',
             }}

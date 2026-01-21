@@ -16,6 +16,8 @@ type Props = {
   language?: 'lua' | 'text' | 'ntsl';
   readOnly?: boolean;
   onChange?: (value: string) => void;
+  onCtrlS?: (value: string) => boolean;
+  onCtrlShiftB?: (value: string) => boolean;
   debounceTime?: number;
 } & BoxProps;
 
@@ -28,6 +30,8 @@ export function AceEditor(props: Props) {
     readOnly,
     debounceTime = DEFAULT_DEBOUNCE_TIME,
     onChange,
+    onCtrlS,
+    onCtrlShiftB,
     ...rest
   } = props;
 
@@ -42,7 +46,7 @@ export function AceEditor(props: Props) {
 
   const [isSynced, setIsSynced] = useState(true);
 
-  const sendCurrentValue = () => {
+  const sendCurrentValue = (fromCtrlS = false, fromCtrlShiftB = false) => {
     const editor = editorRef.current;
     if (!editor) return false;
 
@@ -51,6 +55,8 @@ export function AceEditor(props: Props) {
 
     lastSentValueRef.current = current;
     onChange?.(current);
+    if (fromCtrlS && onCtrlS) onCtrlS(current);
+    if (fromCtrlShiftB && onCtrlShiftB) onCtrlShiftB(current);
 
     const synced = lastRemoteValueRef.current === current;
     setIsSynced(synced);
@@ -95,7 +101,8 @@ export function AceEditor(props: Props) {
 
     editor.setTheme('ace/theme/tomorrow_night');
     if (language === 'ntsl') {
-      editor.session.setMode(new NTSLMode());
+      // editor.session.setMode(new NTSLMode());
+      editor.session.setMode('ace/mode/cstyle');
     } else {
       editor.session.setMode(`ace/mode/${language ?? 'text'}`);
     }
@@ -107,7 +114,6 @@ export function AceEditor(props: Props) {
       readOnly: readOnly ?? false,
       enableLiveAutocompletion: true,
       enableBasicAutocompletion: true,
-      // TODO: change in the future once we switch to react-ace instead.
       useWorker: false,
     });
 
@@ -143,7 +149,24 @@ export function AceEditor(props: Props) {
           clearTimeout(debounceTimerRef.current);
           debounceTimerRef.current = null;
         }
-        if (sendCurrentValue()) showSavedPopup();
+        if (sendCurrentValue(true)) {
+          showSavedPopup();
+        }
+      },
+    });
+
+    // this really should be a prop for each combination tbh.
+    editor.commands.addCommand({
+      name: 'saveAndRun',
+      bindKey: { win: 'Ctrl-Shift-B', mac: 'Command-Shift-B' },
+      exec: async () => {
+        if (debounceTimerRef.current !== null) {
+          clearTimeout(debounceTimerRef.current);
+          debounceTimerRef.current = null;
+        }
+        if (sendCurrentValue(false, true)) {
+          showSavedPopup('Saved & Compiled');
+        }
       },
     });
 
@@ -196,13 +219,25 @@ export function AceEditor(props: Props) {
   }, [value]);
 
   return (
-    <div>
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+      }}
+    >
       <div
         className={classes([computeBoxClassName(rest)])}
         ref={containerRef}
-        style={{ width: '100%', height: '100%', position: 'relative' }}
-        {...computeBoxProps(rest)}
-       />
+        {...computeBoxProps({
+          ...rest,
+          style: {
+            width: '100%',
+            height: '100%',
+            position: 'relative',
+            ...rest.style,
+          },
+        })}
+      />
       <div
         title={isSynced ? 'All changes saved' : 'Unsaved changes'}
         style={{
