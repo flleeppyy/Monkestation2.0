@@ -27,11 +27,11 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	var/obj/effect/statclick/ticket_list/cstatclick = new(null, null, AHELP_CLOSED)
 	var/obj/effect/statclick/ticket_list/rstatclick = new(null, null, AHELP_RESOLVED)
 
-	var/typing_timer
+	var/typing_timer_id
 
 /datum/admin_help_tickets/New()
 	// was unsure if I should have shoved this into a processing subsystem with Process, or into a subsystem,
-	addtimer(CALLBACK(src, PROC_REF(process_typing)), 3 SECONDS, TIMER_UNIQUE | TIMER_LOOP)
+	typing_timer_id = addtimer(CALLBACK(src, PROC_REF(process_typing)), 3 SECONDS, TIMER_UNIQUE | TIMER_LOOP)
 
 /datum/admin_help_tickets/proc/process_typing()
 	var/now = world.time
@@ -56,7 +56,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	QDEL_NULL(astatclick)
 	QDEL_NULL(cstatclick)
 	QDEL_NULL(rstatclick)
-	deltimer(typing_timer)
+	deltimer(typing_timer_id)
 	return ..()
 
 /datum/admin_help_tickets/proc/TicketByID(id)

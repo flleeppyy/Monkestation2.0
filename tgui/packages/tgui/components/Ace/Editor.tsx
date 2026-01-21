@@ -4,6 +4,8 @@ import ace from 'ace-builds';
 import 'ace-builds/src-noconflict/theme-tomorrow_night';
 import 'ace-builds/src-noconflict/mode-lua';
 import 'ace-builds/src-noconflict/mode-text';
+import 'ace-builds/src-noconflict/ext-options';
+import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/ext-statusbar';
 import { BoxProps } from '../Box';
@@ -101,8 +103,7 @@ export function AceEditor(props: Props) {
 
     editor.setTheme('ace/theme/tomorrow_night');
     if (language === 'ntsl') {
-      // editor.session.setMode(new NTSLMode());
-      editor.session.setMode('ace/mode/cstyle');
+      editor.session.setMode(new NTSLMode());
     } else {
       editor.session.setMode(`ace/mode/${language ?? 'text'}`);
     }
