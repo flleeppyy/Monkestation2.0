@@ -5773,6 +5773,7 @@
 #include "code\modules\recycling\disposal\outlet.dm"
 #include "code\modules\recycling\disposal\pipe.dm"
 #include "code\modules\recycling\disposal\pipe_sorting.dm"
+#include "code\modules\relays\relays.dm"
 #include "code\modules\religion\pyre_rites.dm"
 #include "code\modules\religion\religion_sects.dm"
 #include "code\modules\religion\religion_structures.dm"
