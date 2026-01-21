@@ -722,6 +722,11 @@ ADMIN_VERB(reload_configuration, R_DEBUG, FALSE, "Reload Configuration", "Reload
 	if(tgui_alert(user, "Are you absolutely sure you want to reload the configuration from the default path on the disk, wiping any in-round modifications?", "Really reset?", list("No", "Yes")) == "Yes")
 		config.admin_reload()
 
+ADMIN_VERB(reload_lobby_notices, R_NONE, FALSE, "Reload Lobby Notices", "Reloads lobby notices from disk.", ADMIN_CATEGORY_DEBUG)
+	config.load_important_notices()
+	BLACKBOX_LOG_ADMIN_VERB("Reload Lobby Notices")
+	message_admins("[key_name_admin(user)] reloaded lobby notices")
+
 ADMIN_VERB(check_timer_sources, R_DEBUG, FALSE, "Check Timer Sources", "Checks the sources of running timers.", ADMIN_CATEGORY_DEBUG)
 	var/bucket_list_output = generate_timer_source_output(SStimer.bucket_list)
 	var/second_queue = generate_timer_source_output(SStimer.second_queue)
