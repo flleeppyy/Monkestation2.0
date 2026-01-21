@@ -264,6 +264,7 @@ export function TicketPanel() {
                               onClick={() =>
                                 act(data.admin ? 'Unclaim' : 'Claim')
                               }
+                              disabled={data.is_resolved}
                               lineHeight="1.3em"
                             >
                               {data.admin ? 'Unclaim' : 'Claim'}
@@ -429,17 +430,20 @@ export function TicketMessages(props: TicketMessagesProps) {
   function Typing() {
     if (!typing) return null;
 
-    if (Array.isArray(typing)) {
-      const names = typing.join(', ');
-      const verb = typing.length > 1 ? 'are' : 'is';
+    if (typeof typing === 'object') {
+      const keys = Object.keys(typing);
+      if (keys.length === 0) return null;
+
+      const names = keys.join(', ');
+      const verb = keys.length > 1 ? 'are' : 'is';
       return (
         <span>
           {names} {verb} typing…
         </span>
       );
-    } else {
-      return <span>{typing} is typing…</span>;
     }
+
+    return <span>{typing} is typing…</span>;
   }
 
   return (

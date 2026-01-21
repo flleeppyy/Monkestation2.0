@@ -5,6 +5,9 @@
 /datum/admin_help/proc/Claim(announce = FALSE)
 	if(!usr.client)
 		return FALSE
+	if(state !== AHELP_ACTIVE)
+		to_chat(usr, span_notice("This ticket is not active!"))
+		return
 	if(handling_admin_ckey)
 		if(handling_admin_ckey == usr.ckey)
 			to_chat(usr, span_notice("This ticket is already yours."))
@@ -27,6 +30,9 @@
 /datum/admin_help/proc/Unclaim(announce = FALSE)
 	if(!usr.client)
 		return FALSE
+	if(state !== AHELP_ACTIVE)
+		to_chat(usr, span_notice("This ticket is not active!"))
+		return
 	if(!handling_admin_ckey)
 		to_chat(usr, span_notice("This ticket is not claimed."))
 		return
