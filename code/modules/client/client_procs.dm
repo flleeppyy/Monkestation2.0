@@ -121,7 +121,8 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 				return
 		current_ticket?.currently_typing[ckey] = CLASSIC_ADMINPM_TIME_KEY
 		no_tgui_adminhelp(input(src, "Enter your ahelp", "Ahelp") as null|message)
-		COOLDOWN_START(src, client_message_cooldown, 3 SECONDS)
+		if(current_ticket)
+			COOLDOWN_START(src, current_ticket.client_message_cooldown, 3 SECONDS)
 		current_ticket?.currently_typing -= ckey
 		return
 
