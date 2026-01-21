@@ -376,8 +376,6 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 				to_chat(world, "Autoadmin rank not found")
 			else
 				new /datum/admins(autoadmin_ranks, ckey)
-	if(admin_datum && prefs.read_preference(/datum/preference/toggle/autoadmin))
-		admin_datum.activate()
 
 	if(CONFIG_GET(flag/enable_localhost_rank) && !connecting_admin && is_localhost())
 		var/datum/admin_rank/localhost_rank = new("!localhost!", R_EVERYTHING, R_DBRANKS, R_EVERYTHING) //+EVERYTHING -DBRANKS *EVERYTHING
@@ -599,6 +597,8 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		initialize_menus()
 
 	loot_panel = new(src)
+	if(admin_datum && prefs.read_preference(/datum/preference/toggle/autoadmin) && admin_datum.deadmined)
+		admin_datum.activate()
 
 	view_size = new(src, getScreenSize(prefs.read_preference(/datum/preference/toggle/widescreen)))
 	view_size.resetFormat()
