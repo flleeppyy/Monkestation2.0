@@ -89,7 +89,7 @@ export const PaintingAdminPanel = (props) => {
                     key={tag}
                     color="red"
                     icon="minus-circle"
-                    iconRight
+                    iconPosition="right"
                     content={tag}
                     onClick={() =>
                       act('remove_tag', { tag, ref: chosenPainting.ref })
