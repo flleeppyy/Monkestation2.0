@@ -169,7 +169,10 @@
 			ticket_to_open.TicketPanel()
 			return
 		if("typing")
-			currently_typing[usr.ckey] = world.time
+			if(params["stopped"])
+				currently_typing -= usr.ckey
+			else
+				currently_typing[usr.ckey] = world.time
 			return
 	return FALSE
 

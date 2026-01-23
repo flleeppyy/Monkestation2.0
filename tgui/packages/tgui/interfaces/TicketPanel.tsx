@@ -369,7 +369,7 @@ export function TicketMessages(props: TicketMessagesProps) {
 
   const sendMessage = useCallback(
     (value: string) => {
-      if (!value) return;
+      if (!value || value.trim() === '') return;
 
       act('send_message', { message: value });
       setMessage('');
@@ -390,7 +390,9 @@ export function TicketMessages(props: TicketMessagesProps) {
       const value = el.value;
       const now = Date.now();
 
-      if (!lastTyping || now - lastTyping >= 500) {
+      if (value.trim() === '') {
+        act('typing', { stopped: true });
+      } else if (!lastTyping || now - lastTyping >= 500) {
         act('typing');
         setLastTyping(now);
       }
@@ -413,7 +415,6 @@ export function TicketMessages(props: TicketMessagesProps) {
       el.removeEventListener('keydown', onKeyDown);
     };
   }, [act, lastTyping, sendMessage]);
-
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.disabled = !isTicketActive();

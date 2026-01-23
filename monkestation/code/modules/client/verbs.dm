@@ -115,7 +115,7 @@ GLOBAL_LIST(antag_token_config)
 			to_chat(src, span_boldnotice("Your request has been sent."))
 			logger.Log(LOG_CATEGORY_META, "[usr] has requested to use their event tokens to trigger [selected_event.event_name]([selected_event]).")
 			send_formatted_admin_message( \
-				"[ADMIN_LOOKUPFLW(src)] has requested use their event tokens to trigger [selected_event.event_name]([selected_event]).\n\n[ADMIN_APPROVE_TOKEN_EVENT(src)] | [ADMIN_REJECT_TOKEN_EVENT(src)] | [ADMIN_CHECK_ANTAGS(src)] | [ADMIN_OPEN_TOKEN_MANAGER(src)]",	\
+				"[ADMIN_LOOKUPFLW(src)] has requested use their event tokens to trigger [selected_event.event_name]([selected_event]).\n\n[ADMIN_APPROVE_TOKEN_EVENT(src)] | [ADMIN_REJECT_TOKEN_EVENT(src)] | [ADMIN_OPEN_TOKEN_MANAGER(src)]",	\
 				title = "Event Token Request", \
 				color_override = "orange" \
 			)

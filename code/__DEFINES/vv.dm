@@ -155,8 +155,6 @@
 #define VV_HK_SET_SPECIES "setspecies"
 #define VV_HK_REISSUE_RSID "reissue_rs_id"
 
-
-
 // misc
 #define VV_HK_SPACEVINE_PURGE "spacevine_purge"
 

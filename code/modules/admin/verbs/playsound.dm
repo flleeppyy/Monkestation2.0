@@ -147,8 +147,8 @@ ADMIN_VERB(play_direct_mob_sound, R_SOUND, FALSE, "Play Direct Mob Sound", "Play
 					C.media_player?.stop()
 				else
 					C.tgui_panel?.stop_music()
-	if(stop_web_sounds && GLOB.dj_booth)
-		GLOB.dj_booth.stop(null, force = TRUE)
+	if(stop_web_sounds)
+		GLOB.dj_booth?.stop(null, force = TRUE)
 
 	BLACKBOX_LOG_ADMIN_VERB("Play Internet Sound")
 

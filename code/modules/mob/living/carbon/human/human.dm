@@ -780,6 +780,8 @@
 		sec_hud_set_ID()
 
 		put_in_hands(card)
+		message_admins("[key_name_admin(usr)] has")
+		log_admin("[key_name(usr)] has")
 
 /mob/living/carbon/human/limb_attack_self()
 	var/obj/item/bodypart/arm = hand_bodyparts[active_hand_index]
