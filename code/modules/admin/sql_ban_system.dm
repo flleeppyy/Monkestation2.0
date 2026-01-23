@@ -790,7 +790,7 @@
 	unban_panel.set_content(jointext(output, ""))
 	unban_panel.open()
 
-/datum/admins/proc/unban(ban_id, player_key, player_ip, player_cid, role, page, admin_key, mirror_edit = FALSE)
+/datum/admins/proc/unban(ban_id, player_key, player_ip, player_cid, role, page, admin_key)
 	if(!check_rights(R_BAN))
 		return
 	if(!SSdbcore.Connect())
@@ -801,7 +801,7 @@
 		mirror_unban = TRUE
 	var/target = ban_target_string(player_key, player_ip, player_cid)
 	// Make sure the only input that doesn't early return is "Yes" - This is the only situation in which we want the unban to proceed.
-	if(tgui_alert(usr, "Please confirm unban of [target] from [role].", "Unban confirmation", list("Yes", "No")) != "Yes")
+	if(tgui_alert(usr, "Please confirm unban of [target] from [role][mirror_unban ? " and other matching bans" : ""].", "Unban confirmation", list("Yes", "No")) != "Yes")
 		return
 	var/kn = key_name(usr)
 	var/kna = key_name_admin(usr)
@@ -839,8 +839,8 @@
 		qdel(query_unban)
 		return
 	qdel(query_unban)
-	log_admin_private("[kn] has unbanned [target] from [role].")
-	message_admins("[kna] has unbanned [target] from [role].")
+	log_admin_private("[kn] has unbanned [target] from [role][mirror_unban ? " and other matching bans" : ""].")
+	message_admins("[kna] has unbanned [target] from [role][mirror_unban ? " and other matching bans" : ""].")
 	var/client/C = GLOB.directory[player_key]
 	if(C)
 		build_ban_cache(C)
