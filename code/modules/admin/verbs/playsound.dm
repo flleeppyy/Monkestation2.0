@@ -164,7 +164,7 @@ ADMIN_VERB(play_web_sound, R_SOUND, FALSE, "Play Internet Sound", "Play a given 
 			title = "Heads up!",
 			buttons = list("Yes", "No", "Stop Music")
 		)
-		if(prompt === "Stop Music")
+		if(prompt == "Stop Music")
 			web_sound(user, null)
 			return
 		if(prompt != "Yes")
