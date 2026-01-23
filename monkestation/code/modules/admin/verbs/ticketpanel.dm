@@ -79,11 +79,15 @@
 	.["admin"] = hide_key(handling_admin_ckey, is_admin)
 	.["currently_typing"] = null
 
-	if (length(currently_typing))
-		if (is_admin)
-			.["currently_typing"] = currently_typing.Copy()
-		else
-			.["currently_typing"] = "Administrator"
+	if(length(currently_typing))
+		var/typing = currently_typing.Copy()
+
+		if(!is_admin)
+			typing -= user.ckey
+
+		if(length(typing))
+			.["currently_typing"] = is_admin ? typing : "Administrator"
+
 
 	.["state"] = state
 	.["initiator_key_name"] = initiator_key_name
