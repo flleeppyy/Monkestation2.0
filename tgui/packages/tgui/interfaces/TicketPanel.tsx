@@ -252,29 +252,24 @@ export function TicketPanel() {
                   >
                     <Stack vertical fill>
                       <Stack.Item>
-                        <span>
-                          Assigned Admin:{' '}
-                          <b>
-                            {data.admin || 'Unassigned'}{' '}
-                            <Button
-                              m="1.0px"
-                              icon={
-                                data.admin ? 'folder-closed' : 'folder-open'
-                              }
-                              onClick={() =>
-                                act(data.admin ? 'Unclaim' : 'Claim')
-                              }
-                              disabled={data.is_resolved}
-                              lineHeight="1.3em"
-                            >
-                              {data.admin ? 'Unclaim' : 'Claim'}
-                            </Button>
-                          </b>
-                          <br />
-                          {data.opened_at}
-                        </span>
-                      </Stack.Item>
-                      <Stack.Item>
+                        Assigned Admin:{' '}
+                        <b>
+                          {data.admin || 'Unassigned'}{' '}
+                          <Button
+                            m="1.0px"
+                            icon={data.admin ? 'folder-closed' : 'folder-open'}
+                            onClick={() =>
+                              act(data.admin ? 'Unclaim' : 'Claim')
+                            }
+                            disabled={data.is_resolved}
+                            lineHeight="1.3em"
+                          >
+                            {data.admin ? 'Unclaim' : 'Claim'}
+                          </Button>
+                        </b>
+                        <br />
+                        {data.opened_at}
+                        <br />
                         Job:{' '}
                         <b>
                           {data.role?.title} ({data.role?.type})

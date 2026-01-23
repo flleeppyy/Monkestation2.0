@@ -37,9 +37,6 @@
 			type = MESSAGE_TYPE_INFO,
 		)
 		usr << link(destination)
-
-		// sleep(1 SECONDS)
-		// winset(usr, null, "command=.quit")
 	else
 		to_chat(usr, span_notice("You didn't select a relay."))
 
