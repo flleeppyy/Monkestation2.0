@@ -20,6 +20,7 @@
 	var/msg = "[usr.ckey]/([usr]) has been assigned to [TicketHref("ticket #[id]")] as primary admin."
 	message_admins(msg)
 	log_admin_private(msg)
+	AddInteraction(msg)
 
 	if(announce && initiator)
 		to_chat(initiator,
@@ -47,6 +48,7 @@
 
 	message_admins(msg)
 	log_admin_private(msg)
+	AddInteraction(msg)
 
 	if(announce && initiator)
 		to_chat(initiator,
