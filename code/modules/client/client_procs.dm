@@ -360,14 +360,19 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 
 	. = ..() //calls mob.Login()
 
+
 	// Admin Verbs need the client's mob to exist. Must be after ..()
 	var/connecting_admin = FALSE //because de-admined admins connecting should be treated like admins.
 	//Admin Authorization
 	var/datum/admins/admin_datum = GLOB.admin_datums[ckey]
+	var/datum/admins/deadmin_datum = GLOB.deadmins[ckey]
 	if (!isnull(admin_datum))
 		admin_datum.associate(src)
 		connecting_admin = TRUE
-	else if(GLOB.deadmins[ckey])
+	else if(deadmin_datum && prefs.read_preference(/datum/preference/toggle/autoadmin))
+		connecting_admin = TRUE
+		deadmin_datum.activate()
+	else if(deadmin_datum)
 		add_verb(src, /client/proc/readmin)
 		connecting_admin = TRUE
 	if(CONFIG_GET(flag/autoadmin))
@@ -598,8 +603,6 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 		initialize_menus()
 
 	loot_panel = new(src)
-	if(admin_datum && prefs.read_preference(/datum/preference/toggle/autoadmin) && admin_datum.deadmined)
-		admin_datum.activate()
 
 	view_size = new(src, getScreenSize(prefs.read_preference(/datum/preference/toggle/widescreen)))
 	view_size.resetFormat()
