@@ -159,7 +159,7 @@ GLOBAL_LIST_INIT(patreon_etoken_values, list(
 /datum/meta_token_holder/proc/approve_antag_token()
 	if(!in_queue)
 		return
-
+	current_antag_request?.handled = TRUE
 	to_chat(owner, span_boldnicegreen("Your request to play as [in_queue] has been approved."))
 	logger.Log(LOG_CATEGORY_META, "[owner]'s antag token for [in_queue] has been approved")
 
@@ -183,6 +183,7 @@ GLOBAL_LIST_INIT(patreon_etoken_values, list(
 /datum/meta_token_holder/proc/reject_antag_token()
 	if(!in_queue)
 		return
+	current_antag_request?.handled = TRUE
 
 	to_chat(owner, span_boldwarning("Your request to play as [in_queue] has been denied."))
 	logger.Log(LOG_CATEGORY_META, "[owner]'s antag token for [in_queue] has been denied.")
@@ -200,6 +201,8 @@ GLOBAL_LIST_INIT(patreon_etoken_values, list(
 /datum/meta_token_holder/proc/timeout_antag_token()
 	if(!in_queue)
 		return
+	current_antag_request?.timeout_timer = null
+
 	to_chat(owner, span_boldwarning("Your request to play as [in_queue] wasn't answered within 5 minutes. Better luck next time!"))
 	logger.Log(LOG_CATEGORY_META, "[owner]'s antag token for [in_queue] has timed out.")
 
