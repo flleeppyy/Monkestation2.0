@@ -398,7 +398,7 @@ GLOBAL_DATUM(dj_booth, /obj/machinery/dj_station)
 	song_start_time = 0
 	INVOKE_ASYNC(src, PROC_REF(stop_for_all_listeners))
 	SStgui.update_uis(src)
-	log_music("[key_name(user)] [force ? "forcefully ": ""] [stopped playing song \"[playing.name]\" from [inserted_tape.name] ([inserted_tape.cassette_data?.id || "no cassette id"]) at [AREACOORD(src)]")
+	log_music("[key_name(user)] [force ? "forcefully ": ""] stopped playing song \"[playing.name]\" from [inserted_tape.name] ([inserted_tape.cassette_data?.id || "no cassette id"]) at [AREACOORD(src)]")
 	return TRUE
 
 // It cannot be stopped.
