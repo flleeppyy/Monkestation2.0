@@ -159,7 +159,6 @@ GLOBAL_LIST_INIT(patreon_etoken_values, list(
 /datum/meta_token_holder/proc/approve_antag_token()
 	if(!in_queue)
 		return
-	current_antag_request?.handled = TRUE
 	to_chat(owner, span_boldnicegreen("Your request to play as [in_queue] has been approved."))
 	logger.Log(LOG_CATEGORY_META, "[owner]'s antag token for [in_queue] has been approved")
 
@@ -183,7 +182,6 @@ GLOBAL_LIST_INIT(patreon_etoken_values, list(
 /datum/meta_token_holder/proc/reject_antag_token()
 	if(!in_queue)
 		return
-	current_antag_request?.handled = TRUE
 
 	to_chat(owner, span_boldwarning("Your request to play as [in_queue] has been denied."))
 	logger.Log(LOG_CATEGORY_META, "[owner]'s antag token for [in_queue] has been denied.")
@@ -208,6 +206,7 @@ GLOBAL_LIST_INIT(patreon_etoken_values, list(
 	logger.Log(LOG_CATEGORY_META, "[owner]'s antag token for [in_queue] has timed out.")
 
 	SStoken_manager.record_timeout() 	// Token Panel Addition
+	QDEL_NULL(current_antag_request)	// Token Panel Addition
 
 	SEND_SOUND(owner, sound('sound/misc/compiler-failure.ogg', volume = 50))
 	in_queue = null
