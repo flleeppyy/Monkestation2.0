@@ -25,31 +25,31 @@ ADMIN_VERB(cmd_soundquery_debug, R_SERVER|R_DEBUG, FALSE, "Sound Mixer Debug", "
 	proc below are the only ones	that BYOND will give you.
 	in case you're curious, heres the decomp of what soundquery returns from 516.1675
 
-  struct SoundChannelInfo& __thiscall SoundChannelInfo::operator=(SoundChannelInfo* this, struct SoundChannelInfo&& arg2) {
-    *this = *arg2
-    int32_t eax
-    eax.w = *(arg2 + 4)
-    *(this + 4) = eax.w
-    *(this + 8) = *(arg2 + 8)
-    int32_t eax_1
-    eax_1.b = *(arg2 + 0xc)
-    *(this + 0xc) = eax_1.b
-    *(this + 0x10) = *(arg2 + 0x10)
-    *(this + 0x14) = *(arg2 + 0x14)
-    *(this + 0x18) = *(arg2 + 0x18)
-    return this
+	struct SoundChannelInfo& __thiscall SoundChannelInfo::operator=(SoundChannelInfo* this, struct SoundChannelInfo&& arg2) {
+		*this = *arg2
+		int32_t eax
+		eax.w = *(arg2 + 4)
+		*(this + 4) = eax.w
+		*(this + 8) = *(arg2 + 8)
+		int32_t eax_1
+		eax_1.b = *(arg2 + 0xc)
+		*(this + 0xc) = eax_1.b
+		*(this + 0x10) = *(arg2 + 0x10)
+		*(this + 0x14) = *(arg2 + 0x14)
+		*(this + 0x18) = *(arg2 + 0x18)
+		return this
 	}
 
 	struct SoundChannelInfo {
-    uint32_t unknown0;  // Offset 0x00					- file (string pointer)
-    uint16_t unknown4;  // Offset 0x04 (eax.w)  - channel
-    // 2 bytes padding
-    uint32_t unknown8;  // Offset 0x08					- repeat ()
-    uint8_t  unknownC;  // Offset 0x0C (eax_1.b)- status
-    // 3 bytes padding
-    uint32_t unknown10; // Offset 0x10					- offset
-    uint32_t unknown14; // Offset 0x14					- len
-    uint32_t unknown18; // Offset 0x18					- wait
+		uint32_t unknown0;  // Offset 0x00					- file (string pointer)
+		uint16_t unknown4;  // Offset 0x04 (eax.w)  - channel
+		// 2 bytes padding
+		uint32_t unknown8;  // Offset 0x08					- repeat ()
+		uint8_t  unknownC;  // Offset 0x0C (eax_1.b)- status
+		// 3 bytes padding
+		uint32_t unknown10; // Offset 0x10					- offset
+		uint32_t unknown14; // Offset 0x14					- len
+		uint32_t unknown18; // Offset 0x18					- wait
 	};
 
 	this pretty much lines up with the documentation for client.SoundQuery:
