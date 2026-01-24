@@ -107,7 +107,6 @@
 		compiler_output = compile_all(user)
 		var/message = "[key_name_admin(user)] has completelly cleared the NTSL console of code and re-compiled as an admin, this should only be done in severe rule infractions."
 		message_admins(message)
-		usr.log_message("[key_name(src)] [message] [loc_name(src)]", LOG_NTSL)
 		logger.Log(LOG_CATEGORY_NTSL, "[key_name(src)] [message] [loc_name(src)]")
 		access_log += "\[[get_timestamp()]\] ERR !NTSL REMOTELLY CLEARED BY NANOTRASEN STAFF!"
 		return TRUE
