@@ -98,7 +98,7 @@
 	.["has_client"] = !!initiator
 	.["has_mob"] = !!initiator_mob
 	.["role"] = initiator_mind && list("type" = initiator_mind.assigned_role, "title" = initiator_mind.assigned_role.title)
-	.["antag"] = initiator_mind && initiator_mind.special_role
+	.["antag"] = length(initiator_mind?.antag_datums) && "[initiator_mind.antag_datums.Join(", ")][initiator_mind.special_role ? " (Special role: [initiator_mind.special_role])" : ""]"
 
 	var/location = ""
 	if(is_admin && initiator_mob)
