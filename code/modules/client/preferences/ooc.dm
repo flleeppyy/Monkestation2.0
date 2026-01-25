@@ -46,8 +46,7 @@ GLOBAL_LIST_INIT(pronouns_required, list(
 	value = lowertext(value)
 
 	if (!value || trim(value) == "")
-		to_chat(usr, span_warning("You must set at least one pronoun."))
-		return FALSE
+		return TRUE
 
 	// extract pronouns from the start of the string
 	// only letters and slashes, must be first
