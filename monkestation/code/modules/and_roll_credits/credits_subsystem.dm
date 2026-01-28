@@ -111,7 +111,8 @@ SUBSYSTEM_DEF(credits)
 		appearance.maptext = "<center>[ckey]</center>"
 		contributer_pref_images += appearance
 
-	for(var/ckey in GLOB.admin_datums)
+	var/list/all_admin_datums = GLOB.admin_datums + GLOB.deadmins
+	for(var/ckey in all_admin_datums)
 		var/datum/client_interface/interface = new(ckey(ckey))
 		var/datum/preferences/mocked = new(interface)
 
