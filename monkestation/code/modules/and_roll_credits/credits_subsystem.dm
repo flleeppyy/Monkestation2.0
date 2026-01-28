@@ -110,6 +110,7 @@ SUBSYSTEM_DEF(credits)
 		appearance.maptext_y = -12
 		appearance.maptext = "<center>[ckey]</center>"
 		contributer_pref_images += appearance
+		CHECK_TICK
 
 	var/list/all_admin_datums = GLOB.admin_datums + GLOB.deadmins
 	for(var/ckey in all_admin_datums)
@@ -123,6 +124,7 @@ SUBSYSTEM_DEF(credits)
 		appearance.maptext_y = -12
 		appearance.maptext = "<center>[ckey]</center>"
 		admin_pref_images += appearance
+		CHECK_TICK
 
 /datum/controller/subsystem/credits/proc/finalize_name()
 	if(customized_name)
