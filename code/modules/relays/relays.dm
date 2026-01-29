@@ -1,49 +1,41 @@
-// Ported from Iris Station, with some modifications
-#define US_EAST_RELAY_ADDR "byond://useast.monkestation.com:[world.port]"
-#define WARSAW_RELAY_ADDR "byond://warsaw.monkestation.com:[world.port]"
-#define NO_RELAY_ADDR "byond://play.monkestation.com:[world.port]"
-
-#define US_EAST_RELAY "Connect to US-East (Ashburn)"
-#define WARSAW_RELAY "Connect to Warsaw (Poland)"
-#define NO_RELAY "No Relay (Direct Connect)"
+// Originally ported from Iris Station, but added toml config support.
+GLOBAL_VAR(relay_config)
 
 /client/verb/go2relay()
 	if(is_localhost())
-		to_chat(usr, span_notice("You are on localhost, this verb is useless to you."))
+		to_chat(src, span_notice("You are on localhost, this verb is useless to you."))
 		return
-	var/list/static/relays = list(
-		US_EAST_RELAY,
-		WARSAW_RELAY,
-		NO_RELAY,
-	)
-	var/list/static/relays_quickname = list(
-		US_EAST_RELAY = replacetext(US_EAST_RELAY, "Connect to ", ""),
-		WARSAW_RELAY = replacetext(WARSAW_RELAY, "Connect to ", ""),
-		NO_RELAY = "Monke Direct",
-	)
-	var/choice = tgui_input_list(usr, "Which relay do you wish to use? Relays can help improve ping for some users.", "Relay Select", relays)
-	var/destination
-	switch(choice)
-		if(US_EAST_RELAY)
-			destination = US_EAST_RELAY_ADDR
-		if(WARSAW_RELAY)
-			destination = WARSAW_RELAY_ADDR
-		if(NO_RELAY)
-			destination = NO_RELAY_ADDR
-	if(destination)
-		to_chat_immediate(
-			target = usr,
-			html = boxed_message(span_info(span_big("Connecting you to [relays_quickname[choice]]\nIf nothing happens, try manually connecting to the relay ([destination]), or the RELAY may be down!"))),
-			type = MESSAGE_TYPE_INFO,
-		)
-		usr << link(destination)
-	else
-		to_chat(usr, span_notice("You didn't select a relay."))
 
-#undef US_EAST_RELAY_ADDR
-#undef WARSAW_RELAY_ADDR
-#undef NO_RELAY_ADDR
+	if(!GLOB.relay_config || !length(GLOB.relay_config))
+		to_chat(src, span_notice("Relay configuration is missing or empty."))
+		return
 
-#undef US_EAST_RELAY
-#undef WARSAW_RELAY
-#undef NO_RELAY
+	var/list/names = list()
+	var/list/name_to_relay = list()
+
+	for(var/list/relay in GLOB.relay_config)
+		var/name = relay["name"]
+		names += name
+		name_to_relay[name] = relay
+
+	var/choice = tgui_input_list(src,	"Which relay do you wish to use? Relays can help improve ping for some users.",	"Relay Select",	names)
+	if(!choice)
+		to_chat(src, span_notice("You didn't select a relay."))
+		return
+
+	var/list/relay = name_to_relay[choice]
+	if(!relay)
+		to_chat(src, span_notice("Invalid relay selection."))
+		return
+
+	var/address = relay["address"]
+	address = replacetext(address, "{port}", "[world.port]")
+
+	var/quickname = relay["quickname"]
+
+	to_chat_immediate(
+		target = src,
+		html = boxed_message(span_info(span_big("Connecting you to [quickname]\nIf nothing happens, try manually connecting to the relay ([address]), or the RELAY may be down!"))),
+		type = MESSAGE_TYPE_INFO,
+	)
+	src << link(address)

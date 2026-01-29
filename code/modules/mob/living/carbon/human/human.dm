@@ -754,7 +754,7 @@
 	if(href_list[VV_HK_REISSUE_RSID])
 		if(!check_rights(R_SPAWN))
 			return
-		if(!(mind.assigned_role.job_flags & JOB_CREW_MEMBER))
+		if(!(mind.assigned_role?.job_flags & JOB_CREW_MEMBER))
 			to_chat(usr, span_warning("This mob is not a crew member!"))
 			return
 		if(!mind.assigned_role.outfit)
