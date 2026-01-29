@@ -1,3 +1,16 @@
+// Make sure to add important verbs here to stick when the player is in an interview.
+GLOBAL_LIST_INIT(important_interface_verbs, list(
+	/client/verb/wiki,
+	/client/verb/forum,
+	/client/verb/rules,
+	/client/verb/github,
+	//report issue omitted
+	/client/verb/changelog,
+	/client/verb/hotkeys_help,
+	/client/verb/fix_tgui_panel,
+	/client/verb/refresh_tgui
+))
+
 //Please use mob or src (not usr) in these procs. This way they can be called in the same fashion as procs.
 /client/verb/wiki()
 	set name = "wiki"
