@@ -68,7 +68,7 @@ GLOBAL_LIST(antag_token_config)
 
 	to_chat(src, span_boldnotice("Your request has been sent to the admins."))
 	var/formatted_message = "[ADMIN_LOOKUPFLW(src)] has requested to use their antag token to be a [chosen_antagonist::name].\n\n"
-	if(mob.mind)
+	if(mob.mind?.assigned_role)
 		formatted_message += "Current Role: [mob.mind.assigned_role.title]\n"
 	if(mob.mind?.special_role)
 		formatted_message += "Special Role: [mob.mind.special_role]\n"

@@ -37,7 +37,7 @@ GLOBAL_DATUM_INIT(ahelp_tickets, /datum/admin_help_tickets, new)
 	var/now = world.time
 	for(var/datum/admin_help/ticket as anything in active_tickets)
 		var/trip_ui_update = FALSE
-		for(var/ckey in ticket.currently_typing.Copy())
+		for(var/ckey in ticket.currently_typing)
 			if(!istext(ckey))
 				ticket.currently_typing -= ckey
 				trip_ui_update = TRUE

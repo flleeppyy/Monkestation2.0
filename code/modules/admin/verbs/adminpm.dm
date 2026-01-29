@@ -17,7 +17,7 @@
 ADMIN_VERB_ONLY_CONTEXT_MENU(cmd_admin_pm_context, R_NONE, FALSE, "Admin PM Mob", mob/target in world)
 	if(!ismob(target))
 		to_chat(
-			usr,
+			user,
 			type = MESSAGE_TYPE_ADMINPM,
 			html = span_danger("Error: Admin-PM-Context: Target mob is not a mob, somehow."),
 			confidential = TRUE
@@ -43,7 +43,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, FALSE, "Admin PM", "Show a list of client
 			nametag = "[real_mob_name](as [mob_name])"
 		targets["[nametag] - [client]"] = client
 
-	var/target = tgui_input_list(usr, "To whom shall we send a message?", "Admin PM", sort_list(targets))
+	var/target = tgui_input_list(user, "To whom shall we send a message?", "Admin PM", sort_list(targets))
 	if (isnull(target))
 		return
 	user.cmd_admin_pm(targets[target], null)
@@ -193,8 +193,7 @@ ADMIN_VERB(cmd_admin_pm_panel, R_NONE, FALSE, "Admin PM", "Show a list of client
 		return null
 
 	current_ticket?.currently_typing -= ckey
-	if(istype(ambiguious_recipient, /client))
-		astype(ambiguious_recipient, /client)?.current_ticket?.currently_typing -= ckey
+	astype(ambiguious_recipient, /client)?.current_ticket?.currently_typing -= ckey
 
 	if(ambiguious_recipient == EXTERNAL_PM_USER)
 		if(!externalreplyamount) //to prevent people from spamming irc/discord
