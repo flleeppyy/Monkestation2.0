@@ -571,4 +571,6 @@ Example config:
 	if(!length(content))
 		return
 
+	log_config("Loaded relay file", result)
+
 	GLOB.relay_config = content["relay"]
