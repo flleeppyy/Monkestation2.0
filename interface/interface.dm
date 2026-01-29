@@ -14,11 +14,13 @@ GLOBAL_LIST_INIT(important_interface_verbs, list(
 //Please use mob or src (not usr) in these procs. This way they can be called in the same fashion as procs.
 /client/verb/wiki()
 	set name = "wiki"
-	set desc = "Type what you want to know about.  This will open the wiki in your web browser. Type nothing to go to the main page."
+	set desc = "Open the wiki."
 	set hidden = TRUE
 	var/wikiurl = CONFIG_GET(string/wikiurl)
 	if(wikiurl)
-		src << link(wikiurl) // monkestation edit
+		if(tgui_alert(src, "This will open the wiki in your browser. Are you sure?",, list("Yes","No"))!="Yes")
+			return
+		src << link(wikiurl)
 	else
 		to_chat(src, span_danger("The wiki URL is not set in the server configuration."))
 	return
