@@ -865,7 +865,7 @@ GLOBAL_DATUM_INIT(admin_help_ui_handler, /datum/admin_help_ui_handler, new)
 /client/verb/adminhelp()
 	set category = "Admin"
 	set name = "Adminhelp"
-	if(current_ticket && !usr.client.holder)
+	if(current_ticket && !holder)
 		if(!COOLDOWN_FINISHED(src, current_ticket.client_message_cooldown))
 			to_chat(usr, span_warning("You must wait [COOLDOWN_TIMELEFT(src, current_ticket.client_message_cooldown) * 0.1] seconds before sending another message."))
 			return
