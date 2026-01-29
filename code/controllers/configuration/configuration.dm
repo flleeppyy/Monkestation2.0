@@ -567,10 +567,8 @@ Example config:
 		log_config("Notify Server Operators: The relay config (relays.toml) is not configured correctly! [result["content"]]")
 		return
 
-	var/list/content = result["content"]
+	var/list/content = json_decode(result["content"])
 	if(!length(content))
 		return
-
-	log_config("Loaded relay file", result)
 
 	GLOB.relay_config = content["relay"]
