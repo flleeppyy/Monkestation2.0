@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
 import ace from 'ace-builds';
+import { useEffect, useRef, useState } from 'react';
 
 import 'ace-builds/src-noconflict/theme-tomorrow_night';
 import 'ace-builds/src-noconflict/mode-lua';
@@ -8,9 +8,9 @@ import 'ace-builds/src-noconflict/ext-options';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/ext-statusbar';
-import { BoxProps } from '../Box';
-import { computeBoxClassName, computeBoxProps } from 'tgui-core/ui';
 import { classes } from 'common/react';
+import { computeBoxClassName, computeBoxProps } from 'tgui-core/ui';
+import type { BoxProps } from '../Box';
 import { NTSLMode } from './languages/ntsl';
 
 type Props = {

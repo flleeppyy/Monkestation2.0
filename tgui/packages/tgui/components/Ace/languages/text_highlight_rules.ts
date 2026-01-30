@@ -1,4 +1,4 @@
-import { Ace } from 'ace-builds';
+import type { Ace } from 'ace-builds';
 
 type Rule = Ace.HighlightRule;
 type HighlightRulesMap = Ace.HighlightRulesMap;
@@ -16,7 +16,7 @@ function deepCopy(obj) {
   if (Object.prototype.toString.call(obj) !== '[object Object]') return obj;
 
   copy = {};
-  for (let key in obj) copy[key] = deepCopy(obj[key]);
+  for (const key in obj) copy[key] = deepCopy(obj[key]);
   return copy;
 }
 
@@ -30,8 +30,6 @@ export class TextHighlightRules implements Ace.HighlightRules {
   $keywords: any[];
   $keywordList: string[];
   nextState?: string;
-
-  constructor() {}
 
   addRules(rules: HighlightRulesMap, prefix?: string): void {
     if (!prefix) {
@@ -80,7 +78,11 @@ export class TextHighlightRules implements Ace.HighlightRules {
       }
     }
 
-    (this.$embeds ??= []).push(prefix);
+    if (!this.$embeds) {
+      this.$embeds = [];
+    }
+
+    this.$embeds.push(prefix);
   }
 
   getEmbeds(): string[] {
@@ -92,8 +94,9 @@ export class TextHighlightRules implements Ace.HighlightRules {
     const rules = this.$rules;
 
     const pushState = (currentState: string, stack: string[]): string => {
-      if (currentState !== 'start' || stack.length)
-        { stack.unshift(this.nextState!, currentState); }
+      if (currentState !== 'start' || stack.length) {
+        stack.unshift(this.nextState!, currentState);
+      }
       return this.nextState!;
     };
 
@@ -105,7 +108,7 @@ export class TextHighlightRules implements Ace.HighlightRules {
 
     const processState = (key: string) => {
       const state = rules[key];
-      // @ts-ignore
+      // @ts-expect-error
       state.processed = true;
 
       for (let i = 0; i < state.length; i++) {
@@ -120,7 +123,7 @@ export class TextHighlightRules implements Ace.HighlightRules {
         const next = rule.next || (rule.push as any);
         if (next && Array.isArray(next)) {
           let stateName = rule.stateName || (rule.token as string);
-          if (!stateName) stateName = 'state' + id++;
+          if (!stateName) stateName = `state${id++}`;
           rules[stateName] = next;
           rule.next = stateName;
           processState(stateName);
@@ -137,8 +140,9 @@ export class TextHighlightRules implements Ace.HighlightRules {
         if (rule.rules) {
           for (const r in rule.rules) {
             if (rules[r]) {
-              if ((rules[r] as any).push)
-                { (rules[r] as any).push.apply(rules[r], rule.rules[r]); }
+              if ((rules[r] as any).push) {
+                (rules[r] as any).push.apply(rules[r], rule.rules[r]);
+              }
             } else {
               rules[r] = rule.rules[r];
             }
@@ -150,10 +154,10 @@ export class TextHighlightRules implements Ace.HighlightRules {
             ? (rule as string)
             : (rule.include as Rule['include']);
         if (includeName) {
-          if (includeName === '$self') toInsert = rules['start'];
-          else if (Array.isArray(includeName))
-            { toInsert = (includeName as Rule['include']).map((x) => rules[x]); }
-          else toInsert = rules[includeName];
+          if (includeName === '$self') toInsert = rules.start;
+          else if (Array.isArray(includeName)) {
+            toInsert = (includeName as Rule['include']).map((x) => rules[x]);
+          } else toInsert = rules[includeName];
         }
 
         if (toInsert) {

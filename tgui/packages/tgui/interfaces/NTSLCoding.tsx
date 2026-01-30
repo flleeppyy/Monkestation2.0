@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { UI_UPDATE } from 'tgui-core/constants';
+import { sleep } from 'tgui-core/timer';
 import { useBackend } from '../backend';
 import {
   Box,
@@ -9,11 +11,9 @@ import {
   Stack,
   Tabs,
 } from '../components';
+import { AceEditor } from '../components/Ace/Editor';
 import { RADIO_CHANNELS } from '../constants';
 import { Window } from '../layouts';
-import { AceEditor } from '../components/Ace/Editor';
-import { sleep } from 'tgui-core/timer';
-import { UI_UPDATE } from 'tgui-core/constants';
 
 // NTSLTextArea component start
 // This is literally just TextArea but without ENTER updating anything, for NTSL

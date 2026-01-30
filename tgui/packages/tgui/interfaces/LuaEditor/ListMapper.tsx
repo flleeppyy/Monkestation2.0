@@ -1,9 +1,9 @@
 import type { BooleanLike } from 'common/react';
 import React, {
-  ComponentProps,
-  Dispatch,
+  type ComponentProps,
+  type Dispatch,
   isValidElement,
-  SetStateAction,
+  type SetStateAction,
 } from 'react';
 
 import { useBackend } from '../../backend';

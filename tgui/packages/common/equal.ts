@@ -74,7 +74,7 @@ export default function equal(a: unknown, b: unknown): boolean {
     if (length !== Object.keys(b as object).length) return false;
 
     for (i = length; i-- !== 0;) {
-      if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
+      if (!Object.hasOwn(b, keys[i])) return false;
     }
 
     for (i = length; i-- !== 0;) {
@@ -88,6 +88,6 @@ export default function equal(a: unknown, b: unknown): boolean {
     return true;
   }
 
-  // NaN === NaN
+  // biome-ignore lint/suspicious/noSelfCompare: NaN === NaN
   return a !== a && b !== b;
 }

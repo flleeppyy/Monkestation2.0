@@ -1,27 +1,28 @@
 /* eslint-disable react/jsx-max-depth */
-import { useBackend } from '../backend';
-import {
-  Section,
-  Button,
-  Box,
-  Flex,
-  Stack,
-  Tooltip,
-  TextArea,
-} from '../components';
-import { Window } from '../layouts';
+
+import type { BooleanLike } from 'common/react';
 import { decodeHtmlEntities } from 'common/string';
 import {
-  ComponentProps,
+  type ComponentProps,
   forwardRef,
   useCallback,
   useEffect,
   useRef,
   useState,
 } from 'react';
-import { BooleanLike } from 'common/react';
-import { computeBoxClassName, computeBoxProps } from 'tgui-core/ui';
 import { classes } from 'tgui-core/react';
+import { computeBoxClassName, computeBoxProps } from 'tgui-core/ui';
+import { useBackend } from '../backend';
+import {
+  Box,
+  Button,
+  Flex,
+  Section,
+  Stack,
+  type TextArea,
+  Tooltip,
+} from '../components';
+import { Window } from '../layouts';
 
 type TicketButton = {
   name: string;

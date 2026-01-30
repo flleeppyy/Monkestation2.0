@@ -19,6 +19,7 @@ import {
   Stack,
   Tabs,
 } from '../../components';
+import { AceEditor } from '../../components/Ace/Editor';
 import { Window } from '../../layouts';
 import { CallModal } from './CallModal';
 import { ChunkViewModal } from './ChunkViewModal';
@@ -27,7 +28,6 @@ import { Log } from './Log';
 import { StateSelectModal } from './StateSelectModal';
 import { TaskManager } from './TaskManager';
 import type { CallInfo, LuaEditorData, LuaEditorModal } from './types';
-import { AceEditor } from '../../components/Ace/Editor';
 
 hljs.registerLanguage('lua', lua);
 
