@@ -1,5 +1,5 @@
 import type { BooleanLike } from 'common/react';
-import {
+import React, {
   ComponentProps,
   Dispatch,
   isValidElement,

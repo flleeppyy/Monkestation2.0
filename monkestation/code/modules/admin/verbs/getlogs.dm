@@ -44,7 +44,7 @@ ADMIN_VERB(getcurrentlogs_debug, R_DEBUG, FALSE, "Get Current Logs (Debug)", "Vi
 	return
 
 /client/proc/json_log_viewer_page(path)
-	DIRECT_OUTPUT(mob, browse_rsc(path, "log.json"))
+	DIRECT_OUTPUT(mob, browse_rsc(file(path), "log.json"))
 	var/datum/browser/browser = new(mob, "log_viewer", null, 1100, 650)
 	browser.set_content("<pre>Loading log please wait...</pre>")
 	browser.add_head_content({"
