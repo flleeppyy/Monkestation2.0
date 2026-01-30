@@ -1,8 +1,12 @@
-import React, {
-  type ComponentProps,
-  type Dispatch,
-  type SetStateAction,
+import type { BooleanLike } from 'common/react';
+import {
+  ComponentProps,
+  Dispatch,
+  isValidElement,
+  SetStateAction,
 } from 'react';
+
+import { useBackend } from '../../backend';
 import {
   Box,
   Button,
@@ -10,13 +14,16 @@ import {
   LabeledList,
   Section,
   Tooltip,
-} from 'tgui-core/components';
-import type { BooleanLike } from 'tgui-core/react';
-
-import { useBackend } from '../../backend';
+} from '../../components';
 import { logger } from '../../logging';
-import type { CallInfo, LuaEditorModal, Variant, VariantList } from './types';
-import type { ListElement, ListPath } from './types';
+import type {
+  CallInfo,
+  ListElement,
+  ListPath,
+  LuaEditorModal,
+  Variant,
+  VariantList,
+} from './types';
 
 const mapListVariantsInner = (value: any, variant: Variant) => {
   if (Array.isArray(variant)) {
@@ -177,7 +184,10 @@ export const ListMapper = (props: ListMapperProps) => {
                   });
                   setModal('call');
                 }}
-                {...thing.props}
+                {
+                  // @ts-expect-error
+                  ...thing.props
+                }
               />
             );
           } else if (thing === null) {
@@ -218,7 +228,7 @@ export const ListMapper = (props: ListMapperProps) => {
     const uniquelyIndexable =
       typeof key === 'string' ||
       typeof key === 'number' ||
-      (React.isValidElement(key) && key.key === 'ref');
+      (isValidElement(key) && key.key === 'ref');
     const valueNode = ThingNode(
       value,
       typeof key === 'number' ? keyPath : valuePath,

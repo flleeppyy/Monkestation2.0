@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useBackend } from '../../backend';
 import {
   Box,
   Button,
@@ -17,10 +18,7 @@ import {
   Section,
   Stack,
   Tabs,
-} from 'tgui-core/components';
-import { AceEditor } from '../../components/Ace/Editor';
-
-import { useBackend } from '../../backend';
+} from '../../components';
 import { Window } from '../../layouts';
 import { CallModal } from './CallModal';
 import { ChunkViewModal } from './ChunkViewModal';
@@ -29,6 +27,7 @@ import { Log } from './Log';
 import { StateSelectModal } from './StateSelectModal';
 import { TaskManager } from './TaskManager';
 import type { CallInfo, LuaEditorData, LuaEditorModal } from './types';
+import { AceEditor } from '../../components/Ace/Editor';
 
 hljs.registerLanguage('lua', lua);
 
