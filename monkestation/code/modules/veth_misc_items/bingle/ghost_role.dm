@@ -8,6 +8,7 @@
 	tags = list(TAG_COMBAT, TAG_EXTERNAL, TAG_OUTSIDER_ANTAG, TAG_TEAM_ANTAG, TAG_ALIEN)
 	checks_antag_cap = TRUE
 	dont_spawn_near_roundend = TRUE
+	min_players = 50
 
 /datum/job/bingle
 	title = ROLE_BINGLE

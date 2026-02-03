@@ -7,6 +7,7 @@
 	tags = list(TAG_SPOOKY, TAG_COMBAT, TAG_EXTERNAL, TAG_OUTSIDER_ANTAG)
 	checks_antag_cap = TRUE
 	dont_spawn_near_roundend = TRUE
+	min_players = 40
 
 /datum/round_event/ghost_role/slasher
 	minimum_required = 1
