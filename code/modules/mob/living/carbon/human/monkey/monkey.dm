@@ -158,3 +158,5 @@ GLOBAL_DATUM(the_one_and_only_punpun, /mob/living/carbon/human/species/monkey/pu
 /mob/living/carbon/human/species/monkey/simian
 	race = /datum/species/monkey/simian
 	ai_controller = null
+	butcher_results = null
+	guaranteed_butcher_results = null
