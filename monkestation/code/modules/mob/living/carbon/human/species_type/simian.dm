@@ -29,6 +29,7 @@
 
 	species_race_mutation = /datum/mutation/race/simian
 	give_monkey_species_effects = FALSE
+	knife_butcher_results = null
 
 /datum/species/monkey/simian/get_species_description()
 	return "Simians are the closest siblings to Humans, unlike Monkeys, which is a term reserved for bio-engineered and mass produced \
