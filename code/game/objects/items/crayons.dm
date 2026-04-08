@@ -891,10 +891,6 @@
 	if(check_empty(user))
 		return ITEM_INTERACT_BLOCKING
 
-	if (isbodypart(target))
-		if (color_limb(target, user))
-			return ITEM_INTERACT_SUCCESS
-
 	if(iscarbon(target))
 		if(pre_noise || post_noise)
 			playsound(user.loc, 'sound/effects/spray.ogg', 25, TRUE, 5)
@@ -989,7 +985,7 @@
 
 	if(!(SEND_SIGNAL(target, COMSIG_OBJ_PAINTED, user, src, color_is_dark) & DONT_USE_SPRAYCAN_CHARGES))
 		use_charges(user, 2, requires_full = FALSE)
-	reagents.trans_to(target, ., volume_multiplier, transferred_by = user, methods = VAPOR)
+	reagents.trans_to(target, ., volume_multiplier, transfered_by = user, methods = VAPOR)
 
 	if(pre_noise || post_noise)
 		playsound(user.loc, 'sound/effects/spray.ogg', 5, TRUE, 5)

@@ -134,7 +134,6 @@ Regenerative extracts:
 	clothing_piece.remove_atom_colour(WASHABLE_COLOUR_PRIORITY)
 	clothing_piece.add_atom_colour(color_transition_filter(COLOR_NAVY, SATURATION_OVERRIDE), FIXED_COLOUR_PRIORITY)
 	clothing_piece.max_heat_protection_temperature = FIRE_IMMUNITY_MAX_TEMP_PROTECT
-	clothing_piece.heat_protection = clothing_piece.body_parts_covered
 	clothing_piece.resistance_flags |= FIRE_PROOF
 
 /obj/item/slimecross/regenerative/silver
