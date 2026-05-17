@@ -52,10 +52,16 @@
 
 /obj/item/food/pie/cream/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
 	. = ..()
+	var/knows_clownfu = FALSE
 	if(!.) //if we're not being caught
-		splat(hit_atom)
+		if(!isnull(throwingdatum.thrower))
+			var/mob/living/shrodingers_clown = throwingdatum.thrower
+			if(shrodingers_clown.mind)
+				if(is_clown_job(shrodingers_clown.mind.assigned_role) || shrodingers_clown.mind.has_antag_datum(/datum/antagonist/nukeop/clownop) || shrodingers_clown.mind.has_antag_datum(/datum/antagonist/nukeop/leader/clownop) || HAS_TRAIT(shrodingers_clown, TRAIT_CLUMSY) || issilicon(shrodingers_clown))
+					knows_clownfu = TRUE
+		splat(hit_atom, knows_clownfu)
 
-/obj/item/food/pie/cream/proc/splat(atom/movable/hit_atom)
+/obj/item/food/pie/cream/proc/splat(atom/movable/hit_atom, knows_clownfu)
 	if(isliving(loc)) //someone caught us!
 		return
 	var/turf/hit_turf = get_turf(hit_atom)
@@ -65,7 +71,7 @@
 	var/is_creamable = TRUE
 	if(isliving(hit_atom))
 		var/mob/living/living_target_getting_hit = hit_atom
-		if(stunning)
+		if(stunning && knows_clownfu)
 			living_target_getting_hit.Paralyze(2 SECONDS) //splat!
 		if(iscarbon(living_target_getting_hit))
 			is_creamable = !!(living_target_getting_hit.get_bodypart(BODY_ZONE_HEAD))
