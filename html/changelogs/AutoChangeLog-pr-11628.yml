@@ -1,4 +1,0 @@
-author: "Runian"
-delete-after: True
-changes:
-  - bugfix: "Upon safe deconstruction, cyborg upgrades are now dropped onto the floor instead of being deleted."
