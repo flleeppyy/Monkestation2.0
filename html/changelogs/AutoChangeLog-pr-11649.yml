@@ -1,4 +1,0 @@
-author: "SirNightKnight"
-delete-after: True
-changes:
-  - bugfix: "security gets bungo donuts as heirlooms instead of ERRORs."
