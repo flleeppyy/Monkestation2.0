@@ -1,0 +1,6 @@
+author: "TheColorCyan"
+delete-after: True
+changes:
+  - refactor: "refactored multi-hit component, now you have to right-click one tile or more away from yourself, and it no longer works when directly clicking things or clicking a tile right near you"
+  - balance: "using multi-hit now applies slowdown for a very short duration"
+  - bugfix: "fixed baseball bats kneecapping not working"
