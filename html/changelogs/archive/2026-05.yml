@@ -407,3 +407,8 @@
       works in low-pressure environments. It reduces inbound damage by 50%, but consumes
       a hefty amount of energy each time.
   - bugfix: Cyborgs now always get their overlays whenever their appearance updates.
+2026-05-25:
+  Absolucy:
+  - bugfix: Hopefully fixed infinitely stacking salt piles that would kill the FPS
+      of anyone unfortunate enough to be nearby.
+  - bugfix: Salt piles will no longer spawn in mid-air / on groundless turfs.
