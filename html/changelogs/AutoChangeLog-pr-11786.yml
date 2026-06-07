@@ -1,0 +1,4 @@
+author: "LettuceGuardian"
+delete-after: True
+changes:
+  - balance: "Bogseo firerate adjusted to 0.3 seconds"
