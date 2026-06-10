@@ -1,0 +1,6 @@
+author: "Runian"
+delete-after: True
+changes:
+  - rscadd: "A new techweb node for service cyborg upgrades: \"Cyborg Upgrades: Service\""
+  - rscadd: "A new cyborg upgrade for the service model that lets them synthesize condiments primarily used for cooking."
+  - image: "Sprite for service cyborg upgrades."
