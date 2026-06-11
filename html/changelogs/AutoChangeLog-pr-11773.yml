@@ -1,7 +1,0 @@
-author: "tattax"
-delete-after: True
-changes:
-  - qol: "adds a visual indicator for blood thickening (bloodsucker rank up via blood)"
-  - qol: "makes blood full! bloodsucker feed text a bit easier to read"
-  - bugfix: "fixes bloodsucker maptext going not following the gradient when below bad blood"
-  - code_imp: "made some to_chats easier to see"
