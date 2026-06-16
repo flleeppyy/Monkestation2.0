@@ -237,3 +237,9 @@
   - bugfix: bloodlings become properly space proof over level 2
   TealSeer:
   - bugfix: fixed CSS-related errors in BYOND 516.1681+
+2026-06-16:
+  PotatoTomahto:
+  - rscadd: ashwalkers now have access to bungo fruit
+  SirNightKnight:
+  - rscadd: you can slice apart base floor plating with welding tools.
+  - bugfix: you can tip over flashed cyborgs.
