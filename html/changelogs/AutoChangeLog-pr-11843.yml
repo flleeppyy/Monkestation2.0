@@ -1,4 +1,0 @@
-author: "SirNightKnight"
-delete-after: True
-changes:
-  - balance: "removed crate content ashing when the locks are broken."

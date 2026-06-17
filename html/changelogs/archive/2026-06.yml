@@ -243,3 +243,11 @@
   SirNightKnight:
   - rscadd: you can slice apart base floor plating with welding tools.
   - bugfix: you can tip over flashed cyborgs.
+2026-06-17:
+  Mantlecrawler:
+  - rscadd: Plasma is now rainbow during pride month
+  - config: Pride week is now pride month, through the entirety of June.
+  SirNightKnight:
+  - balance: removed crate content ashing when the locks are broken.
+  jlsnow301, SirNightKnight:
+  - bugfix: The library console has been refactored. Report any issues in the github!
