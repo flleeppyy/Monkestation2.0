@@ -304,3 +304,7 @@
   - bugfix: fixed racking action on the cycler shotgun
   - bugfix: bounty hunter cycler shotgun now properly fires incendiary rounds from
       secondary tube
+2026-06-21:
+  SirNightKnight:
+  - rscdel: removed the alternate HOP, captain, CMO RD berets along with the QM berets.
+  - code_imp: cleaned up some beret code overwrites.
