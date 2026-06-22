@@ -1,0 +1,5 @@
+author: "Sorenon"
+delete-after: True
+changes:
+  - rscadd: "Added three different modes to job selection (Simple, Character Filters, Per Character Priorities)"
+  - qol: "Moved antag preferences out of character settings since they don't depend on the selected character"
