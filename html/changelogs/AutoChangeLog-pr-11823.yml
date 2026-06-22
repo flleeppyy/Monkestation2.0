@@ -1,0 +1,8 @@
+author: "TheColorCyan, SirNightKnight"
+delete-after: True
+changes:
+  - balance: "oozelings have inherit slime wetness stacks instead of fire immunity. slime wetness stacks also cancel out regular wetness stacks and protect against water exposure."
+  - balance: "removed the oozeling hydrophobia ability."
+  - balance: "the radioactive mutation is not compatible with oozeling DNA."
+  - balance: "oozelings lose more blood from water exposure"
+  - balance: "when starving, oozelings will regain nutriment from cannibalizing their own blood"
