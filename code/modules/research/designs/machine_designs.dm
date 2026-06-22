@@ -784,6 +784,26 @@
 	)
 	departmental_flags = DEPARTMENT_BITFLAG_ENGINEERING | DEPARTMENT_BITFLAG_SCIENCE
 
+/datum/design/board/crossing_signal
+	name = "Crossing Signal Board"
+	desc = "The circuit board for a tram crossing signal."
+	id = "crossing_signal"
+	build_path = /obj/item/circuitboard/machine/crossing_signal
+	category = list(
+		RND_CATEGORY_MACHINE + RND_SUBCATEGORY_MACHINE_TELECOMMS
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_ENGINEERING
+
+/datum/design/board/guideway_sensor
+	name = "Guideway Sensor Board"
+	desc = "The circuit board for a tram proximity sensor."
+	id = "guideway_sensor"
+	build_path = /obj/item/circuitboard/machine/guideway_sensor
+	category = list(
+		RND_CATEGORY_MACHINE + RND_SUBCATEGORY_MACHINE_TELECOMMS
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_ENGINEERING
+
 /datum/design/board/limbgrower
 	name = "Limb Grower Board"
 	desc = "The circuit board for a limb grower."
@@ -1258,6 +1278,16 @@
 		RND_CATEGORY_MACHINE + RND_SUBCATEGORY_MACHINE_RESEARCH
 	)
 	departmental_flags = DEPARTMENT_BITFLAG_SCIENCE | DEPARTMENT_BITFLAG_ENGINEERING
+
+/datum/design/board/big_manipulator
+	name = "Big Manipulator Board"
+	desc = "The circuit board for a big manipulator."
+	id = "big_manipulator"
+	build_path = /obj/item/circuitboard/machine/big_manipulator
+	category = list(
+		RND_CATEGORY_MACHINE + RND_SUBCATEGORY_MACHINE_ENGINEERING
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_SCIENCE | DEPARTMENT_BITFLAG_ENGINEERING | DEPARTMENT_BITFLAG_CARGO | DEPARTMENT_BITFLAG_SERVICE
 
 /datum/design/board/flatpacker
 	name = "Flatpacker Machine Board"
