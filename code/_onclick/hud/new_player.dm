@@ -562,10 +562,6 @@
 	server_port = HRP_PORT
 	server_id = PLEXORA_SERVERID_MONKERIS
 
-/atom/movable/screen/lobby/button/server/hrp/update_icon_state(updates)
-	. = ..()
-	icon_state = base_icon_state
-
 //MAIN MONKE (MEDIUM RARE)
 /atom/movable/screen/lobby/button/server/mrp
 	base_icon_state = "mrp"
