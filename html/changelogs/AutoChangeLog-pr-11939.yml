@@ -1,9 +1,0 @@
-author: "JohnFulpWillard, Tractor Maam"
-delete-after: True
-changes:
-  - rscadd: "Multi-Z support for AIs, and the re-introduction of AIs to Oldstation & Russian Derelict."
-  - rscadd: "AIs can now fight over control of display cores."
-  - bugfix: "AIs no longer get alerts of falling apart when they aren't."
-  - bugfix: "Upgrade modules now work again."
-  - bugfix: "Power transfer upgrade now researches induction immediately rather than using a separate upgrade for the same thing."
-  - bugfix: "AI data cores can now be pie'd again."
