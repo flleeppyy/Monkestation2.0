@@ -1,0 +1,4 @@
+author: "SpeebusDaGeebus"
+delete-after: True
+changes:
+  - rscdel: "removed health bonus from no revive / DNR"
