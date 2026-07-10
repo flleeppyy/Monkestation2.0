@@ -1,5 +1,0 @@
-author: "hexakats"
-delete-after: True
-changes:
-  - qol: "Moved the hypospray's draw function from a mode to right click"
-  - bugfix: "Fixed a runtime that happens when you try to draw from a container with no vial in the hypospray"

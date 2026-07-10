@@ -244,3 +244,18 @@
   SirNightKnight:
   - bugfix: incendiary bullet fire trails auto-delete in 2.5 seconds to mitigate hangtime
       from lag.
+2026-07-10:
+  PotatoTomahto:
+  - rscadd: adds the buster fist as a tot item from yogstation
+  Runian, lelandkemble:
+  - balance: Scanned wounds stay scanned when they downgrade in severity.
+  SpeebusDaGeebus:
+  - rscdel: removed health bonus from no revive / DNR
+  Vekter, SirNightKnight:
+  - rscadd: Adds support for it/its pronouns. You can select these in character preferences.
+  hexakats:
+  - qol: Moved the hypospray's draw function from a mode to right click
+  - bugfix: Fixed a runtime that happens when you try to draw from a container with
+      no vial in the hypospray
+  - bugfix: Contractor baton can harm with right click again when there's no cuff
+      upgrade (and a runtime fix when trying to harm baton)

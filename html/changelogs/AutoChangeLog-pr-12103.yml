@@ -1,4 +1,0 @@
-author: "hexakats"
-delete-after: True
-changes:
-  - bugfix: "Contractor baton can harm with right click again when there's no cuff upgrade (and a runtime fix when trying to harm baton)"
