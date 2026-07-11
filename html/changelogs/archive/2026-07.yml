@@ -259,3 +259,34 @@
       no vial in the hypospray
   - bugfix: Contractor baton can harm with right click again when there's no cuff
       upgrade (and a runtime fix when trying to harm baton)
+2026-07-11:
+  Barrel:
+  - qol: Darkspawns panopticon no longer needs power or an apc to use. You can now
+      jump to allies and placed void eyes.
+  - refactor: Refactored how cameras work based on tgstation.
+  - balance: sets body camera range to 7, same as cameras
+  Cujo:
+  - rscadd: Mute and Fluffy Tongue are now incompatible quirks
+  - rscdel: Removes the duplicate shower drain from Tramstation Medical for real this
+      time
+  JohnFulpWillard:
+  - bugfix: AIs can double click on a tile to TP to that tile again.
+  - bugfix: Fixes AI's custom portrait icons.
+  - bugfix: Removed negative AI CPU speed/power values from the overclocking workstation
+      computer. Also made the UI a little bit better.
+  Runian:
+  - balance: Hyperkinetic Dampening Projector now only consumes power when a projectile
+      initially becomes dampened.
+  - balance: Hyperkinetic Dampening Projector's power consumption is now 0.15kW per
+      projectile damage.
+  - bugfix: Projectile dampers no longer speeds up projectiles when it should of slowed
+      them down instead.
+  Shoddd:
+  - bugfix: unclonable neurons quirk now tied to mind
+  SirNightKnight:
+  - rscadd: added a dozen mints to the snack vendor contraband section.
+  siliconOpossum, MrMelbert, ghost, SirNightKnight:
+  - qol: Neckties are now worn underneath suit items and accessories, they can still
+      be optionally worn over them in case you want the "business space suit" look.
+  - qol: made Balaclavas layer below glasses and radios
+  - bugfix: split bandage layering so it layers better with back slot items.
