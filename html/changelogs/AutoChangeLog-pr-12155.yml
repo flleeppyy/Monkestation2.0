@@ -1,4 +1,0 @@
-author: "Cujo"
-delete-after: True
-changes:
-  - bugfix: "Kitchen pans (and maybe other kitchen utilities) will no longer talk to you."

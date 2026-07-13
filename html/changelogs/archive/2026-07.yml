@@ -325,3 +325,15 @@
   - map: Tramstation RD Server room now has R-walls sealing it again
   - balance: Replaces the atmospherics arm toolset with Advanced fire extinguisher,
       ranged gas analyzer, and cyborg crowbar from their normal versions
+2026-07-13:
+  Cujo:
+  - bugfix: Kitchen pans (and maybe other kitchen utilities) will no longer talk to
+      you.
+  Shoddd:
+  - bugfix: podpeople no longer have hair
+  - bugfix: changeling armor now list that it slows chemical generation
+  SirNightKnight:
+  - rscadd: gave traitors access to microbomb implants in their uplink.
+  - sound: just switched the taser select sounds around so it makes more sense on
+      the advanced taser .
+  - bugfix: miner salve doesnt give a damage overlay.
