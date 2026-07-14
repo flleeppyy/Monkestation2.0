@@ -1,6 +1,0 @@
-author: "hexakats"
-delete-after: True
-changes:
-  - balance: "The contractor modsuit's complexity has been increased from 15 to 20"
-  - balance: "The contractor modsuit's biohazard has been increased to 100%"
-  - balance: "The contractor modsuit starts with an inbuilt quick cuff module"
