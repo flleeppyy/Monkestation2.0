@@ -360,3 +360,10 @@
   - balance: The contractor modsuit's complexity has been increased from 15 to 20
   - balance: The contractor modsuit's biohazard has been increased to 100%
   - balance: The contractor modsuit starts with an inbuilt quick cuff module
+2026-07-15:
+  Shoddd:
+  - balance: brig med now requires medical hours instead of sec hours
+  SirNightKnight:
+  - balance: lowered sec gps alert delay to 15 seconds from 20
+  byondsucks:
+  - balance: Heretics need 40 players readied up to roll.
