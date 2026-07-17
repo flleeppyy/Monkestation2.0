@@ -378,3 +378,13 @@
   - refactor: refactored blood, report any issues
   - refactor: species chemical interactions are now handled by their livers
   - rscadd: moths, apids, arachnids now share same blood type
+2026-07-17:
+  SirNightKnight:
+  - rscadd: added nitrogen tanks.
+  - bugfix: mini fire extinguishers have a proper sprite when in a tank holder.
+  - code_imp: rewrote how species specific internals are given for internal boxes.
+      fixed a bug where security survival boxes would get two radios with the expanded
+      survival box station trait.
+  TheColorCyan:
+  - bugfix: fixed foods giving way less nutriment than they should
+  - rscadd: added pharaoh tunic to loadout as donator item
