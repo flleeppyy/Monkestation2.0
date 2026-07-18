@@ -1,0 +1,4 @@
+author: "hexakats"
+delete-after: True
+changes:
+  - balance: "bumps up contractor modsuit biohazard protection to 100 (missed this change previously)"
