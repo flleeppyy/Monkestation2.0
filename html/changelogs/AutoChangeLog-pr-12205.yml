@@ -1,0 +1,5 @@
+author: "TheColorCyan"
+delete-after: True
+changes:
+  - bugfix: "fixed blood not carrying over immunity data (and making it so vaccines arent possible to make)"
+  - bugfix: "touch and vapor blood infect will now check for protection instead of always infecting you"
