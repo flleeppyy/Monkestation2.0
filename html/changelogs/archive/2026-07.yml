@@ -388,3 +388,17 @@
   TheColorCyan:
   - bugfix: fixed foods giving way less nutriment than they should
   - rscadd: added pharaoh tunic to loadout as donator item
+2026-07-19:
+  Beeper-Skeeper:
+  - rscadd: Adds 2 bunny suits for the Captain and HoS. Both are in the loadoutstore
+      and also in the command outfitting station if you hack the contraband wire.
+  JohnFulpWillard:
+  - bugfix: '[IceBox] Added a button to toggle the kitchen''s shutters.'
+  TheColorCyan:
+  - bugfix: fixed blood not carrying over immunity data (and making it so vaccines
+      arent possible to make)
+  - bugfix: touch and vapor blood infect will now check for protection instead of
+      always infecting you
+  hexakats:
+  - balance: bumps up contractor modsuit biohazard protection to 100 (missed this
+      change previously)
