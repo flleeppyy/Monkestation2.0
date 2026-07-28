@@ -792,3 +792,6 @@
 
 /datum/config_entry/string/floxy_password
 	protection = CONFIG_ENTRY_LOCKED | CONFIG_ENTRY_HIDDEN
+
+/datum/config_entry/number_list/ignored_cids
+	default = list()

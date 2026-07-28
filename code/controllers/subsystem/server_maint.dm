@@ -14,6 +14,7 @@ SUBSYSTEM_DEF(server_maint)
 	///Delay between list clearings in ticks
 	var/delay = 5
 	var/cleanup_ticker = 0
+	var/list/ignored_cids = list() // will be used as numeric-keyed map
 
 /datum/controller/subsystem/server_maint/PreInit()
 	world.hub_password = "" //quickly! before the hubbies see us.
@@ -34,6 +35,13 @@ SUBSYSTEM_DEF(server_maint)
 		"dead_mob_list" = GLOB.dead_mob_list,
 		"keyloop_list" = GLOB.keyloop_list, //A null here will cause new clients to be unable to move. totally unacceptable
 	)
+
+	// load IGNORED_CIDS as number_list into a fast lookup map
+	var/list/ignored_conf = CONFIG_GET(number_list/ignored_cids)
+	if (ignored_conf && length(ignored_conf))
+		for (var/num in ignored_conf)
+			if (isnum(num))
+				ignored_cids[num2text(num)] = TRUE
 	return SS_INIT_SUCCESS
 
 /datum/controller/subsystem/server_maint/fire(resumed = FALSE)
