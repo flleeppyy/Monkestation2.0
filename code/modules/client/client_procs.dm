@@ -437,7 +437,7 @@ GLOBAL_LIST_INIT(blacklisted_builds, list(
 	tgui_say.initialize()
 
 	if(alert_mob_dupe_login && !holder)
-		if (SSserver_maint in computer_id in SSserver_maint.ignored_cids)
+		if (SSserver_maint && (computer_id in SSserver_maint.ignored_cids))
 			message_admins("<B>MULTIKEYING: </B></span><span class='notice'>[key_name_admin(src)] Connecting player joined with IGNORED CID [computer_id].")
 			log_admin_private("MULTIKEYING: [key_name(src)] Connecting player joined with IGNORED CID [computer_id].")
 		else
