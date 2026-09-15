@@ -33052,6 +33052,11 @@
 /obj/structure/cable,
 /turf/open/floor/iron/dark,
 /area/station/ai_monitored/security/armory)
+"gfc" = (
+/obj/structure/lattice,
+/obj/item/toy/plush/argemia,
+/turf/open/space,
+/area/space/nearstation)
 "gfi" = (
 /obj/structure/disposalpipe/junction/yjunction{
 	dir = 2
@@ -41130,11 +41135,6 @@
 /obj/effect/turf_decal/tile/yellow/half/contrasted,
 /turf/open/floor/iron/dark,
 /area/station/maintenance/disposal/incinerator)
-"mZb" = (
-/obj/structure/lattice,
-/obj/item/toy/plush/argemia,
-/turf/open/space,
-/area/space/nearstation)
 "mZi" = (
 /obj/structure/disposalpipe/segment,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
@@ -111990,7 +111990,7 @@ aaa
 aaa
 aby
 cFB
-mZb
+gfc
 cFB
 aby
 aaa
