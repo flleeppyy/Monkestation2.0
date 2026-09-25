@@ -85,7 +85,7 @@ const Header = (props: { dropdown: any }) => {
   const { data } = useBackend<ChangelogData>();
   return (
     <Section>
-      <h1>Monkestation</h1>
+      <h1>Monke's Paw</h1> {/* <h1>Monkestation</h1>  */}
       <p>
         <b>Thanks to: </b>
         /TG/station, Baystation 12, /vg/station, NTstation, CDK Station devs,
@@ -97,7 +97,7 @@ const Header = (props: { dropdown: any }) => {
         {'Current organization members can be found '}
         <a href="https://github.com/orgs/monkestation/people">here</a>
         {', recent GitHub contributors can be found '}
-        <a href="https://github.com/monkestation/monkestation2.0/pulse/monthly">
+        <a href="https://github.com/monkestation/monkes-paw/pulse/monthly">
           here
         </a>
         .

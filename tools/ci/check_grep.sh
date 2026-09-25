@@ -24,7 +24,7 @@ else
 	grep=grep
 fi
 
-code_files=( code/**/*.dm monkestation/code/**/*.dm )
+code_files=( code/**/*.dm monkestation/code/**/*.dm z_modular_paw/**/*.dm ) # PAW EDIT ADDITION - our folder
 map_files=( _maps/**/*.dmm )
 code_x_515=( code/**/!(__byond_version_compat).dm monkestation/code/**/!(__byond_version_compat).dm )
 

@@ -19,4 +19,4 @@
 #ISSUE_KEY github_pat_EXAMPLE
 
 ##Github API 'slug' for issue reporting, format owner/repo
-ISSUE_SLUG Monkestation/Monkestation2.0
+ISSUE_SLUG Monkestation/Monkes-Paw

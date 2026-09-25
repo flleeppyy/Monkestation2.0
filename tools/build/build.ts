@@ -101,6 +101,7 @@ export const DmTarget = new Juke.Target({
     'sound/**',
     'monkestation/code/**',
     'tgui/public/tgui.html',
+    'z_modular_paw/**', /// PAW EDIT ADDITION
     `${DME_NAME}.dme`,
     NamedVersionFile,
   ],

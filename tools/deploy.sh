@@ -39,6 +39,15 @@ cp -r tgui/packages/tgfont/dist/* $1/tgui/packages/tgfont/dist/
 cp -r goon/icons/* $1/goon/icons/
 cp -r monkestation/code/* $1/monkestation/code/
 
+# PAW EDIT ADD START
+mkdir -p \
+		$1/z_modular_paw
+
+find z_modular_paw/ -name \*.dmi -exec cp --parents {} $1 \;
+# find z_modular_paw/modules/GAGS/json_configs -name \*.json -exec cp --parents {} $1 \;
+
+# PAW EDIT ADD END
+
 #remove .dm files from _maps
 
 #this regrettably doesn't work with windows find
