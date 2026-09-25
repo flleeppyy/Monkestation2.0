@@ -3,5 +3,6 @@
 	"scannable_directory": "z_modular_paw/",
 	"subdirectories": true,
 	"excluded_files": [],
-	"forbidden_includes": []
+	"forbidden_includes": [],
+	"no_error_on_empty": true
 }
