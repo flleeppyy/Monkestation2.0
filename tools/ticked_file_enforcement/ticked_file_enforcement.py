@@ -28,7 +28,7 @@ scannable_directory = schema["scannable_directory"]
 subdirectories = schema["subdirectories"]
 FORBIDDEN_INCLUDES = schema["forbidden_includes"]
 excluded_files = schema["excluded_files"]
-no_error_on_empty = schema["no_error_on_empty"] or False
+no_error_on_empty = schema.get("no_error_on_empty", False)
 
 def post_error(string):
     print(red(f"Ticked File Enforcement [{file_reference}]: " + string))
@@ -39,6 +39,11 @@ def post_error(string):
     print(red(f"Ticked File Enforcement [{file_reference}]: " + string))
     if on_github:
         print(f"::error file={file_reference},line=1,title=Ticked File Enforcement::{string}")
+
+def post_warn(string):
+    print(yellow(f"Ticked File Enforcement [{file_reference}]: " + string))
+    if on_github:
+        print(f"::warning file={file_reference},line=1,title=Ticked File Enforcement::{string}")
 
 for excluded_file in excluded_files:
     full_file_path = scannable_directory + excluded_file
@@ -81,7 +86,7 @@ if len(scannable_files) == 0:
         post_warn(f"No files were found in {scannable_directory}.")
         sys.exit(0)
     else:
-        post_warn(f"No files were found in {scannable_directory}. Ticked File Enforcement has failed!")
+        post_error(f"No files were found in {scannable_directory}. Ticked File Enforcement has failed!")
         sys.exit(1)
 
 for code_file in scannable_files:
