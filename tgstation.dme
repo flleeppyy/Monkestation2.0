@@ -703,6 +703,7 @@
 #include "code\controllers\configuration\entries\lua.dm"
 #include "code\controllers\configuration\entries\monkestation.dm"
 #include "code\controllers\configuration\entries\resources.dm"
+#include "code\controllers\configuration\entries\~paw.dm"
 #include "code\controllers\subsystem\achievements.dm"
 #include "code\controllers\subsystem\addiction.dm"
 #include "code\controllers\subsystem\admin_verbs.dm"
@@ -8925,4 +8926,5 @@
 #include "monkestation\code\modules\wiremod_chem\housing\_chem_housing.dm"
 #include "monkestation\code\modules\wiremod_chem\housing\chemical_circuit.dm"
 #include "monkestation\code\modules\wiremod_chem\housing\precursor_tank.dm"
+#include "z_modular_paw\modules\monke_cross_db\code\dbcore.dm"
 // END_INCLUDE

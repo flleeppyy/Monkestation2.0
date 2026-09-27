@@ -34,7 +34,8 @@
 	var/list/kv = list()
 	var/datum/db_query/Query = SSdbcore.NewQuery(
 		"SELECT achievement_key,value FROM [format_table_name("achievements")] WHERE ckey = :ckey",
-		list("ckey" = owner_ckey)
+		list("ckey" = owner_ckey),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
 	)
 	if(!Query.Execute())
 		qdel(Query)

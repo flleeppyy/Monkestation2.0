@@ -52,7 +52,9 @@
 		FROM [format_table_name("library")]
 		WHERE isnull(deleted) AND (:category IS NULL OR category = :category)
 		ORDER BY rand() LIMIT :limit
-	"}, list("category" = category, "limit" = amount))
+	"}, list("category" = category, "limit" = amount),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
+	)
 	if(query_get_random_books.Execute())
 		while(query_get_random_books.NextRow())
 			var/list/book_deets = query_get_random_books.item

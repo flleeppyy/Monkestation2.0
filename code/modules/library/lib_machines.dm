@@ -207,7 +207,9 @@ GLOBAL_VAR_INIT(library_table_modified, 0)
 			[book_id ? "AND id LIKE CONCAT('%', :book_id, '%')" : ""]
 		ORDER BY id DESC
 		LIMIT :skip, :take
-	"}, list("author" = author, "title" = title, "book_id" = book_id, "category" = category, "skip" = BOOKS_PER_PAGE * search_page, "take" = BOOKS_PER_PAGE))
+	"}, list("author" = author, "title" = title, "book_id" = book_id, "category" = category, "skip" = BOOKS_PER_PAGE * search_page, "take" = BOOKS_PER_PAGE),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
+	)
 
 	var/query_succeeded = query_library_list_books.Execute()
 	sending_request = FALSE
@@ -233,7 +235,9 @@ GLOBAL_VAR_INIT(library_table_modified, 0)
 			AND title LIKE CONCAT('%',:title,'%')
 			AND (:category = 'Any' OR category = :category)
 			[book_id ? "AND id LIKE CONCAT('%', :book_id, '%')" : ""]
-	"}, list("author" = author, "title" = title, "book_id" = book_id, "category" = category))
+	"}, list("author" = author, "title" = title, "book_id" = book_id, "category" = category),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
+	)
 
 	if(!query_library_count_books.warn_execute())
 		qdel(query_library_count_books)
@@ -616,7 +620,9 @@ GLOBAL_VAR_INIT(library_table_modified, 0)
 	var/datum/db_query/query_library_upload = SSdbcore.NewQuery({"
 		INSERT INTO [format_table_name("library")] (author, title, content, category, ckey, datetime, round_id_created)
 		VALUES (:author, :title, :content, :category, :ckey, Now(), :round_id)
-	"}, list("title" = book.title, "author" = book.author, "content" = book.content, "category" = upload_category, "ckey" = usr.ckey, "round_id" = GLOB.round_id))
+	"}, list("title" = book.title, "author" = book.author, "content" = book.content, "category" = upload_category, "ckey" = usr.ckey, "round_id" = GLOB.round_id),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
+	)
 	if(!query_library_upload.Execute())
 		qdel(query_library_upload)
 		say("Database error encountered uploading to Archive")
@@ -661,7 +667,8 @@ GLOBAL_VAR_INIT(library_table_modified, 0)
 
 	var/datum/db_query/query_library_print = SSdbcore.NewQuery(
 		"SELECT * FROM [format_table_name("library")] WHERE id=:id AND isnull(deleted)",
-		list("id" = id)
+		list("id" = id),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
 	)
 	if(!query_library_print.Execute())
 		qdel(query_library_print)

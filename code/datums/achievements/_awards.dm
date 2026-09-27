@@ -52,7 +52,8 @@
 /datum/award/proc/get_raw_value(key)
 	var/datum/db_query/Q = SSdbcore.NewQuery(
 		"SELECT value FROM [format_table_name("achievements")] WHERE ckey = :ckey AND achievement_key = :achievement_key",
-		list("ckey" = key, "achievement_key" = database_id)
+		list("ckey" = key, "achievement_key" = database_id),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
 	)
 	if(!Q.Execute(async = TRUE))
 		qdel(Q)
@@ -154,7 +155,8 @@
 /datum/award/score/proc/LoadHighScores()
 	var/datum/db_query/Q = SSdbcore.NewQuery(
 		"SELECT ckey,value FROM [format_table_name("achievements")] WHERE achievement_key = :achievement_key ORDER BY value DESC LIMIT 50",
-		list("achievement_key" = database_id)
+		list("achievement_key" = database_id),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
 	)
 	if(!Q.Execute(async = TRUE))
 		qdel(Q)
@@ -180,7 +182,8 @@
 	. = ..()
 	var/datum/db_query/get_unlocked_count = SSdbcore.NewQuery(
 		"SELECT COUNT(m.achievement_key) FROM [format_table_name("achievements")] AS a JOIN [format_table_name("achievement_metadata")] m ON a.achievement_key = m.achievement_key AND m.achievement_type = 'Achievement' WHERE a.ckey = :ckey",
-		list("ckey" = key)
+		list("ckey" = key),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
 	)
 	if(!get_unlocked_count.Execute(async = TRUE))
 		qdel(get_unlocked_count)
@@ -194,6 +197,7 @@
 /datum/award/score/achievements_score/LoadHighScores()
 	var/datum/db_query/get_unlocked_highscore = SSdbcore.NewQuery(
 		"SELECT ckey, COUNT(ckey) AS c FROM [format_table_name("achievements")] AS a JOIN [format_table_name("achievement_metadata")] m ON a.achievement_key = m.achievement_key AND m.achievement_type = 'Achievement' GROUP BY ckey ORDER BY c DESC LIMIT 50",
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
 	)
 	if(!get_unlocked_highscore.Execute(async = TRUE))
 		qdel(get_unlocked_highscore)
@@ -208,7 +212,8 @@
 /datum/award/score/achievements_score/on_achievement_data_init(datum/achievement_data/holder, database_value)
 	var/datum/db_query/get_unlocked_load = SSdbcore.NewQuery(
 		"SELECT COUNT(m.achievement_key) FROM [format_table_name("achievements")] AS a JOIN [format_table_name("achievement_metadata")] m ON a.achievement_key = m.achievement_key AND m.achievement_type = 'Achievement' WHERE a.ckey = :ckey",
-		list("ckey" = holder.owner_ckey)
+		list("ckey" = holder.owner_ckey),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
 	)
 	if(!get_unlocked_load.Execute(async = TRUE))
 		qdel(get_unlocked_load)

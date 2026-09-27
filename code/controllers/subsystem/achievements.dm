@@ -82,7 +82,9 @@ SUBSYSTEM_DEF(achievements)
 /datum/controller/subsystem/achievements/proc/update_metadata()
 	var/list/current_metadata = list()
 	//select metadata here
-	var/datum/db_query/Q = SSdbcore.NewQuery("SELECT achievement_key,achievement_version FROM [format_table_name("achievement_metadata")]")
+	var/datum/db_query/Q = SSdbcore.NewQuery("SELECT achievement_key,achievement_version FROM [format_table_name("achievement_metadata")]",
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
+	)
 	if(!Q.Execute(async = TRUE))
 		qdel(Q)
 		return
@@ -98,4 +100,4 @@ SUBSYSTEM_DEF(achievements)
 			to_update += list(A.get_metadata_row())
 
 	if(to_update.len)
-		SSdbcore.MassInsert(format_table_name("achievement_metadata"),to_update,duplicate_key = TRUE)
+		SSdbcore.MassInsert(format_table_name("achievement_metadata"),to_update,duplicate_key = TRUE, cross_db = CONFIG_GET(flag/sql_enabled_cross)) // PAW EDIT - MONKE_CROSS_DB - ORIGINAL: SSdbcore.MassInsert(format_table_name("achievement_metadata"),to_update,duplicate_key = TRUE)

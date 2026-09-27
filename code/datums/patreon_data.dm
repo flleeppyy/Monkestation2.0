@@ -24,7 +24,14 @@
 	access_rank = patreon_rank_to_key(owned_rank)
 
 /datum/patreon_data/proc/fetch_key_and_rank()
-	var/datum/db_query/query_get_key = SSdbcore.NewQuery("SELECT patreon_key, patreon_rank FROM [format_table_name("player")] WHERE ckey = :ckey", list("ckey" = ckey))
+	var/datum/db_query/query_get_key // PAW EDIT - MONKE_CROSS_DB - ORIGINAL: var/datum/db_query/query_get_key = SSdbcore.NewQuery("SELECT patreon_key, patreon_rank FROM [format_table_name("player")] WHERE ckey = :ckey", list("ckey" = ckey))
+	// PAW EDIT ADDITION START
+	// If cross db is enabled, we want to use the cross db connection for this query
+	if(CONFIG_GET(flag/sql_enabled_cross))
+		query_get_key = SSdbcore.NewQuery("SELECT patreon_key, patreon_rank FROM [format_table_name("player")] WHERE ckey = :ckey", list("ckey" = ckey), cross_db = TRUE)
+	else
+		query_get_key = SSdbcore.NewQuery("SELECT patreon_key, patreon_rank FROM [format_table_name("player")] WHERE ckey = :ckey", list("ckey" = ckey))
+	// PAW EDIT ADDITION END
 	if(query_get_key.warn_execute())
 		if(query_get_key.NextRow())
 			client_key = query_get_key.item[1]
@@ -62,7 +69,13 @@
 	var/datum/patreon_data/cached_patreon = GLOB.persistent_clients_by_ckey[ckey]?.patreon
 	if(!isnull(cached_patreon))
 		return raw ? cached_patreon.owned_rank : cached_patreon.access_rank
-	var/datum/db_query/query_get_key = SSdbcore.NewQuery("SELECT patreon_rank FROM [format_table_name("player")] WHERE ckey = :ckey", list("ckey" = ckey))
+	var/datum/db_query/query_get_key // PAW EDIT - MONKE_CROSS_DB - ORIGINAL: var/datum/db_query/query_get_key = SSdbcore.NewQuery("SELECT patreon_rank FROM [format_table_name("player")] WHERE ckey = :ckey", list("ckey" = ckey))
+	// PAW EDIT ADDITION START
+	if(CONFIG_GET(flag/sql_enabled_cross))
+		query_get_key = SSdbcore.NewQuery("SELECT patreon_rank FROM [format_table_name("player")] WHERE ckey = :ckey", list("ckey" = ckey), cross_db = TRUE)
+	else
+		query_get_key = SSdbcore.NewQuery("SELECT patreon_rank FROM [format_table_name("player")] WHERE ckey = :ckey", list("ckey" = ckey))
+	// PAW EDIT ADDITION END
 	var/owned_rank
 	var/access_rank
 	if(query_get_key.warn_execute())

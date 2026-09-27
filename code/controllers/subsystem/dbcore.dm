@@ -381,7 +381,7 @@ SUBSYSTEM_DEF(dbcore)
 /datum/controller/subsystem/dbcore/proc/ReportError(error)
 	last_error = error
 
-/datum/controller/subsystem/dbcore/proc/NewQuery(sql_query, arguments, allow_during_shutdown=FALSE)
+/datum/controller/subsystem/dbcore/proc/NewQuery(sql_query, arguments, allow_during_shutdown=FALSE, cross_db=FALSE) // PAW EDIT ADDITION - MONKE_CROSS_DB - ORIGINAL: /datum/controller/subsystem/dbcore/proc/NewQuery(sql_query, arguments, allow_during_shutdown=FALSE)
 	//If the subsystem is shutting down, disallow new queries
 	if(!allow_during_shutdown && shutting_down)
 		CRASH("Attempting to create a new db query during the world shutdown")
@@ -390,7 +390,7 @@ SUBSYSTEM_DEF(dbcore)
 		log_admin_private("ERROR: Advanced admin proc call led to sql query: [sql_query]. Query has been blocked")
 		message_admins("ERROR: Advanced admin proc call led to sql query. Query has been blocked")
 		return FALSE
-	return new /datum/db_query(connection, sql_query, arguments)
+	// return new /datum/db_query(connection, sql_query, arguments) // PAW EDIT REMOVAL - MONKE_CROSS_DB
 
 /**
  * Creates and executes a query without waiting for or tracking the results.
@@ -450,7 +450,7 @@ The duplicate_key arg can be true to automatically generate this part of the que
 Ignore_errors instructes mysql to continue inserting rows if some of them have errors.
 	the erroneous row(s) aren't inserted and there isn't really any way to know why or why errored
 */
-/datum/controller/subsystem/dbcore/proc/MassInsert(table, list/rows, duplicate_key = FALSE, ignore_errors = FALSE, warn = FALSE, async = TRUE, special_columns = null)
+/datum/controller/subsystem/dbcore/proc/MassInsert(table, list/rows, duplicate_key = FALSE, ignore_errors = FALSE, warn = FALSE, async = TRUE, special_columns = null, cross_db = FALSE) // PAW EDIT CHANGE - ORIGINAL: /datum/controller/subsystem/dbcore/proc/MassInsert(table, list/rows, duplicate_key = FALSE, ignore_errors = FALSE, warn = FALSE, async = TRUE, special_columns = null)
 	if (!table || !rows || !istype(rows))
 		return
 
@@ -501,7 +501,7 @@ Ignore_errors instructes mysql to continue inserting rows if some of them have e
 	else if (duplicate_key != FALSE)
 		query_parts += duplicate_key
 
-	var/datum/db_query/Query = NewQuery(query_parts.Join(), arguments)
+	var/datum/db_query/Query = NewQuery(query_parts.Join(), arguments, cross_db = cross_db) // PAW EDIT - MONKE_CROSS_DB - ORIGINAL: var/datum/db_query/Query = NewQuery(query_parts.Join(), arguments)
 	if (warn)
 		. = Query.warn_execute(async)
 	else

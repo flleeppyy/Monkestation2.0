@@ -39,7 +39,9 @@
 			AND ckey LIKE CONCAT('%',:ckey,'%')
 		ORDER BY id DESC
 		LIMIT :skip, :take
-	"}, list("author" = author, "title" = title, "book_id" = book_id, "category" = category, "ckey" = ckey, "skip" = BOOKS_PER_PAGE * search_page, "take" = BOOKS_PER_PAGE))
+	"}, list("author" = author, "title" = title, "book_id" = book_id, "category" = category, "ckey" = ckey, "skip" = BOOKS_PER_PAGE * search_page, "take" = BOOKS_PER_PAGE),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
+	)
 
 	var/query_succeeded = query_library_list_books.Execute()
 	sending_request = FALSE
@@ -68,7 +70,9 @@
 			AND (:category = 'Any' OR category = :category)
 			[book_id ? "AND id LIKE CONCAT('%', :book_id, '%')" : ""]
 			AND ckey LIKE CONCAT('%',:ckey,'%')
-	"}, list("author" = author, "title" = title, "book_id" = book_id, "category" = category, "ckey" = ckey))
+	"}, list("author" = author, "title" = title, "book_id" = book_id, "category" = category, "ckey" = ckey),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
+	)
 
 	if(!query_library_count_books.warn_execute())
 		qdel(query_library_count_books)
@@ -155,7 +159,8 @@
 
 	var/datum/db_query/query_library_view = SSdbcore.NewQuery(
 		"SELECT * FROM [format_table_name("library")] WHERE id=:id",
-		list("id" = id)
+		list("id" = id),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
 	)
 	if(!query_library_view.Execute())
 		qdel(query_library_view)
@@ -183,7 +188,8 @@
 		SELECT id, book, reason, ckey, datetime, action, INET_NTOA(ip_addr)
 			FROM [format_table_name("library_action")] WHERE book=:id
 		"},
-		list("id" = id)
+		list("id" = id),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
 	)
 	if(!query_book_history.Execute())
 		qdel(query_book_history)
@@ -217,7 +223,9 @@
 		UPDATE [format_table_name("library")]
 		SET deleted = 1
 		WHERE id = :id
-	"}, list("id" = id))
+	"}, list("id" = id),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
+	)
 	if(!query_hide_book.warn_execute())
 		qdel(query_hide_book)
 		return
@@ -227,7 +235,9 @@
 	var/datum/db_query/query_update_log = SSdbcore.NewQuery({"
 		INSERT INTO [format_table_name("library_action")] (book, reason, ckey, datetime, action, ip_addr)
 		VALUES (:book, :reason, :ckey, Now(), :action, INET_ATON(:ip_addr))
-	"}, list("book" = id, "reason" = reason, "ckey" = admin.ckey, "action" = BOOK_ADMIN_DELETE, "ip_addr" = admin.address))
+	"}, list("book" = id, "reason" = reason, "ckey" = admin.ckey, "action" = BOOK_ADMIN_DELETE, "ip_addr" = admin.address),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
+	)
 	if(!query_update_log.warn_execute())
 		qdel(query_update_log)
 		return
@@ -252,7 +262,9 @@
 		UPDATE [format_table_name("library")]
 		SET deleted = NULL
 		WHERE id = :id
-	"}, list("id" = id))
+	"}, list("id" = id),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
+	)
 
 	if(!query_unhide_book.warn_execute())
 		qdel(query_unhide_book)
@@ -262,7 +274,9 @@
 	var/datum/db_query/query_update_log = SSdbcore.NewQuery({"
 		INSERT INTO [format_table_name("library_action")] (book, reason, ckey, datetime, action, ip_addr)
 		VALUES (:book, :reason, :ckey, Now(), :action, INET_ATON(:ip_addr))
-	"}, list("book" = id, "reason" = reason, "ckey" = admin.ckey, "action" = BOOK_ADMIN_RESTORE, "ip_addr" = admin.address))
+	"}, list("book" = id, "reason" = reason, "ckey" = admin.ckey, "action" = BOOK_ADMIN_RESTORE, "ip_addr" = admin.address),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
+	)
 	if(!query_update_log.warn_execute())
 		qdel(query_update_log)
 		return
