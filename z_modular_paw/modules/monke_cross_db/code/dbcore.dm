@@ -1,13 +1,17 @@
 /datum/controller/subsystem/dbcore
 	var/connection_cross   // Arbitrary handle returned from rust_g.
 
+/datum/controller/subsystem/dbcore/Initialize()
+	. = ..()
+	ConnectCross()
+
 /datum/controller/subsystem/dbcore/proc/ConnectCross()
-	if(IsConnected())
+	if(IsConnectedCross())
 		return TRUE
 
-	if(connection)
-		Disconnect() //clear the current connection handle so isconnected() calls stop invoking rustg
-		connection = null //make sure its cleared even if runtimes happened
+	if(connection_cross)
+		DisconnectCross() //clear the current connection handle so isconnected() calls stop invoking rustg
+		connection_cross = null //make sure its cleared even if runtimes happened
 
 	if(failed_connection_timeout <= world.time) //it's been long enough since we failed to connect, reset the counter
 		failed_connections = 0
@@ -43,9 +47,9 @@
 	))))
 	. = (result["status"] == "ok")
 	if (.)
-		connection = result["handle"]
+		connection_cross = result["handle"]
 	else
-		connection = null
+		connection_cross = null
 		last_error = result["data"]
 		log_sql("ConnectCross() failed | [last_error]")
 		++failed_connections
@@ -63,7 +67,7 @@
 	connection_cross = null
 
 /datum/controller/subsystem/dbcore/proc/IsConnectedCross()
-	if (!CONFIG_GET(flag/sql_enabled))
+	if (!CONFIG_GET(flag/sql_enabled_cross))
 		return FALSE
 	if (!connection_cross)
 		return FALSE
