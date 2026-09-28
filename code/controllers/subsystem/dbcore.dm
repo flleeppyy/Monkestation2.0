@@ -170,7 +170,7 @@ SUBSYSTEM_DEF(dbcore)
 /datum/controller/subsystem/dbcore/proc/run_query(datum/db_query/query)
 	if(IsAdminAdvancedProcCall())
 		return
-	query.job_id = rustg_sql_query_async(connection, query.sql, json_encode(query.arguments))
+	query.job_id = rustg_sql_query_async(query.connection, query.sql, json_encode(query.arguments)) // PAW EDIT - MONKE_CROSS_DB - ORIGINAL: query.job_id = rustg_sql_query_async(connection, query.sql, json_encode(query.arguments))
 
 /datum/controller/subsystem/dbcore/proc/queue_query(datum/db_query/query)
 	if(IsAdminAdvancedProcCall())
@@ -401,8 +401,8 @@ SUBSYSTEM_DEF(dbcore)
  * * arguments - List of arguments to pass to the query for parameter binding
  * * allow_during_shutdown - If TRUE, allows query to be created during subsystem shutdown. Generally, only cleanup queries should set this.
  */
-/datum/controller/subsystem/dbcore/proc/FireAndForget(sql_query, arguments, allow_during_shutdown = FALSE)
-	var/datum/db_query/query = NewQuery(sql_query, arguments, allow_during_shutdown)
+/datum/controller/subsystem/dbcore/proc/FireAndForget(sql_query, arguments, allow_during_shutdown = FALSE, cross_db = FALSE) // PAW EDIT - MONKE_CROSS_DB - ORIGINAL: /datum/controller/subsystem/dbcore/proc/FireAndForget(sql_query, arguments, allow_during_shutdown = FALSE)
+	var/datum/db_query/query = NewQuery(sql_query, arguments, allow_during_shutdown, cross_db) // PAW EDIT - MONKE_CROSS_DB - ORIGINAL: var/datum/db_query/query = NewQuery(sql_query, arguments, allow_during_shutdown)
 	if(!query)
 		return
 	ASYNC

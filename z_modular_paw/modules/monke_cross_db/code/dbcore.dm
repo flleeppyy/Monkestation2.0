@@ -93,3 +93,13 @@
 		return new /datum/db_query(connection, sql_query, arguments)
 	else
 		return new /datum/db_query(connection_cross, sql_query, arguments)
+
+/datum/controller/subsystem/dbcore/can_vv_get(var_name)
+	if(var_name == NAMEOF(src, connection_cross))
+		return FALSE
+	. = ..()
+
+/datum/controller/subsystem/dbcore/vv_edit_var(var_name, var_value)
+	if(var_name == NAMEOF(src, connection_cross))
+		return FALSE
+	. = ..()
