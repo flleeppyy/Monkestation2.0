@@ -3,7 +3,8 @@
 		return
 	var/datum/db_query/query_gear = SSdbcore.NewQuery(
 		"SELECT item_id,amount FROM [format_table_name("metacoin_item_purchases")] WHERE ckey = :ckey",
-		list("ckey" = ckey)
+		list("ckey" = ckey),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
 	)
 	if(!query_gear.Execute())
 		qdel(query_gear)

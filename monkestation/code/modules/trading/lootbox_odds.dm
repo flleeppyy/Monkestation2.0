@@ -76,14 +76,18 @@
 	if(!buyer.prefs.inventory[item_path])
 		query_add_gear_purchase = SSdbcore.NewQuery({"
 			INSERT INTO [format_table_name("metacoin_item_purchases")] (`ckey`, `item_id`, `amount`) VALUES (:ckey, :item_id, :amount)"},
-			list("ckey" = buyer.ckey, "item_id" = item_path, "amount" = 1))
+			list("ckey" = buyer.ckey, "item_id" = item_path, "amount" = 1),
+			cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
+		)
 	else
 		// Note from someone who didn't make this lootbox system: This seems to be related to
 		// duplicate lootbox items, but duplicate items don't appear to run this proc, making this
 		// seemingly useless. Even then, why are we setting the amount to 1?
 		query_add_gear_purchase = SSdbcore.NewQuery({"
 			UPDATE [format_table_name("metacoin_item_purchases")] SET amount = :amount WHERE ckey = :ckey AND item_id = :item_id"},
-			list("ckey" = buyer.ckey, "item_id" = item_path, "amount" = 1))
+			list("ckey" = buyer.ckey, "item_id" = item_path, "amount" = 1),
+			cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
+		)
 	if(!query_add_gear_purchase.Execute())
 		// If the query fails to execute, notify the user and give them a replacement lootbox.
 		to_chat(buyer, span_warning("Failed to add lootbox item to database."))
