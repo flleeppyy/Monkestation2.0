@@ -76,7 +76,7 @@ GLOBAL_PROTECT(exp_to_update)
 	set waitfor = FALSE
 	var/list/old_minutes = GLOB.exp_to_update
 	GLOB.exp_to_update = null
-	SSdbcore.MassInsert(format_table_name("role_time"), old_minutes, duplicate_key = "ON DUPLICATE KEY UPDATE minutes = minutes + VALUES(minutes)")
+	SSdbcore.MassInsert(format_table_name("role_time"), old_minutes, duplicate_key = "ON DUPLICATE KEY UPDATE minutes = minutes + VALUES(minutes)", cross_db = CONFIG_GET(flag/sql_enabled_cross)) // PAW EDIT ADDITION - MONKE_CROSS_DB)
 
 //resets a client's exp to what was in the db.
 /client/proc/set_exp_from_db()
@@ -86,7 +86,8 @@ GLOBAL_PROTECT(exp_to_update)
 		return -1
 	var/datum/db_query/exp_read = SSdbcore.NewQuery(
 		"SELECT job, minutes FROM [format_table_name("role_time")] WHERE ckey = :ckey",
-		list("ckey" = ckey)
+		list("ckey" = ckey),
+		cross_db = CONFIG_GET(flag/sql_enabled_cross) // PAW EDIT ADDITION - MONKE_CROSS_DB
 	)
 	if(!exp_read.Execute(async = TRUE))
 		qdel(exp_read)
