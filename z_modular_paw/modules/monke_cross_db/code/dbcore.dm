@@ -87,8 +87,6 @@
 	if(. == FALSE)
 		return
 
-	log_sql("NewQuery() | [sql_query] | cross_db=[cross_db]")
-
 	if(!cross_db)
 		return new /datum/db_query(connection, sql_query, arguments)
 	else
