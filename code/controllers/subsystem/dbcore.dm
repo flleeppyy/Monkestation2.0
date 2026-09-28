@@ -599,6 +599,7 @@ Ignore_errors instructes mysql to continue inserting rows if some of them have e
 /datum/db_query/proc/Activity(activity)
 	last_activity = activity
 	last_activity_time = world.time
+	log_sql("Query [activity]: [sql] | [arguments]")
 
 /datum/db_query/proc/warn_execute(async = TRUE)
 	. = Execute(async)

@@ -82,7 +82,7 @@ GLOBAL_PROTECT(exp_to_update)
 /client/proc/set_exp_from_db()
 	if(!CONFIG_GET(flag/use_exp_tracking))
 		return -1
-	if(!SSdbcore.Connect())
+	if(!SSdbcore.ConnectCross()) // PAW EDIT ADDITION - MONKE_CROSS_DB - ORIGINA: if(!SSdbcore.Connect())
 		return -1
 	var/datum/db_query/exp_read = SSdbcore.NewQuery(
 		"SELECT job, minutes FROM [format_table_name("role_time")] WHERE ckey = :ckey",
