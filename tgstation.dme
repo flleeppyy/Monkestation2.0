@@ -8929,7 +8929,6 @@
 #include "monkestation\code\modules\wiremod_chem\housing\_chem_housing.dm"
 #include "monkestation\code\modules\wiremod_chem\housing\chemical_circuit.dm"
 #include "monkestation\code\modules\wiremod_chem\housing\precursor_tank.dm"
-#include "z_modular_paw\modules\monke_cross_db\code\dbcore.dm"
 #include "z_modular_paw\master_files\code\controllers\subsystem\map_vote.dm"
 #include "z_modular_paw\master_files\code\datums\votes\map_vote.dm"
 #include "z_modular_paw\modules\automapper\code\area_spawn_entries.dm"
@@ -8937,5 +8936,6 @@
 #include "z_modular_paw\modules\automapper\code\automap_template.dm"
 #include "z_modular_paw\modules\automapper\code\automapper_subsystem.dm"
 #include "z_modular_paw\modules\automapper\code\modular_map_loader.dm"
+#include "z_modular_paw\modules\monke_cross_db\code\dbcore.dm"
 #include "z_modular_paw\modules\plushies\paw_plushies.dm"
 // END_INCLUDE
