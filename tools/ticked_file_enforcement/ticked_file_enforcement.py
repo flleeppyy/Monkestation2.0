@@ -69,6 +69,10 @@ with open(file_reference, 'r') as file:
             break
         elif not reading:
             continue
+        # PAW EDIT START
+        elif line == "// PAW EDIT START" or line == "// PAW EDIT END":
+            continue
+        # PAW EDIT END
 
         lines.append(line)
 
@@ -96,6 +100,10 @@ for code_file in scannable_files:
         dm_path = code_file.replace('/', '\\')
     else:
         dm_path = os.path.basename(code_file)
+        # PAW EDIT START - Modular unit tests - have to append this again after it gets removed; this was not designed upstream with subfolders for unit tests in mind so we must cope.
+        if("~paw/" in code_file):
+            dm_path = "~paw\\" + dm_path
+        # PAW EDIT END
 
     included = f"#include \"{dm_path}\"" in lines
 

@@ -1,0 +1,35 @@
+# Automapper configuration
+# [templates.example_template] - example_template should be replaced with the name of your map template.
+# directory - The direct path to our map files.
+# map_files - These are the names of the map files, including the extension, that will be loaded. Supports multiple for randomness.
+# required_map - This is the name of the required map that needs to be loaded in order for this template to load.
+# coordinates - The coordinates of the map template placement. (X, Y, Z). PLEASE NOTE: The Z coordinate is the same as would be shown in SDMM. NOT IN GAME.
+# leave it at 1 if it is not a multi-z map. It is relative to the map file Z, not the one loaded in game.
+# trait_name - The name of the Z level trait that will be used to determine what Z level we use.
+# Traits - Station (for station relatied edits), CentCom (for edits on the CC map), Mining (for edits on Lavaland)
+# More can be found in code\__DEFINES\maps.dm
+
+# CENTRAL COMMAND MAP TEMPLATES
+# CC Ferry Dock - Admin Shuttle
+# [templates.centcom_ferry_dock]
+# map_files = ["centcom_ferry_dock.dmm"]
+# directory = "_maps/paw/automapper/templates/centcom/"
+# required_map = "builtin"
+# coordinates = [128, 79, 1]
+# trait_name = "CentCom"
+
+# CC Evac Docking Port Removal
+# [templates.centcom_shuttle_dock]
+# map_files = ["centcom_shuttle_dock.dmm"]
+# directory = "_maps/paw/automapper/templates/centcom/"
+# required_map = "builtin"
+# coordinates = [206, 85, 1]
+# trait_name = "CentCom"
+
+# runtimestation_paw_test
+[templates.runtimestation_paw_test]
+map_files = ["runtimestation_paw_test.dmm"]
+directory = "_maps/paw/automapper/templates/runtimestation/"
+required_map = "runtimestation.dmm"
+coordinates = [35, 37, 1]
+trait_name = "Station"

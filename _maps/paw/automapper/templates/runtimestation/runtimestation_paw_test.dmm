@@ -1,0 +1,178 @@
+//MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
+"aP" = (
+/turf/open/floor/grass/fairy,
+/area/station/service/hydroponics/garden)
+"or" = (
+/obj/machinery/component_printer,
+/turf/open/floor/iron/dark,
+/area/station/science/explab)
+"ps" = (
+/obj/structure/flora/tree/mushroom/blue,
+/turf/open/floor/grass/fairy,
+/area/station/service/hydroponics/garden)
+"rl" = (
+/turf/closed/wall/r_wall,
+/area/station/service/hydroponics/garden)
+"tc" = (
+/obj/effect/spawner/structure/window/reinforced,
+/turf/open/floor/plating,
+/area/station/science/explab)
+"BS" = (
+/obj/structure/signboard{
+	sign_text = "Yay! Monke's Paw garden!"
+	},
+/turf/open/floor/grass/fairy,
+/area/station/service/hydroponics/garden)
+"Fb" = (
+/obj/structure/table,
+/obj/item/storage/toolbox/electrical,
+/obj/item/multitool/circuit{
+	pixel_x = -4
+	},
+/obj/item/multitool{
+	pixel_x = 4
+	},
+/turf/open/floor/iron/dark,
+/area/station/science/explab)
+"Gs" = (
+/obj/structure/flora/tree/mushroom/green,
+/obj/structure/flora/grass/jungle/a/style_random,
+/turf/open/misc/grass,
+/area/station/service/hydroponics/garden)
+"HE" = (
+/obj/structure/flora/grass/jungle/a/style_random,
+/turf/open/misc/grass,
+/area/station/service/hydroponics/garden)
+"IK" = (
+/obj/structure/bot,
+/turf/open/floor/iron/dark,
+/area/station/science/explab)
+"JJ" = (
+/turf/template_noop,
+/area/template_noop)
+"Ko" = (
+/obj/structure/table,
+/obj/machinery/cell_charger,
+/obj/item/stock_parts/power_store/cell/bluespace,
+/obj/item/stock_parts/power_store/cell/bluespace,
+/obj/item/stock_parts/power_store/cell/bluespace,
+/obj/machinery/camera/autoname/directional/west,
+/turf/open/floor/iron/dark,
+/area/station/science/explab)
+"NA" = (
+/obj/structure/money_bot,
+/turf/open/floor/iron/dark,
+/area/station/science/explab)
+"PA" = (
+/turf/open/space/basic,
+/area/space)
+"Vn" = (
+/obj/machinery/door/airlock,
+/turf/open/floor/plating,
+/area/station/science/explab)
+"Wb" = (
+/turf/closed/wall/r_wall,
+/area/station/science/explab)
+"Zi" = (
+/turf/closed/wall/r_wall,
+/area/station/medical/coldroom)
+
+(1,1,1) = {"
+JJ
+PA
+PA
+PA
+PA
+PA
+PA
+PA
+PA
+"}
+(2,1,1) = {"
+JJ
+Wb
+rl
+rl
+rl
+rl
+rl
+rl
+PA
+"}
+(3,1,1) = {"
+Ko
+tc
+aP
+aP
+ps
+aP
+aP
+rl
+PA
+"}
+(4,1,1) = {"
+NA
+Vn
+aP
+HE
+HE
+HE
+aP
+rl
+PA
+"}
+(5,1,1) = {"
+Fb
+tc
+aP
+HE
+HE
+HE
+BS
+rl
+PA
+"}
+(6,1,1) = {"
+IK
+Vn
+aP
+HE
+HE
+Gs
+aP
+rl
+PA
+"}
+(7,1,1) = {"
+or
+tc
+aP
+aP
+aP
+aP
+aP
+rl
+PA
+"}
+(8,1,1) = {"
+JJ
+Zi
+Zi
+Zi
+rl
+rl
+rl
+rl
+PA
+"}
+(9,1,1) = {"
+JJ
+JJ
+JJ
+Zi
+PA
+PA
+PA
+PA
+PA
+"}

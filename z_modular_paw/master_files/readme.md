@@ -12,7 +12,8 @@ MASTER SOUND FILES
 
 MASTER CODE FILES
 
-- N/A
+- `code/controllers/subsystem/map_vote.dm`: `update_tally_printout` (SIMPLE_MAP_VOTE)
+- `code/datums/votes/map_vote.dm`: `finalize_vote`, `tiebreaker` (SIMPLE_MAP_VOTE)
 
 MASTER GLOBAL VARS
 

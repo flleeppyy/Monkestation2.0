@@ -25,8 +25,10 @@
 	var/list/msg = list()
 
 	msg += span_nicegreen("This shows your slime wetness stacks.")
+	/* // PAW EDIT REMOVAL START - oozelings are just fireproof, wetness has nothing to do with it
 	msg += span_nicegreen("As long as you have slime wetness, you can't be set on fire.")
 	msg += span_nicegreen("The amount of stacks will decrease based on severity of the fire.")
+	*/ // PAW EDIT REMOVAL END
 	msg += span_nicegreen("Slime wetness also acts as protection from water, as long as amount of stacks is above [HYDROPHOBIA_WETNESS_STACKS].")
 	msg += span_nicegreen("Water will also decrease the amount of stacks.")
 

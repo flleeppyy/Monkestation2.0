@@ -4,6 +4,7 @@ SUBSYSTEM_DEF(mapping)
 		/datum/controller/subsystem/job,
 		/datum/controller/subsystem/processing/station,
 		/datum/controller/subsystem/processing/reagents,
+		/datum/controller/subsystem/automapper, // PAW EDIT ADDITION
 	)
 	runlevels = ALL
 
@@ -441,13 +442,23 @@ Used by the AI doomsday and the self-destruct nuke.
 		add_new_zlevel("[name][i ? " [i + 1]" : ""]", level, contain_turfs = FALSE)
 		++i
 
+	// PAW EDIT ADDITION START - automapper
+	var/datum/parsed_map/first_map = length(parsed_maps) ? parsed_maps[1] : null
+	SSautomapper.preload_templates_from_toml(files, first_map?.bounds) // we need to load our templates AFTER the Z level exists, otherwise, there is no z level to preload.
+	var/turf_blacklist = SSautomapper.get_turf_blacklists(files) // we use blacklisted turfs to carve out places for our templates.
+	// PAW EDIT ADDITION END
 	// load the maps
 	for(var/datum/parsed_map/pm as() in parsed_maps)
+		pm.turf_blacklist = turf_blacklist // PAW EDIT ADDITION - apply blacklist
 		var/bounds = pm.bounds
 		var/x_offset = bounds ? round(world.maxx / 2 - bounds[MAP_MAXX] / 2) + 1 : 1
 		var/y_offset = bounds ? round(world.maxy / 2 - bounds[MAP_MAXY] / 2) + 1 : 1
 		if (!pm.load(x_offset, y_offset, start_z + parsed_maps[pm], no_changeturf = TRUE, new_z = TRUE))
 			errorList |= pm.original_path
+	// PAW EDIT ADDITION BEGIN - We need to load our templates from cache after our space has been carved out.
+	if(!LAZYLEN(errorList))
+		SSautomapper.load_templates_from_cache(files)
+	// PAW EDIT ADDITION END
 	if(!silent)
 		SStitle.add_init_text(path, "> [name]", "<font color='green'>DONE</font>", (REALTIMEOFDAY - start_time) / (1 SECONDS))
 	return parsed_maps

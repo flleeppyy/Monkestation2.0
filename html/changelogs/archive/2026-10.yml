@@ -1,0 +1,20 @@
+2026-10-01:
+  00-Steven:
+  - bugfix: Books no longer cut off valid paper inputs when they are under the character
+      limit.
+  AberrantQuerist:
+  - rscadd: Beepsky once again will drop a paragraph of swears and insults.
+  - rscadd: Emagged Compli-o-Nator is uncensored.
+  hexakats:
+  - bugfix: Omnilathe no longer tries to take materials from the ore silo then delete
+      the ones that don't fit when repacking a linked one
+  - refactor: Omnilathe uses item_interaction instead of attackby
+  - bugfix: fixed automatic weapons not working with two time root beer
+  notghosti:
+  - code_imp: Refactors guns without manufacturers to use has_manufacturer instead
+      of just returning the proc
+2026-10-03:
+  Absolucy:
+  - bugfix: Fixed voice barks being too quiet (or even inaudible) sometimes.
+  LettuceGuardian:
+  - bugfix: CIN and NRI webbing being able to be reskinned and turned invisible

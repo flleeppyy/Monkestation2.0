@@ -24,6 +24,9 @@
 		TRAIT_EASYDISMEMBER,
 		TRAIT_SPLEENLESS_METABOLISM,
 		TRAIT_FOOD_ABSORPTION,
+		// PAW EDIT ADDITION START
+		TRAIT_NOFIRE,
+		// PAW EDIT ADDITION END
 	)
 
 	inherent_biotypes = MOB_ORGANIC|MOB_SLIME|MOB_HUMANOID
@@ -283,11 +286,19 @@
 			SPECIES_PERK_NAME = "Plasma Respiration",
 			SPECIES_PERK_DESC = "[plural_form] can breathe plasma, and restore blood by doing so.",
 		),
+		// PAW EDIT ADDITION START
+		list(
+			SPECIES_PERK_TYPE = SPECIES_POSITIVE_PERK,
+			SPECIES_PERK_ICON = "burn",
+			SPECIES_PERK_NAME = "Incombustible",
+			SPECIES_PERK_DESC = "[plural_form] cannot be set aflame.",
+		),
+		// PAW EDIT ADDITION END
 		list(
 			SPECIES_PERK_TYPE = SPECIES_POSITIVE_PERK,
 			SPECIES_PERK_ICON = "shield-alt",
 			SPECIES_PERK_NAME = "Fire Resilience",
-			SPECIES_PERK_DESC = "[plural_form] have an outer membrane that is semi-resistant to flames, and burn damage. Water and prolonged flame exposure will errode this membrane.",
+			SPECIES_PERK_DESC = "[plural_form] are resilient to flames, and burn damage.", // PAW EDIT CHANGE - ORIGINAL: SPECIES_PERK_DESC = "[plural_form] have an outer membrane that is semi-resistant to flames, and burn damage. Water and prolonged flame exposure will errode this membrane.",
 		),
 		list(
 			SPECIES_PERK_TYPE = SPECIES_POSITIVE_PERK,
