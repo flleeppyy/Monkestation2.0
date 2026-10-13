@@ -118,7 +118,7 @@
 	target.remove_shared_particles(/particles/vacuum_sparkles)
 
 /obj/item/vacuum_pack/proc/start_extract_pull(obj/item/slime_extract/extract, mob/living/user)
-	var/datum/move_loop/loop = SSmove_manager.home_onto(extract, user, delay = 0.1 SECONDS, timeout = 2 SECONDS, priority = MOVEMENT_ABOVE_SPACE_PRIORITY)
+	var/datum/move_loop/loop = GLOB.move_manager.home_onto(extract, user, delay = 0.1 SECONDS, timeout = 2 SECONDS, priority = MOVEMENT_ABOVE_SPACE_PRIORITY)
 	if(!loop)
 		return
 	pulled_extracts[extract] = loop
