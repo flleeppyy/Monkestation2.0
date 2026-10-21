@@ -8933,4 +8933,6 @@
 #include "z_modular_paw\modules\slime_rancher\code\vacuum\vacuum_pack.dm"
 #include "z_modular_paw\modules\slime_rancher\code\vacuum\vacuum_suction.dm"
 #include "z_modular_paw\modules\slime_rancher\code\vacuum\vacuum_upgrades.dm"
+#include "z_modular_paw\modules\tiny_fan\crafting.dm"
+#include "z_modular_paw\modules\tiny_fan\fans.dm"
 // END_INCLUDE
