@@ -94,7 +94,7 @@
 		target.balloon_alert(user, "can't take any more!")
 		return ITEM_INTERACT_BLOCKING
 	user.visible_message(span_notice("[user] presses [src] into [target], and it sinks right in."), span_notice("You press [src] into [target], and it sinks right in."))
-	playsound(target, 'sound/effects/attackblob.ogg', 50, TRUE)
+	playsound(target, 'sound/effects/blob/attackblob.ogg', 50, TRUE)
 	qdel(src)
 	return ITEM_INTERACT_SUCCESS
 

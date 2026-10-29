@@ -15,7 +15,7 @@
 	icon_living = "grey-baby"
 	icon_dead = "grey-baby-dead"
 
-	attack_sound = 'sound/weapons/bite.ogg'
+	attack_sound = 'sound/items/weapons/bite.ogg'
 
 	maxHealth = 150
 	health = 150
@@ -401,7 +401,7 @@
 /mob/living/basic/slime/proc/spawn_corecross()
 	var/static/list/crossbreeds = subtypesof(/obj/item/slimecross)
 	visible_message(span_danger("[src] shudders, its mutated core consuming the rest of its body!"))
-	playsound(src, 'sound/magic/smoke.ogg', 50, TRUE)
+	playsound(src, 'sound/effects/magic/smoke.ogg', 50, TRUE)
 	// crossbreeds spell two-word colors with a space ("dark purple"), slime types with a dash
 	var/cross_color = replacetext(slime_type.color, "-", " ")
 	var/selected_crossbreed_path
