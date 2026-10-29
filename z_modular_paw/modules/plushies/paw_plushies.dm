@@ -7,7 +7,7 @@
 	icon_state = "fumo"
 	gender = NEUTER
 	pet_message = "Spencie grumbles \"something something suit sensors...\""
-	squeak_override = list('sound/surgery/scalpel2.ogg' = 1)
+	squeak_override = list('sound/items/handling/surgery/scalpel2.ogg' = 1)
 
 /obj/item/toy/plush/paw/admin/spence/click_alt(mob/living/user)
 	switch(icon_state)

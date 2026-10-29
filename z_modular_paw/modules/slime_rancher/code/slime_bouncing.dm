@@ -20,7 +20,7 @@
 /mob/living/basic/slime/proc/bounce_off(mob/living/person)
 	COOLDOWN_START(src, bounce_cooldown, rand(SLIME_BOUNCE_COOLDOWN_MIN, SLIME_BOUNCE_COOLDOWN_MAX))
 	set_temporary_mood(SLIME_MOOD_CAT)
-	playsound(src, 'sound/effects/attackblob.ogg', 25, TRUE, -3)
+	playsound(src, 'sound/effects/blob/attackblob.ogg', 25, TRUE, -3)
 	manual_emote(pick(
 		"boings off of [person].",
 		"bounces right off [person] and wobbles.",

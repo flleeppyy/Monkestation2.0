@@ -145,7 +145,7 @@
 		if(!user.put_in_hands(nozzle))
 			balloon_alert(user, "need a free hand!")
 			return FALSE
-		playsound(src, 'sound/mecha/mechmove03.ogg', 75, TRUE)
+		playsound(src, 'sound/vehicles/mecha/mechmove03.ogg', 75, TRUE)
 		return TRUE
 	retract_nozzle()
 	return TRUE
@@ -158,7 +158,7 @@
 	if(ismob(nozzle.loc))
 		var/mob/holder = nozzle.loc
 		holder.temporarilyRemoveItemFromInventory(nozzle, force = TRUE)
-	playsound(src, 'sound/mecha/mechmove03.ogg', vol = 75, vary = TRUE)
+	playsound(src, 'sound/vehicles/mecha/mechmove03.ogg', vol = 75, vary = TRUE)
 	nozzle.forceMove(src)
 	retracting = FALSE
 
@@ -169,7 +169,7 @@
 	if(ismob(loc))
 		balloon_alert(loc, "nozzle snaps back")
 	source.forceMove(src)
-	playsound(source, 'sound/mecha/mechmove03.ogg', 75, TRUE)
+	playsound(source, 'sound/vehicles/mecha/mechmove03.ogg', 75, TRUE)
 
 /obj/item/vacuum_pack/proc/is_worn_by(mob/user)
 	return user.get_slot_by_item(src) & slot_flags

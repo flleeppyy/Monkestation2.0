@@ -634,7 +634,7 @@
 /obj/effect/warped_rune/pinkspace/on_entered(datum/source, mob/living/carbon/human/arrived, atom/old_loc)
 	if(istype(arrived))
 		arrived.add_mood_event("jolly", /datum/mood_event/jolly)
-		playsound(rune_turf, 'sound/weapons/thudswoosh.ogg', 50, TRUE)
+		playsound(rune_turf, 'sound/items/weapons/thudswoosh.ogg', 50, TRUE)
 		to_chat(arrived, span_notice("You feel happier."))
 		activated_on_step = TRUE
 	return ..()
