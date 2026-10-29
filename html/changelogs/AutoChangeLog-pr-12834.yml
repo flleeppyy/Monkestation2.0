@@ -1,4 +1,0 @@
-author: "Absolucy"
-delete-after: True
-changes:
-  - bugfix: "fixed AI advanced tracking probably lagging the shit out of the server."

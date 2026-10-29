@@ -1,5 +1,0 @@
-author: "SmArtKar"
-delete-after: True
-changes:
-  - bugfix: "Hulk and infusions no longer color or texture robotic limbs."
-  - bugfix: "Limbs attached while you have a carp infusion or hulk now match the rest of your body."

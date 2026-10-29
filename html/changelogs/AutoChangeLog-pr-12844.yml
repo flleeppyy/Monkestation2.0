@@ -1,4 +1,0 @@
-author: "Tractor-Maam"
-delete-after: True
-changes:
-  - bugfix: "Cyborgs will now link to AIs again.\nfix; AI Uploads now work again."

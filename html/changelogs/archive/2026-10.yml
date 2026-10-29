@@ -386,6 +386,53 @@
   - bugfix: Severed limbs with wounds no longer look like two limbs when they land
       sideways
 2026-10-29:
+  13spacemen:
+  - refactor: Bodytypes to do with character sprite shape now have their own bodyshape
+      var, all sprite handling is done with bodyshape and not bodytype anymore
+  Absolucy:
+  - bugfix: fixed AI advanced tracking probably lagging the shit out of the server.
+  - bugfix: Hopefully reduced FPS lag when there's a lot of people of varying heights
+      wearing clothes and such.
+  - bugfix: big floods cause way less lag
+  - bugfix: burning liquid no longer spams smoke, and burnt-out fires actually go
+      out
+  - rscadd: Storytellers now support latejoin antags!
+  - bugfix: Fixed the roundstart roleset pick ignoring the storyteller's tag multipliers.
+  - bugfix: Fixed scheduled events eating points if they failed their last-second
+      recheck.
+  - bugfix: Fixed scheduled events possibly firing twice, or track possibly buying
+      two events, if a ban check slept at the wrong time.
+  - bugfix: Antag events that get nobody now refund their points and don't use up
+      an occurrence
+  - bugfix: Xenos/paradox clones with nowhere to spawn get refunded instead of hanging
+      around forever
+  - balance: Antag events that only get some of their antags refund the rest
+  - rscadd: Xenobiology is now literally slime rancher.
+  - rscadd: Slime vacuum packs now have built-in extract storage, upgradable with
+      a matter bin.
+  - rscadd: Vacuum packs hold extracts now. shoot them into the fridge, dump them
+      in a bag, or right-click to grab one.
+  - rscadd: Slime pens now actually look decent and have more space.
+  - rscadd: Crossbreeds are now made with an "extract compressor", which consumes
+      both biomass and slime extracts.
+  - rscadd: Slime scanners are now used to remotely scan a slime and stay up to date
+      on that specific slime's stats and such.
+  - rscadd: Instead of mulching slimes for extracts, slimes now produce extracts when
+      fed enough.
+  - rscadd: Slimes won't split on their own - instead, you need to feed them "breeding
+      pellets" from the biomass recycler, or if you are the slime's friend, order
+      them to do so, and they will split or mutate whenever they can instead. This
+      does not apply to "wild" slimes that haven't been in a pen recently, and player
+      slimes can still manually split whenever.
+  - rscadd: Catslimes now harmlessly boop people nearby :3
+  - rscadd: Cleaner slimes go wander off to look for messes when there's nothing nearby,
+      and sometimes go find a random player
+  - rscadd: Cleaner slimes (and slimes you've sicced on something) can use stairs
+      now
+  - bugfix: Mobs no longer freeze up after changing floors until someone walks up
+      to them
+  - admin: select equipment's quirk and holy/unholy options work again, and now apply
+      to the person being dressed
   ArcaneMusic, CabinetOnFire, Kapu, grungussuss, Melbert, vinylspiders, EnnyDaiz:
   - rscadd: Cargo can now buy a Nanomusic boombox! Comes with a demo tape, more tapes
       can be found as goodies, on the black market, in the game vendor and in the
@@ -412,3 +459,25 @@
   - bugfix: Changing a volume slider updates sounds that follow you right away.
   - bugfix: The alt siren starts on its start sound.
   - bugfix: Randomly pitched sounds no longer lean low on 48 kHz files.
+  Runian:
+  - rscadd: Engineering cyborgs can pick up conveyor belts and switches.
+  - rscadd: Using a screwdriver on an unattached sign will attach to it to a wall
+      you're facing.
+  SmArtKar:
+  - bugfix: Hulk and infusions no longer color or texture robotic limbs.
+  - bugfix: Limbs attached while you have a carp infusion or hulk now match the rest
+      of your body.
+  Tractor-Maam:
+  - spellcheck: Integration Cog installs now say "apc" in their balloon alert instead
+      of "aPC".
+  - bugfix: 'Cyborgs will now link to AIs again.
+
+      fix; AI Uploads now work again.'
+  ashallaryn:
+  - image: added hair_bedhead_glorppy sprites
+  - image: added hair_bedhead_nestia sprites
+  - image: updated hair sprite for hair_floorlength_bedhead "Floorlength Bedhead"
+  - image: updated hair sprite for hair_longer_bedhead "Longer Bedhead"
+  - image: updated hair sprite for hair_long_bedhead "Long Bedhead"
+  - image: updated hair sprite for hair_longstraightponytail "Ponytail (Long)"
+  - image: updated hair sprite for hair_highponytail "Ponytail (High)"

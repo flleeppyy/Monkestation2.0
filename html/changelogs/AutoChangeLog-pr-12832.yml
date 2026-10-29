@@ -1,4 +1,0 @@
-author: "Absolucy"
-delete-after: True
-changes:
-  - admin: "select equipment's quirk and holy/unholy options work again, and now apply to the person being dressed"
