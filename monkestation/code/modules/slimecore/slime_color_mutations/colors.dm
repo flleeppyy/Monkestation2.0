@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /datum/slime_color/grey
 	name = "grey"
 	icon_prefix = "grey"

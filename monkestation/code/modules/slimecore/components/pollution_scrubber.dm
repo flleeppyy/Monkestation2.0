@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /datum/component/pollution_scrubber
 	///the amount we try to scrub each process
 	var/scrubbing_amount

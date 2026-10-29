@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /datum/slime_store_item/biomass_vac
 	name = "Slime Vac Biomass Link Upgrade"
 	desc = "A module for the slime vac that lets you link with a biomass recycler."

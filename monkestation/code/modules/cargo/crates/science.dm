@@ -5,10 +5,13 @@
 	access = ACCESS_XENOBIOLOGY
 	contains = list(/obj/item/slime_extract/grey = 2,
 					/obj/item/reagent_containers/syringe/plasma,
+					/* // PAW EDIT REMOVAL START - SLIME_RANCHER - slimecore's market is gone
 					/obj/item/circuitboard/computer/slime_market,
 					/obj/item/circuitboard/machine/slime_market_pad,
+					*/ // PAW EDIT REMOVAL END
+					/obj/item/circuitboard/machine/extract_compressor, // PAW EDIT ADDITION - SLIME_RANCHER
 					/obj/item/circuitboard/machine/biomass_recycler,
-					/obj/item/vacuum_pack/backpack)
+					/obj/item/vacuum_pack) // PAW EDIT CHANGE - SLIME_RANCHER - ORIGINAL: /obj/item/vacuum_pack/backpack)
 	crate_name = "xenobiology starter crate"
 	crate_type = /obj/structure/closet/crate/secure/science
 

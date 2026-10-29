@@ -12,8 +12,16 @@ MASTER SOUND FILES
 
 MASTER CODE FILES
 
+- `code/__HELPERS/paths/path.dm` (SLIME_RANCHER)
 - `code/controllers/subsystem/map_vote.dm`: `update_tally_printout` (SIMPLE_MAP_VOTE)
+- `code/datums/ai/monkey/monkey_behaviors.dm` (SLIME_RANCHER)
+- `code/datums/ai/monkey/monkey_controller.dm` (SLIME_RANCHER)
 - `code/datums/votes/map_vote.dm`: `finalize_vote`, `tiebreaker` (SIMPLE_MAP_VOTE)
+- `code/game/objects/items/storage/bags.dm` (SLIME_RANCHER)
+- `code/modules/food_and_drinks/machinery/smartfridge.dm` (SLIME_RANCHER)
+- `code/modules/mob/living/basic/basic.dm` (SLIME_RANCHER)
+- `code/modules/research/techweb/service_nodes.dm` (SLIME_RANCHER)
+- `code/modules/research/xenobiology/crossbreeding/__corecross.dm` (SLIME_RANCHER)
 
 MASTER GLOBAL VARS
 

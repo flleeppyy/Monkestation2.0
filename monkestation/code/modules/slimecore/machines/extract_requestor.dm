@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /obj/machinery/slime_extract_requestor
 	name = "extract requestor pad"
 	desc = "A tall device with a hole for retrieving slime extracts."

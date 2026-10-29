@@ -444,8 +444,12 @@ Used by the AI doomsday and the self-destruct nuke.
 
 	// PAW EDIT ADDITION START - automapper
 	var/datum/parsed_map/first_map = length(parsed_maps) ? parsed_maps[1] : null
-	SSautomapper.preload_templates_from_toml(files, first_map?.bounds) // we need to load our templates AFTER the Z level exists, otherwise, there is no z level to preload.
-	var/turf_blacklist = SSautomapper.get_turf_blacklists(files) // we use blacklisted turfs to carve out places for our templates.
+	// bare filenames collide (Oshan's station and trench are both Oshan.dmm), so the automapper matches on full paths
+	var/list/automap_names = list()
+	for(var/file in files)
+		automap_names += "[path]/[file]"
+	SSautomapper.preload_templates_from_toml(automap_names, first_map?.bounds) // we need to load our templates AFTER the Z level exists, otherwise, there is no z level to preload.
+	var/turf_blacklist = SSautomapper.get_turf_blacklists(automap_names) // we use blacklisted turfs to carve out places for our templates.
 	// PAW EDIT ADDITION END
 	// load the maps
 	for(var/datum/parsed_map/pm as() in parsed_maps)
@@ -457,7 +461,7 @@ Used by the AI doomsday and the self-destruct nuke.
 			errorList |= pm.original_path
 	// PAW EDIT ADDITION BEGIN - We need to load our templates from cache after our space has been carved out.
 	if(!LAZYLEN(errorList))
-		SSautomapper.load_templates_from_cache(files)
+		SSautomapper.load_templates_from_cache(automap_names)
 	// PAW EDIT ADDITION END
 	if(!silent)
 		SStitle.add_init_text(path, "> [name]", "<font color='green'>DONE</font>", (REALTIMEOFDAY - start_time) / (1 SECONDS))

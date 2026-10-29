@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /datum/idle_behavior/idle_slime_playful
 	///Chance that the mob random walks per second
 	var/walk_chance = 25

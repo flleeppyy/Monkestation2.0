@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 //this is just a doc comment but currently the max interior size is 9x9 so 11x11 if you include the corral walls
 /datum/corral_data
 	///list of all managed slimes

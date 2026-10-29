@@ -23,7 +23,14 @@
 /datum/quirk/item_quirk/junkie/add_unique(client/client_source)
 	var/mob/living/carbon/human/human_holder = quirk_holder
 
-	reagent_type ||= pick(drug_list)
+	// PAW EDIT CHANGE - JUNKIE_DRUG_CHOICE - ORIGINAL: reagent_type ||= pick(drug_list)
+	// PAW EDIT ADDITION START - JUNKIE_DRUG_CHOICE
+	var/preferred_drug = client_source?.prefs?.read_preference(/datum/preference/choiced/junkie_drug_choice)
+	if(preferred_drug == "Random")
+		reagent_type = pick(drug_list)
+	else
+		reagent_type = GLOB.junkie_drugs[preferred_drug]
+	// PAW EDIT ADDITION END - JUNKIE_DRUG_CHOICE
 	reagent_instance = new reagent_type
 
 	for(var/addiction in reagent_instance.addiction_types)

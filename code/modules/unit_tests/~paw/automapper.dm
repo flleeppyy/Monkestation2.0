@@ -16,6 +16,11 @@
 			var/map_file = selected_template["directory"] + selected_template["map_files"][map]
 			TEST_ASSERT(fexists(map_file), "[template] could not find map file [map_file]!") // Testing for map existence
 
+		// a typo here silently skips the template, so make sure it points at a real map
+		var/required_map = selected_template["required_map"]
+		if(required_map != AUTOMAPPER_MAP_BUILTIN)
+			TEST_ASSERT(fexists("_maps/[required_map]"), "[template] has required_map [required_map], but _maps/[required_map] doesn't exist! It must be the full path under _maps/.")
+
 		for(var/template_two in test_config["templates"]) // Testing for duplicate entries
 			if(template_two == template)
 				continue

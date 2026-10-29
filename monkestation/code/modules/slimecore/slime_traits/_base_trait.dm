@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /datum/slime_trait
 	var/name = "Base Trait"
 	var/desc = "You shouldn't see this, this means someone forgot to set a trait desc or your seeing the base trait."

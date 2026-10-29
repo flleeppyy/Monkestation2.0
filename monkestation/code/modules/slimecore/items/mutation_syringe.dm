@@ -1,8 +1,9 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /obj/item/slime_mutation_syringe
 	name = "slime mutation syringe"
 	desc = "Infuses a mutation into a slime."
 
-	icon = 'icons/obj/xenobiology/mutation_syringe.dmi'
+	icon = 'icons/obj/science/mutation_syringe.dmi'
 	icon_state = "mutation_syringe"
 
 	w_class = WEIGHT_CLASS_SMALL

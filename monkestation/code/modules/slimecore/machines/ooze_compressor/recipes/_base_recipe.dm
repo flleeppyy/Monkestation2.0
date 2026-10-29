@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 GLOBAL_LIST_EMPTY_TYPED(compressor_recipe_previews, /image)
 
 /datum/compressor_recipe

@@ -1,0 +1,4 @@
+author: "Veth-s"
+delete-after: True
+changes:
+  - rscadd: "AIs now have 120s to pick their set of laws on first spawn, if they do not, it defaults to the randomly assigned one shift start."

@@ -1,0 +1,4 @@
+author: "ashallaryn"
+delete-after: True
+changes:
+  - rscadd: "Tiny fans are now craftable via 5 iron, 1 micro-manipulator, requires wrench"

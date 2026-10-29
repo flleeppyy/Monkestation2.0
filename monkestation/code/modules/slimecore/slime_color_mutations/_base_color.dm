@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 GLOBAL_LIST_INIT(unlocked_slime_colors, list())
 GLOBAL_LIST_INIT(mutated_slime_colors, list())
 

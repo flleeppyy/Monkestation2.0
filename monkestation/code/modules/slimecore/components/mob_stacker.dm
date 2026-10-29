@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /datum/component/mob_stacker
 	var/list/stacked_mobs = list()
 	///until we get a better pixel proc this is a constant offset

@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /datum/slime_mutation_data/metal
 	output = /datum/slime_color/metal
 	needed_items = list(/obj/item/stack/sheet/iron)

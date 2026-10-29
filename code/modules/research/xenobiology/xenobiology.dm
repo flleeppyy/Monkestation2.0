@@ -243,6 +243,11 @@
 /obj/item/slime_extract/yellow/activate(mob/living/carbon/human/user, datum/species/oozeling/luminescent/species, activation_type)
 	switch(activation_type)
 		if(SLIME_ACTIVATE_MINOR)
+			// PAW EDIT ADDITION START - SLIME_RANCHER - avoid runtimes with gentle extracts
+			if(!istype(species))
+				to_chat(user, span_warning("This effect only works with Luminescents!"))
+				return
+			// PAW EDIT ADDITION END
 			if(species.glow_intensity != LUMINESCENT_DEFAULT_GLOW)
 				to_chat(user, span_warning("Your glow is already enhanced!"))
 				return
@@ -274,7 +279,7 @@
 		if(SLIME_ACTIVATE_MAJOR)
 			user.visible_message(span_warning("[user]'s skin flashes red for a moment..."), span_warning("Your skin flashes red as you emit rage-inducing pheromones..."))
 			for(var/mob/living/basic/slime/slime in viewers(get_turf(user), null))
-				ADD_TRAIT(slime, TRAIT_SLIME_RABID, "red-extract")
+				slime.ai_controller?.set_blackboard_key(BB_SLIME_RABID, TRUE) // PAW EDIT CHANGE - SLIME_RANCHER - ORIGINAL: ADD_TRAIT(slime, TRAIT_SLIME_RABID, "red-extract")
 				slime.visible_message(span_danger("The [slime] is driven into a frenzy!"))
 			return 600
 
@@ -473,7 +478,7 @@
 				return
 			to_chat(user, span_notice("You stop feeding [src], and your body returns to its slimelike state."))
 
-/obj/item/slime_extract/adamantine/proc/reset_armor(datum/species/oozeling/luminescent/species)
+/obj/item/slime_extract/adamantine/proc/reset_armor(datum/species/species) // PAW EDIT - SLIME_RANCHER - prevent exploit with gentle extracts - ORIGINAL: /obj/item/slime_extract/adamantine/proc/reset_armor(datum/species/oozeling/luminescent/species)
 	if(istype(species))
 		species.armor -= 25
 
@@ -494,7 +499,7 @@
 			to_chat(user, span_warning("You feel your body vibrating..."))
 			if(do_after(user, 2.5 SECONDS, target = user))
 				to_chat(user, span_warning("You teleport!"))
-				do_teleport(user, get_turf(user), 6, asoundin = 'sound/weapons/emitter2.ogg', channel = TELEPORT_CHANNEL_BLUESPACE)
+				do_teleport(user, get_turf(user), 6, asoundin = 'sound/items/weapons/emitter2.ogg', channel = TELEPORT_CHANNEL_BLUESPACE)
 				return 300
 
 		if(SLIME_ACTIVATE_MAJOR)
@@ -510,7 +515,7 @@
 				if(teleport_x && teleport_y && teleport_z)
 					var/turf/T = locate(teleport_x, teleport_y, teleport_z)
 					to_chat(user, span_notice("You snap back to your anchor point!"))
-					do_teleport(user, T,  asoundin = 'sound/weapons/emitter2.ogg', channel = TELEPORT_CHANNEL_BLUESPACE)
+					do_teleport(user, T,  asoundin = 'sound/items/weapons/emitter2.ogg', channel = TELEPORT_CHANNEL_BLUESPACE)
 					return 450
 
 
@@ -599,7 +604,8 @@
 			var/datum/color_palette/generic_colors/located = user.dna.color_palettes[/datum/color_palette/generic_colors]
 			located.mutant_color = "#[pick("7F", "FF")][pick("7F", "FF")][pick("7F", "FF")]"
 			user.updateappearance(mutcolor_update=1)
-			species.update_glow(user)
+			if(istype(species)) // PAW EDIT ADDITION - SLIME_RANCHER - avoid runtimes with gentle extracts
+				species.update_glow(user)
 			to_chat(user, span_notice("You feel different..."))
 			return 100
 
@@ -649,13 +655,13 @@
 	if(M.stat)
 		to_chat(user, span_warning("The slime is dead!"))
 		return
-	if(HAS_TRAIT(M, TRAIT_SLIME_RABID)) //Stops being rabid, but doesn't become truly docile.
+	if(M.ai_controller?.blackboard[BB_SLIME_RABID]) //Stops being rabid, but doesn't become truly docile. // PAW EDIT CHANGE - SLIME_RANCHER - ORIGINAL: if(HAS_TRAIT(M, TRAIT_SLIME_RABID)) //Stops being rabid, but doesn't become truly docile.
 		to_chat(M, span_warning("You absorb the potion, and your rabid hunger finally settles to a normal desire to feed."))
 		to_chat(user, span_notice("You feed the slime the potion, calming its rabid rage."))
-		REMOVE_TRAIT(M, TRAIT_SLIME_RABID, null)
+		M.set_default_behavior() // PAW EDIT CHANGE - SLIME_RANCHER - ORIGINAL: REMOVE_TRAIT(M, TRAIT_SLIME_RABID, null)
 		qdel(src)
 		return
-	M.add_trait(/datum/slime_trait/docility)
+	M.set_pacified_behavior() // PAW EDIT CHANGE - SLIME_RANCHER - ORIGINAL: M.add_trait(/datum/slime_trait/docility)
 	to_chat(M, span_warning("You absorb the potion and feel your intense desire to feed melt away."))
 	to_chat(user, span_notice("You feed the slime the potion, removing its hunger and calming it."))
 	var/newname = sanitize_name(tgui_input_text(user, "Would you like to give the slime a name?", "Name your new pet", "Pet Slime", MAX_NAME_LEN))
@@ -808,11 +814,11 @@
 	if(M.stat)
 		to_chat(user, span_warning("The slime is dead!"))
 		return
-	if(M.slime_extract_bonus >= 6)
+	if(M.cores >= 7) // PAW EDIT CHANGE - SLIME_RANCHER - extracts come from cores now - ORIGINAL: if(M.slime_extract_bonus >= 6)
 		to_chat(user, span_warning("The slime can't consume any more of the steroid."))
 		return
 	to_chat(user, span_notice("You feed the slime the steroid. It will now produce more extracts."))
-	M.slime_extract_bonus += 3
+	M.cores += 3 // PAW EDIT CHANGE - SLIME_RANCHER - ORIGINAL: M.slime_extract_bonus += 3
 	qdel(src)
 
 /obj/item/slimepotion/enhancer
@@ -855,7 +861,7 @@
 	if(M.stat)
 		to_chat(user, span_warning("The slime is dead!"))
 		return
-	if(HAS_TRAIT(M, TRAIT_MUTATOR_USED))
+	if(M.mutator_used) // PAW EDIT CHANGE - SLIME_RANCHER - ORIGINAL: if(HAS_TRAIT(M, TRAIT_MUTATOR_USED))
 		to_chat(user, span_warning("This slime has already consumed a mutator, any more would be far too unstable!"))
 		return
 	if(M.mutation_chance == 100)
@@ -864,7 +870,7 @@
 
 	to_chat(user, span_notice("You feed the slime the mutator. It is now more likely to mutate."))
 	M.mutation_chance = clamp(M.mutation_chance+12,0,100)
-	ADD_TRAIT(M, TRAIT_MUTATOR_USED, "slime-mutator")
+	M.mutator_used = TRUE // PAW EDIT CHANGE - SLIME_RANCHER - ORIGINAL: ADD_TRAIT(M, TRAIT_MUTATOR_USED, "slime-mutator")
 	qdel(src)
 
 /obj/item/slimepotion/speed

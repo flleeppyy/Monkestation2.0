@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /mob/living/basic/cockroach/rockroach
 	name = "rockroach"
 	desc = "This cockroach has decided to cosplay as a turtle and is carrying a rock shell on it's back."

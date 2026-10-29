@@ -20,7 +20,7 @@ Charged extracts:
 		return
 	reagents.remove_reagent(/datum/reagent/toxin/plasma,10)
 	to_chat(user, span_notice("You squeeze the extract, and it absorbs the plasma!"))
-	playsound(src, 'sound/effects/bubbles.ogg', 50, TRUE)
+	playsound(src, 'sound/effects/bubbles/bubbles.ogg', 50, TRUE)
 	playsound(src, 'sound/effects/light_flicker.ogg', 50, TRUE)
 	do_effect(user)
 
@@ -276,6 +276,8 @@ Charged extracts:
 /obj/item/slimecross/charged/rainbow/do_effect(mob/user)
 	user.visible_message(span_warning("[src] swells and splits into three new slimes!"))
 	for(var/i in 1 to 3)
-		var/mob/living/basic/slime/S = new(get_turf(user))
+		new /mob/living/basic/slime(get_turf(user), SLIME_TYPE_RANDOM) // PAW EDIT CHANGE - SLIME_RANCHER - ORIGINAL: var/mob/living/basic/slime/S = new(get_turf(user))
+		/* // PAW EDIT REMOVAL START - SLIME_RANCHER - spawned random above instead
 		S.start_mutating(TRUE)
+		*/ // PAW EDIT REMOVAL END
 	return ..()

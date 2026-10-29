@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /datum/slime_store_item/cleaner_mutation
 	name = "Cleaner Slime Mutation Syringe"
 	desc = "Adds the Cleaner Slime mutation to a single slime."

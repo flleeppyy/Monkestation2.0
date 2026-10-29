@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 // Used exclusively for xenobio machines
 /proc/return_color_from_string(string)
 	switch(string)

@@ -19,8 +19,8 @@ Burning extracts:
 		return
 	reagents.remove_reagent(/datum/reagent/toxin/plasma,10)
 	to_chat(user, span_notice("You squeeze the extract, and it absorbs the plasma!"))
-	playsound(src, 'sound/effects/bubbles.ogg', 50, TRUE)
-	playsound(src, 'sound/magic/fireball.ogg', 50, TRUE)
+	playsound(src, 'sound/effects/bubbles/bubbles.ogg', 50, TRUE)
+	playsound(src, 'sound/effects/magic/fireball.ogg', 50, TRUE)
 	do_effect(user)
 
 /obj/item/slimecross/burning/proc/do_effect(mob/user) //If, for whatever reason, you don't want to delete the extract, don't do ..()
@@ -34,7 +34,7 @@ Burning extracts:
 /obj/item/slimecross/burning/grey/do_effect(mob/user)
 	var/mob/living/basic/slime/S = new(get_turf(user))
 	S.visible_message(span_danger("A baby slime emerges from [src], and it nuzzles [user] before burbling hungrily!"))
-	SEND_SIGNAL(S, COMSIG_FRIENDSHIP_CHANGE, user, 110)
+	S.befriend(user) // PAW EDIT CHANGE - SLIME_RANCHER - ORIGINAL: SEND_SIGNAL(S, COMSIG_FRIENDSHIP_CHANGE, user, 110)
 	S.bodytemperature = T0C + 400 //We gonna step on the gas.
 	..()
 
@@ -98,7 +98,7 @@ Burning extracts:
 
 /obj/item/slimecross/burning/yellow/do_effect(mob/user)
 	user.visible_message(span_danger("[src] explodes into an energy field, shocking others nearby!"))
-	playsound(get_turf(src), 'sound/weapons/zapbang.ogg', 50, TRUE)
+	playsound(get_turf(src), 'sound/items/weapons/zapbang.ogg', 50, TRUE)
 	for(var/mob/living/victim in range(4, get_turf(user)) - user)
 		user.Beam(victim, icon_state = "sm_arc", time = 0.5 SECONDS)
 		// Shock immunity prevents negative effects
@@ -216,7 +216,7 @@ Burning extracts:
 		else
 			S.clear_friends()
 		*/
-		ADD_TRAIT(S, TRAIT_SLIME_RABID, "burning-red")
+		S.ai_controller?.set_blackboard_key(BB_SLIME_RABID, TRUE) // PAW EDIT CHANGE - SLIME_RANCHER - ORIGINAL: ADD_TRAIT(S, TRAIT_SLIME_RABID, "burning-red")
 		S.visible_message(span_danger("The [S] is driven into a dangerous frenzy!"))
 	..()
 
@@ -277,7 +277,7 @@ Burning extracts:
 /// Inflicts a blastwave upon every mob within a small radius.
 /obj/item/slimecross/burning/oil/proc/boom()
 	var/turf/T = get_turf(src)
-	playsound(T, 'sound/effects/explosion2.ogg', 200, TRUE)
+	playsound(T, 'sound/effects/explosion/explosion2.ogg', 200, TRUE)
 	for(var/mob/living/target in range(2, T))
 		new /obj/effect/temp_visual/explosion(get_turf(target))
 		SSexplosions.med_mov_atom += target

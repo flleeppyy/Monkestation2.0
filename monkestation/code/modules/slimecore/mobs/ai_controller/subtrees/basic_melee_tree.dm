@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /datum/ai_planning_subtree/basic_melee_attack_subtree/slime
 	melee_attack_behavior = /datum/ai_behavior/basic_melee_attack/try_latch_feed
 

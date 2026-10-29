@@ -81,6 +81,12 @@
 @include meta.load-css('./themes/generic-yellow.scss');
 @include meta.load-css('./themes/generic.scss');
 
+// PAW EDIT ADDITION START - SLIME_RANCHER
+@include meta.load-css('./themes/slime_rancher.scss');
+@include meta.load-css('./interfaces/SlimeRancherScanner.scss');
+@include meta.load-css('./interfaces/SlimePen.scss');
+// PAW EDIT ADDITION END
+
 // NT Theme
 .Layout__content {
   background-image: url('assets/bg-nanotrasen.svg');

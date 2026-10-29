@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /datum/pet_command/stop_eating
 	command_name = "Stop Eating"
 	command_desc = "Command your pet to stop eating."

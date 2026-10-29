@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /datum/ai_behavior/find_potential_targets_without_trait
 	action_cooldown = 2 SECONDS
 	/// How far can we see stuff?

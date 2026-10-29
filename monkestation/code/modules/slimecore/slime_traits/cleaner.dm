@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /datum/slime_trait/cleaner
 	name = "Cleaner"
 	desc = "Changes the slime to consume pollution and grime."

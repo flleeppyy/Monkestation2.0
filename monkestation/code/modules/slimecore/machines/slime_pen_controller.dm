@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /obj/item/wallframe/slime_pen_controller
 	name = "slime pen management frame"
 	desc = "Used for building slime pen consoles."

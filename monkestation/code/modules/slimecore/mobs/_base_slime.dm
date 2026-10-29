@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /mob/living/basic/slime
 	name = "grey baby slime (123)"
 	icon = 'icons/mob/basic/slime.dmi'

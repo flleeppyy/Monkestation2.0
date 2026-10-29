@@ -31,13 +31,15 @@
 	if(istype(tile))
 		tile.atmos_spawn_air("o2=500;plasma=500;TEMP=1000") //Make it hot and burny for the new slime
 
-	var/new_colour = pick(/datum/slime_color/red, /datum/slime_color/orange)
+	var/new_colour = pick(/datum/slime_type/red, /datum/slime_type/orange) // PAW EDIT CHANGE - SLIME_RANCHER - ORIGINAL: var/new_colour = pick(/datum/slime_color/red, /datum/slime_color/orange)
 	var/mob/living/basic/slime/pyro = new(tile, new_colour)
-	ADD_TRAIT(pyro, TRAIT_SLIME_RABID, "pyro")
+	pyro.ai_controller?.set_blackboard_key(BB_SLIME_RABID, TRUE) // PAW EDIT CHANGE - SLIME_RANCHER - ORIGINAL: ADD_TRAIT(pyro, TRAIT_SLIME_RABID, "pyro")
 
 	var/mob/chosen_one = SSpolling.poll_ghosts_for_target(check_jobban = ROLE_SENTIENCE, poll_time = 10 SECONDS, checked_target = pyro, ignore_category = POLL_IGNORE_PYROSLIME, alert_pic = pyro, role_name_text = "pyroclastic anomaly slime")
 	if(isnull(chosen_one))
+		/* // PAW EDIT REMOVAL START - SLIME_RANCHER - the new slime AI reads rabid live, nothing to recompile
 		pyro.recompile_ai_tree()
+		*/ // PAW EDIT REMOVAL END
 		return
 	pyro.PossessByPlayer(chosen_one.key)
 	pyro.mind.special_role = ROLE_PYROCLASTIC_SLIME

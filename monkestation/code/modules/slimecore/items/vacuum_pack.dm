@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 #define NORMAL_VACUUM_PACK_CAPACITY 3
 #define UPGRADED_VACUUM_PACK_CAPACITY 6
 #define ILLEGAL_VACUUM_PACK_CAPACITY 12
@@ -614,7 +615,7 @@
 		to_chat(user, span_warning("You need a free hand to hold [nozzle]!"))
 		return
 
-	playsound(user, 'sound/mecha/mechmove03.ogg', 75, TRUE)
+	playsound(user, 'sound/vehicles/mecha/mechmove03.ogg', 75, TRUE)
 
 /obj/item/vacuum_pack/backpack/proc/remove_nozzle()
 	if(QDELETED(nozzle))
@@ -622,7 +623,7 @@
 	if(ismob(nozzle.loc))
 		var/mob/wearer = nozzle.loc
 		wearer.temporarilyRemoveItemFromInventory(nozzle, TRUE)
-		playsound(loc, 'sound/mecha/mechmove03.ogg', 75, TRUE)
+		playsound(loc, 'sound/vehicles/mecha/mechmove03.ogg', 75, TRUE)
 	nozzle.forceMove(src)
 
 /obj/item/vacuum_nozzle

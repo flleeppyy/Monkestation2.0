@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /obj/item/circuitboard/machine/biomass_recycler
 	name = "Biomass Recycler (Machine Board)"
 	greyscale_colors = CIRCUIT_COLOR_SCIENCE

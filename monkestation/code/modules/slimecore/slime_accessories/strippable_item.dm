@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 GLOBAL_LIST_INIT(strippable_slime_items, create_strippable_list(list(
 	/datum/strippable_item/slime_head,
 )))

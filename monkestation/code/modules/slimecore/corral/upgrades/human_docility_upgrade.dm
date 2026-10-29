@@ -1,3 +1,4 @@
+// PAW EDIT - SLIME_RANCHER - this file is unticked in tgstation.dme; slimecore is replaced by z_modular_paw/modules/slime_rancher
 /datum/corral_upgrade/human_docility
 	name = "Human Docility Upgrade"
 	desc = "Makes the non rabid slimes docile to people with souls."

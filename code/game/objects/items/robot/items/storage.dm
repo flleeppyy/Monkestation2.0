@@ -408,7 +408,9 @@ GAME_VERB(/obj/item/borg/apparatus, verb_drop_stored_item, "Drop", "Object")
 		/obj/item/gun/magic/artifact,
 		/obj/item/melee/artifact,
 		/obj/item/artifact_summon_wand,
+		/* // PAW EDIT REMOVAL START - SLIME_RANCHER - slimecore's mutation syringe is gone
 		/obj/item/slime_mutation_syringe,
+		*/ // PAW EDIT REMOVAL END
 		/obj/item/borg_restart_board
 	)
 	blacklisted_storables = list(
