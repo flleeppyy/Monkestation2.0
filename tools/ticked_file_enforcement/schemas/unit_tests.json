@@ -16,8 +16,7 @@
 		"font_awesome_icons.dm",
 		"outfit_sanity.dm",
 		"monkey_business.dm",
-		"rev_conversion.dm",
-		"linked_xenobio_pens.dm"
+		"rev_conversion.dm"
 	],
 	"forbidden_includes": []
 }
