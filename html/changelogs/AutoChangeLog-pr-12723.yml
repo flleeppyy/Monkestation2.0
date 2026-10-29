@@ -1,0 +1,4 @@
+author: "Absolucy"
+delete-after: True
+changes:
+  - bugfix: "Hopefully reduced FPS lag when there's a lot of people of varying heights wearing clothes and such."
