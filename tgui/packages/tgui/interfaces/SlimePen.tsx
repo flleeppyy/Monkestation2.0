@@ -1,4 +1,3 @@
-// THIS IS A PAW SECTOR UI FILE
 import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { type HsvaColor, hexToHsva, hsvaToHex } from 'tgui-core/color';
