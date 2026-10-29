@@ -1,0 +1,4 @@
+author: "Tractor-Maam"
+delete-after: True
+changes:
+  - spellcheck: "Integration Cog installs now say \"apc\" in their balloon alert instead of \"aPC\"."
