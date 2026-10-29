@@ -1,0 +1,5 @@
+author: "Absolucy"
+delete-after: True
+changes:
+  - bugfix: "big floods cause way less lag"
+  - bugfix: "burning liquid no longer spams smoke, and burnt-out fires actually go out"
